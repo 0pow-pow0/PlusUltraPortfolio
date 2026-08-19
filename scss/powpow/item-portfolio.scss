@@ -1,0 +1,153 @@
+.portfolio-card{
+    background:#fff;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 5px 20px rgba(0,0,0,.08);
+}
+
+.portfolio-info{
+    padding:18px;
+}
+
+.portfolio-info h4{
+    margin-bottom:15px;
+    font-size:20px;
+    font-weight:600;
+}
+
+.portfolio-stats{
+    display:flex;
+    justify-content:space-between;
+    text-align:center;
+}
+
+.stat{
+    flex:1;
+}
+
+.number{
+    display:block;
+    font-size:24px;
+    font-weight:700;
+}
+
+.label{
+    display:block;
+    font-size:13px;
+    color:#777;
+}
+
+.portfolio-info{
+    padding:18px;
+}
+
+.project-stats{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1.3vw;
+}
+
+.project-description {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: #6c757d;
+    border-top: 1px solid #eee;
+    padding-top: 12px;
+    margin-top: 10px;
+}
+
+.stat{
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+    font-size: 1.3vw;
+    font-weight: 500;
+}
+
+.portfolio-info{
+    padding: 24px 18px;
+}
+
+
+.project-stats{
+    display: flex;
+    justify-content: center;
+    gap: 1vw;
+}       
+
+.stat{
+    flex: 1;
+    display: flex;
+    flex-direction: column;    /* Icona sopra, testo sotto */
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 8px;
+    margin-top: 5px;
+}
+
+.stat i{
+    font-size: 1.2em;
+    color: #4a90e2;
+}
+
+.stat span{
+    font-size: 0.7em;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+
+
+.portfolio-card {
+    height: 460px;
+}
+
+.portfolio-card .image img {
+    height: 160px;
+    object-fit: cover;
+}
+
+.portfolio-info {
+    padding: 10px 12px 12px;
+}
+
+.project-title {
+    font-size: 1.5rem;
+    margin-top: 5px;
+    margin-bottom: 10px;
+
+    text-align: center;
+    font-weight:600;
+    line-height: 1.2em;
+}
+
+.project-stats {
+    font-size: 0.8rem;
+}
+
+.project-stats .stat {
+    margin-right: 8px;
+}
+
+.mb-4 {
+    margin-bottom: 1rem !important;
+}
+
+@media (max-width: 720px) {
+    .project-stats
+    {
+        margin-top: 20px;
+        margin-bottom: 0px;
+    }
+
+    .stat
+    {
+        font-size: 2.4vw;
+    }
+}

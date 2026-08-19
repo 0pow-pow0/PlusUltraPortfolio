@@ -1,0 +1,33 @@
+<section class="portfolio ">
+	<div class="container">
+		<div class="portfolio-options row mb-5">
+			<div class="col-10">
+				<div class="btn-group btn-group-toggle " data-toggle="buttons">
+					<label class="btn active ">
+						<input type="radio" name="shuffle-filter" value="all" checked="checked" />All Projects
+					</label>
+					<label class="btn">
+						<input type="radio" name="shuffle-filter" value="unity" />Unity
+					</label>
+					<label class="btn">
+						<input class="full-text" type="radio" name="shuffle-filter" value="unreal engine" />
+						<p class="full-text">Unreal Engine</p>
+						<p class="short-text">UE26</p>
+					</label>
+					<label class="btn">
+						<input type="radio" name="shuffle-filter" value="other" />Other
+					</label>
+				</div>
+			</div>
+		</div>
+
+
+		  <!-- ROW che contiene le card -->
+        <div class="row shuffle-wrapper portfolio-gallery">
+       
+		@@include('blocks/portfolio-item/rumble-smash-portfolio-item.htm')
+		@@include('blocks/portfolio-item/rumble-smash-portfolio-item.htm')
+
+		</div>
+	</div>
+</section>
