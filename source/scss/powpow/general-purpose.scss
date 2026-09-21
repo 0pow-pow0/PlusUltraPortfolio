@@ -1,0 +1,247 @@
+.portfolio-options
+{
+    margin-bottom: 1em !important;
+}
+
+/* ============================================
+   BANNER: contenitore principale
+   ============================================ */
+.banner {
+    position: relative;
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* ============================================
+   VIDEO BACKGROUND: colonna centrata
+   ============================================ */
+.video-background {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 95%;              /* 👈 LARGHEZZA DELLA COLONNA (regolabile) */
+    height: 95%;             /* 👈 ALTEZZA DELLA COLONNA (regolabile) */
+    min-width: 70%;
+    max-width: 1200px;       /* Larghezza massima */
+    max-height: 800px;       /* Altezza massima */
+    z-index: 0;
+    overflow: hidden;
+    border-radius: 20px;     /* Angoli arrotondati (opzionale) */
+    box-shadow: inset 0 10px 20px rgba(0, 0, 0, 0.5); /* Ombra (opzionale) */
+}
+
+/* ============================================
+   VIDEO: centrato e tagliato all'interno della colonna
+   ============================================ */
+.video-background video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: cover;
+    opacity: 60%;
+}
+
+/* Meta' schermo */
+@media (max-width: 720px) {
+    .video-background {
+        max-height: 80%;
+        max-width: 100%;
+    }
+    
+    .banner .cd-headline
+    {
+        font-size: 24px !important;
+    }
+    
+    .section.banner
+    {
+        padding: 0px;
+        min-height: 50vh;
+    }
+
+    body > section.portfolio > div > div.row.mb-5
+    {
+        margin-bottom: 15px !important;
+    }
+}
+/* 
+==================================
+Telefono
+==================================
+*/
+@media (max-width: 520px)
+{
+    .video-background {
+        max-height: 100%;
+        max-width: 100%;
+        border-radius: 0px;
+
+        width: 100%;
+        height: 100%;
+        box-shadow: inset 0px 0px 30px 30px rgba(0, 0, 0, 0.5); /* Ombra (opzionale) */
+    }
+
+    .section.banner
+    {
+        padding: 0px;
+        min-height: 30vh;
+    }
+
+    body > section.portfolio > div > div.row.mb-5
+    {
+        margin-bottom: 15px !important;
+    }
+    /*
+    ==================================
+    Portfolio-home
+    ==================================
+    */
+    label.btn {
+        font-size: 13px;
+        padding: 20px 10px 10px 0px !important;
+    }
+
+    p.short-text{
+        display: contents;
+    }
+
+    p.full-text{
+        display:none;
+    }
+
+    .stat {
+        font-size: 3vw;
+    }
+}
+@media (min-width: 521px)
+{
+    p.short-text
+    {
+        display:none;
+    }
+    
+    p.full-text{
+        display:contents;
+    }
+
+}
+
+
+
+
+/* ============================================
+   CONTENUTO TESTUALE: sopra il video
+   ============================================ */
+.banner .container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+}
+
+/* Colonna del testo centrata con larghezza controllata */
+.banner .container .col-lg-10 {
+    margin: 0 auto;
+    float: none;
+}
+
+/* Testo in contrasto con il video */
+.banner h2,
+.banner p {
+    color: white;
+    text-shadow: 0 2px 15px rgba(0, 0, 0, 0.7);
+}
+
+
+
+
+
+.copy-btn {
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: inherit;          /* Eredita il colore dal testo circostante */
+    font: inherit;           /* Eredita il font */
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.copy-btn:hover {
+    color: #f44336;
+}
+
+.toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #ffffff;
+    color: #222;
+    padding: 14px 32px;
+    border-radius: 30px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    z-index: 9999;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+
+
+
+/* Cambiano in base alla grandezza del dispositivo */
+/* Su schermi piccoli, abbrevia il testo */
+@media (max-width: 768px) {
+    .stat .full-text {
+        display: none;
+    }
+    .stat .short-text {
+        display: inline;
+    }
+}
+
+@media (min-width: 769px) {
+    .stat .full-text {
+        display: inline;
+    }
+    .stat .short-text {
+        display: none;
+    }
+}
+
+@media (max-width: 991px)
+{
+    .footer-widget
+    {
+        margin-top: 1em !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .navbar-nav {
+        flex-wrap: nowrap !important;
+    }
+    
+    .navbar-nav .nav-item {
+        white-space: nowrap;
+    }
+}

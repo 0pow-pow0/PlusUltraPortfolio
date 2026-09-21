@@ -1,0 +1,9 @@
+{
+    "search.exclude": {
+        "source/js": true,
+        "source/images": true,
+        "node_modules": true,
+        "theme": true,
+        "fontawesome-free-7.3.1-web": true
+    }
+}
