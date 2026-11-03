@@ -1,0 +1,193 @@
+<!-- ===== Table of Contents Partial ===== -->
+<button id="toc-toggle" class="toc-toggle" type="button" aria-expanded="false" aria-controls="toc-sidebar" aria-label="Apri indice pagina">
+  <img src="images/UI/list.svg" alt="Indice" class="toc-toggle__icon">
+</button>
+
+<aside id="toc-sidebar" class="toc-sidebar" role="navigation" aria-label="Indice pagina" aria-hidden="true">
+  <div class="toc-sidebar__header">
+    <h2 class="toc-sidebar__title">Indice</h2>
+    <button id="toc-close" class="toc-sidebar__close" type="button" aria-label="Chiudi indice">&#215;</button>
+  </div>
+  <nav class="toc-sidebar__nav">
+    <ul id="toc-list" class="toc-list"></ul>
+  </nav>
+</aside>
+
+<div id="toc-overlay" class="toc-overlay" aria-hidden="true"></div>
+<!-- ===== /Table of Contents Partial ===== -->
+<!-- Stili spostati in scss/table-of-contents.scss -->
+
+<script>
+  (function() {
+    'use strict';
+
+    var toggle = document.getElementById('toc-toggle');
+    var sidebar = document.getElementById('toc-sidebar');
+    var closeBtn = document.getElementById('toc-close');
+    var overlay = document.getElementById('toc-overlay');
+    var list = document.getElementById('toc-list');
+
+    if (!toggle || !sidebar || !list) return;
+
+    var observer = null;
+
+    function markLastItems(listEl) {
+      var items = listEl.querySelectorAll(':scope > .toc-item');
+      items.forEach(function(item, idx, arr) {
+        if (idx === arr.length - 1) {
+          item.classList.add('is-last');
+        } else {
+          item.classList.remove('is-last');
+        }
+        var nested = item.querySelector(':scope > .toc-list.nested');
+        if (nested) {
+          markLastItems(nested);
+        }
+      });
+    }
+
+    function build() {
+      list.innerHTML = '';
+      var headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+
+      headings.forEach(function(h, i) {
+        if (!h.id) {
+          h.id = 'toc-heading-' + i;
+        }
+      });
+
+      var rootUl = document.createElement('ul');
+      rootUl.className = 'toc-list';
+      var lastLiByLevel = {};
+
+      headings.forEach(function(h) {
+        var level = parseInt(h.tagName.charAt(1), 10);
+        if (level < 1 || level > 6) level = 2;
+
+        var li = document.createElement('li');
+        li.className = 'toc-item level-' + level;
+
+        var a = document.createElement('a');
+        a.href = '#' + h.id;
+        a.textContent = h.textContent.trim() || 'Senza titolo';
+        li.appendChild(a);
+
+        if (level === 1) {
+          rootUl.appendChild(li);
+        } else {
+          var parentLi = lastLiByLevel[level - 1];
+          if (parentLi) {
+            var childUl = parentLi.querySelector(':scope > ul.toc-list');
+            if (!childUl) {
+              childUl = document.createElement('ul');
+              childUl.className = 'toc-list nested';
+              parentLi.appendChild(childUl);
+              parentLi.classList.add('has-children');
+            }
+            childUl.appendChild(li);
+          } else {
+            rootUl.appendChild(li);
+          }
+        }
+
+        lastLiByLevel[level] = li;
+        for (var l = level + 1; l <= 6; l++) {
+          delete lastLiByLevel[l];
+        }
+      });
+
+      list.appendChild(rootUl);
+
+      markLastItems(rootUl);
+
+      list.querySelectorAll('.toc-item.has-children').forEach(function(li) {
+        var existing = li.querySelector(':scope > .toc-expand');
+        if (existing) return;
+
+        var btn = document.createElement('button');
+        btn.className = 'toc-expand';
+        btn.type = 'button';
+        btn.setAttribute('aria-expanded', 'false');
+        btn.textContent = '▶';
+
+        var a = li.querySelector(':scope > a');
+        a.prepend(btn);
+
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          e.preventDefault();
+          var expanded = btn.getAttribute('aria-expanded') === 'true';
+          btn.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+          li.classList.toggle('expanded');
+        });
+      });
+    }
+
+    list.addEventListener('click', function(e) {
+      var a = e.target.closest ? e.target.closest('a') : null;
+      if (!a) return;
+      e.preventDefault();
+      var target = document.querySelector(a.hash);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      closeSidebar();
+    });
+
+    function openSidebar() {
+      toggle.setAttribute('aria-expanded', 'true');
+      sidebar.setAttribute('aria-hidden', 'false');
+      overlay.setAttribute('aria-hidden', 'false');
+      toggle.classList.add('active');
+      sidebar.classList.add('open');
+      overlay.classList.add('open');
+    }
+
+    function closeSidebar() {
+      toggle.setAttribute('aria-expanded', 'false');
+      sidebar.setAttribute('aria-hidden', 'true');
+      overlay.setAttribute('aria-hidden', 'true');
+      toggle.classList.remove('active');
+      sidebar.classList.remove('open');
+      overlay.classList.remove('open');
+    }
+
+    toggle.addEventListener('click', function() {
+      var expanded = toggle.getAttribute('aria-expanded') === 'true';
+      if (expanded) closeSidebar(); else openSidebar();
+    });
+
+    closeBtn.addEventListener('click', closeSidebar);
+    overlay.addEventListener('click', closeSidebar);
+
+    window.initTableOfContents = build;
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', build);
+    } else {
+      build();
+    }
+
+    if (window.MutationObserver) {
+      observer = new MutationObserver(function(mutations) {
+        var changed = false;
+        mutations.forEach(function(m) {
+          if (m.type === 'childList' && m.addedNodes.length > 0) {
+            m.addedNodes.forEach(function(node) {
+              if (node.nodeType === 1 && node.matches && node.matches('h1, h2, h3, h4, h5, h6')) {
+                changed = true;
+              }
+              if (node.nodeType === 1 && node.querySelectorAll) {
+                if (node.querySelectorAll('h1, h2, h3, h4, h5, h6').length > 0) {
+                  changed = true;
+                }
+              }
+            });
+          }
+        });
+        if (changed) build();
+      });
+      observer.observe(document.body, { childList: true, subtree: true });
+    }
+  })();
+</script>

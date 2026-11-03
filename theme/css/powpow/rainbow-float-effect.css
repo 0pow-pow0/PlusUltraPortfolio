@@ -1,0 +1,36 @@
+/**
+ *
+ */
+
+.rainbow-icon {
+  display: inline-block;
+  font-size: 1.2rem;
+  background: linear-gradient(90deg, #ff0000, #ff7700, #ffff00, #00ff00, #0000ff, #8b00ff, #ff0000);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: rainbowScroll 4s linear infinite, floatXY 1s linear infinite;
+}
+
+@keyframes rainbowScroll {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 300% 50%;
+  }
+}
+@keyframes floatXY {
+  /*0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-10deg);}
+  50% { transform: rotate(0deg); }
+  75% { transform: rotate(10deg); }*/
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+/*# sourceMappingURL=rainbow-float-effect.css.map */

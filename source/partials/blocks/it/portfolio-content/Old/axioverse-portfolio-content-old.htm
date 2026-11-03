@@ -1,0 +1,479 @@
+<h1 id="axioverse-technical-portfolio-document">Axioverse — Technical Portfolio Document</h1>
+<blockquote>
+    <p>[!NOTE] Primo progetto!
+        Questo è il mio primo progetto mai realizzato!</p>
+</blockquote>
+<p><strong>Un platformer single-player che gira nativamente sulla console di Windows! Realizzato senza alcun
+        Engine!</strong>
+    Corri, salta e spara! Fatti strada tra il nero della console e nemici animati da caratteri ASCII. Se prima li
+    utilizzavi per spiegare a mamma cosa volevi mangiare a cena, adesso caratteri e parole <strong>SONO CONTRO DI TE!
+        SCONFIGGILI!</strong> Tocca anche solo con un dito la bandierina e avrai vinto.</p>
+<hr>
+<h2 id="-state-machine-a-bitmask-bitwise-flags-manual-state-management">🗿 State Machine a Bitmask | Bitwise Flags &amp;
+    Manual State Management</h2>
+<h3 id="-context">🧭 CONTEXT</h3>
+<p>Allora, il player. Dovevo sapere se stesse fermo, corresse, saltasse, cadesse, sparasse. Ovviamente, la risposta
+    giusta era utilizzare una state machine, <strong>magari sfruttando un&#39;architettura divisa in classi che poi
+        convergesso, per composizione, dentro uno script che li gestisse</strong>. Come fatto per [[RumbleSmash -
+    Portfolio - IT|Rumble Smash]]. </p>
+<p>Però, io sono fico 😎.</p>
+<p>Dunque, ho optato per gestire gli stati attraverso <strong>i bit</strong> (mi diverto, vero?) <strong>e delle
+        bitmask</strong>. Teoricamente attraverso un approccio classico per le state machine, se io sto saltando e
+    sparando e supponiamo che quando sono in questo stato subisco il doppio dei danni, posso creare un nuovo pseudostato
+    per gestire interazioni e comportamenti speciali, risolvendo, dunque, questo problema.</p>
+<p>Invece, con le bitmask è leggermento diverso, perché per verificare se io mi trovo in due stati contemporanemente mi
+    basta applicare due maschere allo stesso tempo.</p>
+<p>Supponiamo che</p>
+<pre><code class="lang-cpp">// <span class="hljs-number">8</span> bit, ogni bit rappresenta uno stato.
+unsigned char current_active_states = <span class="hljs-number">0</span>;
+
+const int STATE_STILL     = <span class="hljs-number">0b1</span>;
+const int STATE_RUNNING   = <span class="hljs-number">0b10</span>;
+const int STATE_JUMPING   = <span class="hljs-number">0b100</span>;
+const int STATE_FALLING   = <span class="hljs-number">0b1000</span>;
+const int STATE_SHOOTING  = <span class="hljs-number">0b10000</span>;
+</code></pre>
+<p>Per gestire i comportamenti derivanti dall&#39;attivazione di 2 stati o piu&#39; faccio:</p>
+<pre><code class="lang-cpp"><span class="hljs-keyword">if</span> <span class="hljs-comment">((current_active_states &amp; STATE_JUMPING)</span> &amp;&amp; <span class="hljs-comment">(current_active_states &amp; STATE_SHOOTING)</span>)
+{
+    damageMultiplier = <span class="hljs-number">2</span>f;
+}
+</code></pre>
+<h3 id="-why-">❓ WHY?</h3>
+<p><strong>Perché i bit e le bitmask invece di enum/state pattern classico?</strong>
+    Il vero motivo era imparare a gestire i bit e manipolarli, dunque era più un caso di studio che una vera e propria
+    scelta architetturale, ma vediamo comunque quali vantaggi esistono in questa architettura.</p>
+<ul>
+    <li><strong>Coesistenza di stati</strong>: <code>collision_mask</code> può avere <code>GROUND | RIGHT_SIDE</code>
+        insieme, con altri metodi dovrei creare pseudostati.</li>
+    <li><strong>Performance</strong>: <code>state_mask &amp; STATE_JUMPING</code> Le operazioni binarie sono
+        semplicissime, in pratica perfetto se voglio programmare ROM per il mio amato Game Boy Advance (è successo),
+        dove l&#39;ottimizzazione è alla base.</li>
+    <li><strong>Memoria</strong>: 1 <code>unsigned char</code> significa 8 stati in 1 byte.</li>
+    <li><strong>Estensibilità</strong>: aggiungere <code>STATE_DASHING = 0b100000</code> non tocca codice esistente,
+    </li>
+</ul>
+<p>Inoltre, la semplicità del gioco mi ha permesso di optare per questa soluzione, chiaramente per sistemi più
+    complessi, avrei dovuto adottare altre scelte.</p>
+<h3 id="-how">🛠️ HOW</h3>
+<p>Ho creato una classe player e dopodiché ho aggiunto un parametro per contenere i vari stati e il bit a cui
+    corrisponde ogni stato.</p>
+<p><code>cpp title:Player Class
+class Player
+{
+    // Definizione flag 
+    typedef unsigned char ENTITY_STATE;
+    public const int STATE_STILL     = 0b1;
+    public const int STATE_RUNNING   = 0b10;
+    public const int STATE_JUMPING   = 0b100;
+    public const int STATE_FALLING   = 0b1000;
+    public const int STATE_SHOOTING  = 0b10000;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;typedef int COLLISION_TYPE;
+const int COLLISION_TYPE_GROUND     = &lt;span class=&quot;hljs-number&quot;&gt;0b1&lt;/span&gt;;
+const int COLLISION_TYPE_CEILING    = &lt;span class=&quot;hljs-number&quot;&gt;0b10&lt;/span&gt;;
+const int COLLISION_TYPE_LEFT_SIDE  = &lt;span class=&quot;hljs-number&quot;&gt;0b100&lt;/span&gt;;
+const int COLLISION_TYPE_RIGHT_SIDE = &lt;span class=&quot;hljs-number&quot;&gt;0b1000&lt;/span&gt;;
+
+// Check O(&lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;)
+public bool is_entity_state(ENTITY_STATE s);
+
+// Setter semplice
+public void set_entity_state(ENTITY_STATE new_state);
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;}&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+**Utilizzo nel game loop (righe 1112-1136):**</code>cpp<span class="hljs-built_in">
+        if </span>(GetAsyncKeyState(VK_RIGHT)) {
+    p1.flipped = false;
+    p1.set_entity_state(STATE_RUNNING); // Pulisce STILL/FALLING
+    p1.speed_x = P<span class="hljs-class">LAYER_SPEED_X;</span>
+    }<span class="hljs-built_in">
+        if </span>(GetAsyncKeyState(VK_SPACE) &amp;&amp;
+    p1.is_colliding(COLLISION_TYPE_GROUND)) {
+    p1.set_entity_state(STATE_JUMPING);
+    p1.speed_y = P<span class="hljs-class">LAYER_JUMP_FORCE;</span>
+    }
+    </code></pre>
+    <hr>
+<h2 id="-sistema-di-collisione-per-char-collision-detection">⚽ Sistema di Collisione | Per-Char collision detection</h2>
+<h3 id="-context">🧭 CONTEXT</h3>
+<p>Dovevo creare le collisioni all&#39;interno del gioco, dunque, per un gioco eseguito in console, l&#39;unica
+    un&#39;opzione era un array bidimensionale di caratteri. Mi serviva, oltre che avere dei &quot;blocchi&quot;
+    diversi, era necessario che ognuno avesse un behaviour diverso, alcuni &quot;blocchi&quot; dovevano bloccarmi il
+    giocatore, altri no, se poi avessi voluto creare nuovi behaviour per altri blocchi, dovevo rendere il codice
+    estensibile per questo fine.
+    Dunque, ho sostanzialmente creato una &quot;tilemap&quot; fatta di unsigned char, dove:</p>
+<ul>
+    <li><code>&#39;=&#39;</code>: piattaforme</li>
+    <li><code>&#39;I&#39;</code> = muri</li>
+    <li><code>&#39; &#39;</code> = vuoto. </li>
+</ul>
+<p>Dopo aver risolto il problema della mappa, era necessario che creassi un sistema di collisioni, l&#39;idea era quella
+    di sviluppare <strong>un simil AABB con continuous collision detection</strong>, la CCD era necessaria, altrimenti
+    qualunque movimento superiore ad un &quot;tile&quot; avrebbe rotto le collisioni. Il risultato è un algoritmo che
+    controlla la mesh del personaggio e che suddivide il movimento in &quot;step&quot;, ognuno dei quali viene
+    verificato, non appena si verificare una collisione, l&#39;entità viene traslata di un valore pari alla distanza tra
+    la posizione iniziale dell&#39;entità e la prima collisione verificatasi, per un progetto basato solamente su forme
+    semplici, è perfetto, magari non il meglio dell&#39;ottimizzazione.
+    Ogni step verificato, la mesh del personaggio viene interamente controllato l&#39;overlap con i tile della mappa,
+    visto che le mesh sono fatte da caratteri ASCII, viene controllato ogni carattere in <strong>World Space</strong>
+    per verificare se sono avvenute collisioni. Per abbreviare, questo algoritmo di CCD per-char viene detto CCDPC.</p>
+<h3 id="-why-">❓ WHY?</h3>
+<p><strong>Perché hai scelto l&#39;algoritmo CCDPC?</strong>
+    Verificare la collisione di ogni carattere della mesh non è dispendioso, visto che le mesh sono relativemente
+    piccole e hanno un tetto di grandezza massimo, il quale è molto esiguo. Inoltre, era necessario dover controllare
+    ogni char, altrimenti ci sarebbero potute essere imperfezioni ottiche importanti, considerando che il gioco si basa
+    sul render di caratteri molto grandi. Avrei potuto ottimizzare aggiungendo degli algoritmi in grado di valutare le
+    collisioni a priori, come algoritmi di broad phase, per poi passare alla verifica della collisione per-char, ma non
+    era necessario. Inoltre, la <strong>CCDPC</strong> mi permette di realizzare meccaniche divertenti per un platformer
+    nonostante i suoi limiti. Dal punto di vista tempistico era la scelta migliore. </p>
+<h3 id="-how">🛠️ HOW</h3>
+<p><strong>Collisione mappa (righe 174-351) — algoritmo per asse Y positivo (caduta):</strong></p>
+<pre><code class="lang-cpp"><span class="hljs-keyword">void</span> entity::check_map_collision(wchar_t<strong> <span class="hljs-built_in">map</span>, <span class="hljs-keyword">int</span> level_height, <span class="hljs-keyword">int</span> level_width) {
+    reset_collision_states();
+    <span class="hljs-keyword">int</span> translate_x = speed_x;
+    <span class="hljs-keyword">int</span> translate_y = speed_y;
+
+    <span class="hljs-built_in">if</span> (translate_y &gt; <span class="hljs-number">0</span>) {  <span class="hljs-comment">// Caduta</span>
+        <span class="hljs-keyword">int</span> piedi_y = sprite_height - <span class="hljs-number">1</span>;  <span class="hljs-comment">// Solo i piedi</span>
+        <span class="hljs-keyword">bool</span> collided = false;
+        <span class="hljs-built_in">for</span> (<span class="hljs-keyword">int</span> <span class="hljs-built_in">step</span> = <span class="hljs-number">1</span>; <span class="hljs-built_in">step</span> &lt;= speed_y; <span class="hljs-built_in">step</span>++) {
+            <span class="hljs-built_in">for</span> (<span class="hljs-keyword">int</span> x = <span class="hljs-number">0</span>; x &lt; sprite_width; x++) {
+                <span class="hljs-keyword">int</span> coll_y = <span class="hljs-keyword">this</span>-&gt;y + piedi_y + <span class="hljs-built_in">step</span>;
+                <span class="hljs-keyword">int</span> coll_x = <span class="hljs-keyword">this</span>-&gt;x + x;
+                wchar_t tile = (coll_x &gt;= level_width || coll_y &gt;= level_height) 
+                    ? NO_CHAR : <span class="hljs-built_in">map</span>[coll_y][coll_x];
+
+                <span class="hljs-comment">// Anti-tunneling: se già colliso e ora vuoto → stop immediato</span>
+                <span class="hljs-built_in">if</span> (collided &amp;&amp; tile == L<span class="hljs-string">&#39; &#39;</span>) {
+                    translate_y -= speed_y - (<span class="hljs-built_in">step</span> - <span class="hljs-number">1</span>);
+                    <span class="hljs-built_in">step</span> = speed_y; <span class="hljs-built_in">break</span>;
+                }
+
+                <span class="hljs-built_in">if</span> (tile == L<span class="hljs-string">&#39;=&#39;</span> || tile == L<span class="hljs-string">&#39;I&#39;</span> || tile == NO_CHAR) {
+                    set_collision_state(COLLISION_TYPE_GROUND);
+                    collided = true;
+                    translate_y -= <span class="hljs-number">1</span>;  <span class="hljs-comment">// Indietreggia di 1</span>
+                    <span class="hljs-built_in">break</span>;
+                }
+            }
+        }
+    }
+    <span class="hljs-comment">// ... Y negativo (ceiling), X positivo (right), X negativo (left) identici ...</span>
+    x += translate_x;
+    y += translate_y;
+}
+</code></pre>
+<p><strong>Punti chiave:</strong></p>
+<ul>
+    <li><code>collided</code> flag previene tunneling: una volta toccato solido, se step successivo trova vuoto → stop
+        immediato (evita &quot;uscire&quot; dal muro dall&#39;altra parte ad alta velocità)</li>
+    <li>Solo punti rilevanti: <code>piedi_y</code> per ground, <code>testa_y=0</code> per ceiling,
+        <code>limite_destro_x</code> per right, <code>0</code> per left — non controlla tutta bbox ogni step</li>
+    <li>Out-of-bounds = muro (<code>NO_CHAR</code> trattato come solido) → entità non esce dal livello</li>
+    <li>Ritorna flag per fisica: <code>is_colliding(COLLISION_TYPE_GROUND)</code> abilita salto, <code>RIGHT_SIDE</code>
+        blocca movimento dx</li>
+</ul>
+<p><strong>Collisione entità-entità (righe 356-371, 728-777) — AABB + double dispatch manuale:</strong></p>
+<pre><code class="lang-cpp"><span class="hljs-comment">// Base: AABB overlap test — righe 356-366</span>
+bool entity::check_entity_collision(entity<em> e1) {
+    <span class="hljs-function"><span class="hljs-title">return</span> (x &lt; e1-&gt;</span><span class="hljs-function"><span class="hljs-title">x</span> + e1-&gt;</span>bounding_box_width  &amp;&amp;
+            <span class="hljs-function"><span class="hljs-title">x</span> + bounding_box_width  &gt; e1-&gt;</span>x &amp;&amp;
+            <span class="hljs-function"><span class="hljs-title">y</span> &lt; e1-&gt;</span><span class="hljs-function"><span class="hljs-title">y</span> + e1-&gt;</span>bounding_box_height &amp;&amp;
+            <span class="hljs-function"><span class="hljs-title">y</span> + bounding_box_height &gt; e1-&gt;</span>y);
+}
+
+virtual void evaluate_collision(entity</em> e1) = <span class="hljs-number">0</span>;
+
+void player::evaluate_collision(entity<em> e) {  <span class="hljs-comment">// Player vs Enemy</span>
+    <span class="hljs-function"><span class="hljs-title">if</span> (e-&gt;</span><span class="hljs-function"><span class="hljs-title">entity_type</span> == ENTITY_ENEMY) { hp--; e-&gt;</span>destroy = <span class="hljs-literal">true</span>; }
+}
+void enemy::evaluate_collision(entity</em> e) {   <span class="hljs-comment">// Enemy vs Bullet</span>
+    <span class="hljs-function"><span class="hljs-title">if</span> (e-&gt;</span><span class="hljs-function"><span class="hljs-title">entity_type</span> == ENTITY_ALLY_BULLET) { e-&gt;</span>destroy = <span class="hljs-literal">true</span>; destroy = <span class="hljs-literal">true</span>; }
+}
+void bullet::evaluate_collision(entity* e) { }  <span class="hljs-comment">// Bullet: logica in map collision + lifetime</span>
+</code></pre>
+<p><strong>Vantaggi:</strong> Zero <code>dynamic_cast</code>, zero RTTI, <code>entity_type</code> =
+    <code>unsigned char</code> → branch prediction friendly, cache-friendly.</p>
+<hr>
+<h2 id="-il-player-input-fisica-arcade-bullet-management">🎮 Il Player | Input, Fisica Arcade, Bullet Management</h2>
+<h3 id="-context">🧭 CONTEXT</h3>
+<p>Il player era l&#39;entità &quot;tuttofare&quot;. Input da tastiera (freccie + Z + Spazio), fisica (gravità, attrito,
+    salto), state machine bitmask, gestione proiettili (max 1 alla volta, spawn da posizione arma), collisione mappa +
+    entità, rendering con flip orizzontale.</p>
+<p>I proiettili hanno richiesto un po&#39; di test, poiché un numero troppo alto di munizioni rendeva tutto troppo
+    semplice, inoltre, lo spawn dei proiettili era pieno di edge-cases da risolvere, ad esempio: &quot;Se provo a
+    sparare mentre sono davanti ad un muro?&quot;</p>
+<h3 id="-why-">❓ WHY?</h3>
+<p><strong>Perché fisica &quot;arcade&quot; (attrito lineare, gravità clamped) invece di un approccio physics
+        based?</strong>
+    Assolutamente non necessario, il sistema scelto mi permette di realizzare un feeling classico del gioco,
+    perfettamente in linea con gli obiettivi di design del gioco. Inoltre, il limite era il terminale stesso, non potevo
+    avere numeri con la virgola, non servivano a niente, non potevano essere considerati durante i movimenti sulla
+    tilemap, basata su numeri interi.</p>
+<h3 id="-how">🛠️ HOW</h3>
+<p><strong>Input polling immediato (righe 1112-1136):</strong></p>
+<pre><code class="lang-cpp">if (GetAsyncKeyState(VK_RIGHT)) { p1.flipped=false; p1.set_entity_state(STATE_RUNNING); p1.speed_x=P<span class="hljs-class">LAYER_SPEED_X;</span> }<span class="hljs-built_in">
+if </span>(GetAsyncKeyState(VK_<span class="hljs-class">LEFT))  { p1.flipped=true;</span>  p1.set_entity_state(STATE_RUNNING); p1.speed_x=-P<span class="hljs-class">LAYER_SPEED_X;</span> }<span class="hljs-built_in">
+if </span>(GetAsyncKeyState(VK_SPACE) &amp;&amp; p1.is_colliding(COLLISION_TYPE_GROUND)) { 
+    p1.set_entity_state(STATE_JUMPING); p1.speed_y=P<span class="hljs-class">LAYER_JUMP_FORCE;</span> 
+}<span class="hljs-built_in">
+if </span>(GetAsyncKeyState(0x5A) &amp;&amp; p1.can_spawn_bullets()) {  // &#39;Z&#39;
+    p1.set_entity_state(STATE_SHOOTING);
+    p1.generate_bullet(active_level-&gt;map, active_level-&gt;level_width, active_level-&gt;level_height);
+}
+</code></pre>
+<p><strong>Physics update (riga 639-640) — chiamato DOPO collisione mappa:</strong></p>
+<pre><code class="lang-cpp">void player::update() {
+    <span class="hljs-attr">speed_x</span> = speed_x - DECAYING_SPEED; <span class="hljs-keyword">if</span> (speed_x &lt; <span class="hljs-number">0</span>) <span class="hljs-attr">speed_x</span> = <span class="hljs-number">0</span>;  // Attrito
+    <span class="hljs-attr">speed_y</span> = speed_y + GRAVITY_FORCE;  <span class="hljs-keyword">if</span> (speed_y &gt; GRAVITY_FORCE) <span class="hljs-attr">speed_y</span> = GRAVITY_FORCE;  // Gravità + terminal velocity
+    <span class="hljs-keyword">if</span> (hp &lt;= <span class="hljs-number">0</span>) <span class="hljs-attr">destroy</span> = <span class="hljs-literal">true</span>;
+}
+</code></pre>
+<p><strong>Bullet spawn con check validità (righe 652-688):</strong></p>
+<pre><code class="lang-cpp">void player:<span class="hljs-type"></span>:generate_bullet(wchar_t</strong> map, int level_width, int level_height) {
+    int <span class="hljs-keyword">new</span><span class="hljs-type">_x</span> = flipped ? x : <span class="hljs-type">x </span>+ <span class="hljs-number">4</span>;  <span class="hljs-comment">// Offset da punta arma (sprite 4x4)</span>
+    int <span class="hljs-keyword">new</span><span class="hljs-type">_y</span> = y + <span class="hljs-number">1</span>;
+    int speed_x = flipped ? -BULLET_SPEED_X : <span class="hljs-type">BULLET_SPEED_X</span>;
+
+    wchar_t tile = (<span class="hljs-keyword">new</span><span class="hljs-type">_y</span> &gt;= level_height || <span class="hljs-keyword">new</span><span class="hljs-type">_x</span> &gt;= level_width) ? NO_CHAR : <span class="hljs-type">map</span>[<span class="hljs-keyword">new</span><span class="hljs-type">_y</span>][<span class="hljs-keyword">new</span><span class="hljs-type">_x</span>];
+    <span class="hljs-keyword">if</span> (tile == L<span class="hljs-string">&#39;=&#39;</span> || tile == L<span class="hljs-string">&#39;I&#39;</span> || tile == L<span class="hljs-string">&#39;~&#39;</span> || tile == NO_CHAR) <span class="hljs-keyword">return</span>;  <span class="hljs-comment">// Non spawnare in muro</span>
+
+    bull = <span class="hljs-keyword">new</span> <span class="hljs-type">bullet</span>(ENTITY_ALLY_BULLET);
+    bull-&gt;x = <span class="hljs-keyword">new</span><span class="hljs-type">_x</span>; bull-&gt;y = <span class="hljs-keyword">new</span><span class="hljs-type">_y</span>; bull-&gt;speed_x = speed_x;
+}
+</code></pre>
+<p><strong>Bullet lifecycle (righe 690-726):</strong></p>
+<pre><code class="lang-cpp"><span class="hljs-keyword">void</span> player::update_bullets() { <span class="hljs-keyword">if</span> (bull) bull-&gt;update(); }
+<span class="hljs-keyword">void</span> player::check_destroy() { <span class="hljs-keyword">if</span> (bull &amp;&amp; bull-&gt;destroy) { <span class="hljs-keyword">delete</span> bull; bull = <span class="hljs-literal">nullptr</span>; } }
+<span class="hljs-keyword">void</span> player::check_map_collision_bullets(...) { <span class="hljs-keyword">if</span> (bull) bull-&gt;check_map_collision(...); }
+</code></pre>
+<hr>
+<h2 id="-rendering-pipeline-double-buffering-virtual-camera-ascii-sprites">📽️ Rendering Pipeline | Double Buffering +
+    Virtual Camera + ASCII Sprites</h2>
+<h3 id="-context">🧭 CONTEXT</h3>
+<p>All&#39;inizio usavo <code>system(&quot;cls&quot;)</code> + <code>cout</code> per stampare tutto. Chiaramente era
+    tutto sballato, la console sfarfallava e il cursore si muoveva dentro la console.</p>
+<p>Poi il problema della camera, in sostanza dovevo realizzare a tutti gli effetti un &quot;frustum&quot;, dato un
+    livello 400×30 e uno schermo 130×30. Chiaramente devo renderizzare solo la regione di mappa interessata alla
+    grandezza dello schermo. </p>
+<p>Oltre a questo problema, dopo aver pensato a renderizzare, dovevo stampare le entità sopra la mappa e comporre il
+    &quot;frame&quot; finale per poterlo renderizzare, senza contaminare la struttura originale della mappa. Per questo
+    ho fatto: <strong>tre buffer separati</strong>. </p>
+<ul>
+    <li><code>map</code> = dati livello immutabili (da file). <code>wchar_t<strong></code></li>
+    <li><code>buf</code> = composizione frame corrente (map + entità in coordinate mondo). <code>wchar_t</strong></code>
+    </li>
+    <li><code>screen</code> = buffer lineare 1D per <code>WriteConsoleOutputCharacter</code>. <code>wchar_t<em></code>
+    </li>
+</ul>
+<h3 id="-why-">❓ WHY?</h3>
+<p><strong>Perché double buffering manuale (<code>map</code> → <code>buf</code> → <code>screen</code>)?</strong>
+    Era necessario dividere la responsabilità, in memoria mi serviva un copia immutabile della mappa per poter
+    effettuare la CD, poi mi serviva una versione per comporre la scena ufficiale, stampando entità e proiettili, senza
+    influenzare la versione immutabile della mappà. Inoltre era necessario avere un buffer in più per renderizzare sulla
+    regione visibile disponibile (la grandezza del terminale).</p>
+<p><strong>Perché <code>WriteConsoleOutputCharacter</code> invece di <code>std::cout</code>?</strong>
+    Ovviamente molto più ottimizzato, una singola syscall, piuttosto che una quantità altissima per colpa di
+    <code>std::cout</code>, inoltre evito il flicker del cursore ed ho controllo totale sulla posizione dei cratteri.
+</p>
+<h3 id="-how">🛠️ HOW</h3>
+<p><strong>Level buffers (righe 815-842, 864-908):</strong>
+    Qui componiamo la scena finale, renderizziamo solo la porzione interessata e generiamo l&#39;array finale da passare
+    <code>WriteConsoleOutputCharacter</code>. </p>
+<pre><code class="lang-cpp"><span class="hljs-keyword">class</span> <span class="hljs-title">level</span> {
+    wchar_t<strong> map;  <span class="hljs-comment">// Da file, never changes</span>
+    wchar_t</strong> buf;  <span class="hljs-comment">// Frame corrente</span>
+
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">refresh_buffer</span>(<span class="hljs-params"></span>) </span>{  <span class="hljs-comment">// Chiamato ogni frame</span>
+        <span class="hljs-keyword">for</span> (y) <span class="hljs-keyword">for</span> (x) buf[y][x] = map[y][x];
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">draw</span>(<span class="hljs-params">wchar_t</em> screen, camera<em> cam</span>) </span>{
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> y = <span class="hljs-number">0</span>; y &lt; SCREEN_HEIGHT; y++) {
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> x = <span class="hljs-number">0</span>; x &lt; SCREEN_WIDTH; x++) {
+                <span class="hljs-keyword">int</span> src_x = cam-&gt;pan_x + x;
+                <span class="hljs-keyword">int</span> src_y = cam-&gt;pan_y + y;
+                <span class="hljs-comment">// FRUSTUM CULLING implicito</span>
+                <span class="hljs-keyword">if</span> (src_x &gt;= level_width || src_y &gt;= level_height)
+                    screen[y </em> SCREEN_WIDTH + x] = L<span class="hljs-string">&#39; &#39;</span>;
+                <span class="hljs-keyword">else</span>
+                    screen[y <em> SCREEN_WIDTH + x] = buf[src_y][src_x];
+            }
+        }
+        screen[SCREEN_WIDTH </em> SCREEN_HEIGHT - <span class="hljs-number">1</span>] = L<span class="hljs-string">&#39;\0&#39;</span>;
+    }
+};
+</code></pre>
+<p>La camera si centra al giocatore, se non supera la prima, tranne quando si trova ai limiti del livello, lì non si
+    muove, non mantenendo il giocatore al centro</p>
+<p><strong>Camera follow (righe 1174-1180):</strong></p>
+<pre><code class="lang-cpp">player_camera.pan_x = p1.x - <span class="hljs-number">60</span>; <span class="hljs-comment">// hardcoded</span>
+<span class="hljs-keyword">if</span> (player_camera.pan_x &lt; <span class="hljs-number">0</span>) player_camera.pan_x = <span class="hljs-number">0</span>;
+<span class="hljs-function"><span class="hljs-title">if</span> (player_camera.pan_x + player_camera.width &gt; active_level-&gt;</span>level_width)
+    <span class="hljs-function"><span class="hljs-title">player_camera</span>.pan_x = active_level-&gt;</span>level_width - player_camera.width;
+</code></pre>
+<p><strong>Entity rendering con flip (righe 463-504):</strong></p>
+<pre><code class="lang-cpp">void entity::render_in_buffer(wchar_t<em>* buf) {
+    <span class="hljs-keyword">if</span> (flipped) {
+        <span class="hljs-keyword">for</span> (y) <span class="hljs-keyword">for</span> (x = sprite_width<span class="hljs-number">-1</span>, x1=<span class="hljs-number">0</span>; x &gt;= <span class="hljs-number">0</span>; x--, x1++)
+            <span class="hljs-keyword">if</span> (sprite[y][x] != L<span class="hljs-string">&#39; &#39;</span>) buf[y + <span class="hljs-keyword">this</span>-&gt;y][x1 + <span class="hljs-keyword">this</span>-&gt;x] = sprite[y][x];
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">for</span> (y) <span class="hljs-keyword">for</span> (x)
+            <span class="hljs-keyword">if</span> (sprite[y][x] != L<span class="hljs-string">&#39; &#39;</span>) buf[y + <span class="hljs-keyword">this</span>-&gt;y][x + <span class="hljs-keyword">this</span>-&gt;x] = sprite[y][x];
+    }
+}
+</code></pre>
+<p><strong>Sequenza rendering per frame (righe 1110-1202):</strong>
+    Ogni entità si aggiunge al buffer <code>buf</code></p>
+<pre><code class="lang-cpp"><span class="hljs-function"><span class="hljs-title">active_level</span>-&gt;</span>refresh_buffer();                    <span class="hljs-comment">// 1. Pulisci buf con map</span>
+<span class="hljs-function"><span class="hljs-title">p1</span>.render_in_buffer(active_level-&gt;</span>buf);            <span class="hljs-comment">// 2. Player</span>
+<span class="hljs-function"><span class="hljs-title">if</span> (p1.bull) p1.bull-&gt;</span>render_in_buffer(buf);       <span class="hljs-comment">// 3. Bullet</span>
+<span class="hljs-function"><span class="hljs-title">active_level</span>-&gt;</span>f.render_in_buffer(buf);             <span class="hljs-comment">// 4. Flag</span>
+<span class="hljs-function"><span class="hljs-title">active_level</span>-&gt;</span>render_enemies(buf);                 <span class="hljs-comment">// 5. Nemici</span>
+<span class="hljs-function"><span class="hljs-title">active_level</span>-&gt;</span>draw(screen.<span class="hljs-keyword">data</span>, &amp;player_camera);   <span class="hljs-comment">// 6. Camera → linear screen</span>
+WriteConsoleOutputCharacter(h_console, screen.<span class="hljs-keyword">data</span>, SCREEN_WIDTH</em>SCREEN_HEIGHT, {<span class="hljs-number">0</span>,<span class="hljs-number">0</span>}, &amp;dwBytesWritten);
+</code></pre>
+<hr>
+<h2 id="-memory-management-raii-manuale-per-array-2d-ownership-semantics">📦 Memory Management | RAII Manuale per Array
+    2D + Ownership Semantics</h2>
+<h3 id="-context">🧭 CONTEXT</h3>
+<p>Per il memory management, ho utilizzato strategie classiche, per le entità significava allocare e distruggere nei
+    rispettivi costruttori e distruttori, per la mappa e i buffer, lo stesso.</p>
+<p>Questo significa, nel caso dei buffer, che all&#39;avvio si inizializzassero alla grandezza della hmappa
+    corrispondente, dunque, la grandezza del buffer dipendeva dalla grandezza complessiva della mappa, descritta dai
+    parametri passati durante l&#39;inizializzazione (<code>level_width</code> e <code>level_height</code>). Dopodiché,
+    la mappa veniva letta e immagazzinata in memoria.</p>
+<p>Un procedimento analogo viene applicato per instanziare le sprite delle entità.</p>
+<h3 id="-how">🛠️ HOW</h3>
+<p><strong>Entity distruttore (righe 141-156) — gestisce entrambe forme:</strong></p>
+<pre><code class="lang-cpp">~entity() {
+    <span class="hljs-keyword">if</span> (sprite_height == <span class="hljs-number">1</span> &amp;&amp; sprite_width == <span class="hljs-number">1</span>) {  <span class="hljs-regexp">//</span> Bullet <span class="hljs-number">1</span>x1
+        <span class="hljs-keyword">delete</span> sprite[<span class="hljs-number">0</span>];
+        <span class="hljs-keyword">delete</span> sprite;
+    } <span class="hljs-keyword">else</span> {  <span class="hljs-regexp">//</span> Sprite rettangolare
+        <span class="hljs-keyword">for</span> (int i = <span class="hljs-number">0</span>; i &lt; sprite_height; i++) <span class="hljs-keyword">delete</span>[] sprite[i];
+        <span class="hljs-keyword">delete</span> sprite;  <span class="hljs-regexp">//</span> <span class="hljs-keyword">delete</span> (non <span class="hljs-keyword">delete</span>[]) perché sprite = new wchar_t<em>[h]
+    }
+}
+</code></pre>
+<p><strong>Level map/buf (righe 828-862):</strong></p>
+<pre><code class="lang-cpp">level(<span class="hljs-keyword">int</span> w, <span class="hljs-keyword">int</span> h) : level_width(w), level_height(h) {
+    buf = <span class="hljs-keyword">new</span> <span class="hljs-keyword">wchar_t</span></em>[level_height];
+    <span class="hljs-built_in">map</span> = <span class="hljs-keyword">new</span> <span class="hljs-keyword">wchar_t</span><em>[level_height];
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; level_height; i++) {
+        buf[i] = <span class="hljs-keyword">new</span> <span class="hljs-keyword">wchar_t</span>[level_width];
+        <span class="hljs-built_in">map</span>[i] = <span class="hljs-keyword">new</span> <span class="hljs-keyword">wchar_t</span>[level_width];
+    }
+}
+~level() {
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; level_height; i++) {
+        <span class="hljs-keyword">delete</span>[] <span class="hljs-built_in">map</span>[i]; <span class="hljs-keyword">delete</span>[] buf[i];
+    }
+    <span class="hljs-keyword">delete</span> <span class="hljs-built_in">map</span>; <span class="hljs-keyword">delete</span> buf;
+}
+</code></pre>
+<p><strong>Ownership bullet (righe 610, 683, 702-718):</strong></p>
+<pre><code class="lang-cpp">bullet</em> bull = <span class="hljs-literal">nullptr</span>;  <span class="hljs-comment">// Raw pointer = owning pointer (convenzione documentata)</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">generate_bullet</span><span class="hljs-params">(...)</span> </span>{ bull = <span class="hljs-keyword">new</span> bullet(...); }
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">check_destroy</span><span class="hljs-params">()</span> </span>{ <span class="hljs-keyword">if</span> (bull &amp;&amp; bull-&gt;destroy) { <span class="hljs-keyword">delete</span> bull; bull = <span class="hljs-literal">nullptr</span>; } }
+</code></pre>
+<hr>
+<h2 id="-asset-pipeline-data-driven-level-sprite-loading-da-file-ascii">📂 Asset Pipeline | Data-Driven Level &amp;
+    Sprite Loading da File ASCII</h2>
+<h3 id="-context">🧭 CONTEXT</h3>
+<p>Tutti gli asset renderizzati sono stati realizzati sfruttando [[<a
+        href="https://asciistudio.app/|un">https://asciistudio.app/|un</a> tool]] online per creare tilemap tramite
+    caratteri, dopodiché, ogni file risultante viene parsato via codice.</p>
+<h3 id="-why-">❓ WHY?</h3>
+<p><strong>Perché file ASCII invece di JSON/XML/binario?</strong>
+    Da studente, ancora non sapevo manipolare bene file al di fuori dei &quot;.txt&quot;, proprio per questo ho optato
+    per questo tipo di file. I vantaggi risiedono nella semplicità, ho potuto creare un parser con poche righe e
+    sfruttare tool semplicissi per realizzare gli assets.</p>
+<h3 id="-how">🛠️ HOW</h3>
+<p><strong>Entity loader (righe 508-536):</strong></p>
+<pre><code class="lang-cpp"><span class="hljs-keyword">void</span> entity::loader(<span class="hljs-built_in">string</span> file) {
+    <span class="hljs-function">ifstream <span class="hljs-title">fs</span><span class="hljs-params">(file)</span></span>;
+    <span class="hljs-built_in">string</span> str; <span class="hljs-keyword">int</span> y = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">while</span> (getline(fs, str)) {
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> x = <span class="hljs-number">0</span>; x &lt; str.length(); x++)
+            sprite[y][x] = (<span class="hljs-keyword">wchar_t</span>)str[x];
+        y++;
+    }
+    fs.close();
+}
+</code></pre>
+<p><strong>Level loader (righe 912-942):</strong></p>
+<pre><code class="lang-cpp"><span class="hljs-keyword">void</span> level::loader(<span class="hljs-built_in">string</span> file) {
+    <span class="hljs-function">ifstream <span class="hljs-title">fs</span><span class="hljs-params">(file)</span></span>;
+    <span class="hljs-built_in">string</span> str; <span class="hljs-keyword">int</span> y = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">while</span> (getline(fs, str)) {
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> x = <span class="hljs-number">0</span>; x &lt; str.length(); x++)
+            <span class="hljs-built_in">map</span>[y][x] = (<span class="hljs-keyword">wchar_t</span>)str[x];
+        y++;
+    }
+    refresh_buffer();  <span class="hljs-comment">// Inizializza buf == map</span>
+    fs.close();
+}
+</code></pre>
+<hr>
+<h2 id="-game-loop-fixed-timestep-polling-single-threaded-deterministic">⬇️ Game Loop | Fixed Timestep Polling +
+    Single-Threaded Deterministic</h2>
+<h3 id="-context">🧭 CONTEXT</h3>
+<p>Il gameloop sfrutta semplici risoluzione per ovviare a problemi legati al timing e alla mancanza di framecap. Ad
+    esempio, l&#39;update degli input è letto ogni frame, ma eseguito a 6fps, per ovviare a problemi come velocità
+    supersoniche.</p>
+<p>L&#39;ordine del frame è costruito nel seguente modo:</p>
+<ol>
+    <li>Destroy check (bullet morti)</li>
+    <li>Input → stato + velocità</li>
+    <li>Physics update </li>
+    <li>Collision resolution (map &amp; entity, separatamente) </li>
+    <li>Camera follow</li>
+    <li>Win check</li>
+    <li>Render composition</li>
+</ol>
+<h3 id="-why-">❓ WHY?</h3>
+<p><strong>Perché questo ordine?</strong>
+    L&#39;ordine segue una logica molto precisa, garbage collecting, input gathering, update dei movimenti, risoluzione
+    delle collisioni. La sequenza è molto precisa poiché la logica è rigida, eseguire la valutazione delle collisioni
+    <strong>PRIMA</strong> del potrebbe rompere certe sezioni di gioco, poiché il transform potrebbe essere in una
+    posizione non valida fino al prossimo check delle collisioni.</p>
+<hr>
+<h1 id="-post-mortem">💀 Post Mortem</h1>
+<h3 id="limiti-di-conoscenza">Limiti di conoscenza</h3>
+<p>In quanto è stato il mio primo progetto &quot;<strong>Axioverse</strong>&quot; presenta palesi problemi dovuti
+    all&#39;inesperienza e ad una mancanza di conoscenze, banalmente, basti pensare al fatto che ho utilizzati puntatori
+    puri senza alcun motivo, quando le librerie standard forniscono gli smart pointers. Questi limiti, mi hanno permesso
+    di comprendere le mie lacune e di proseguire affinando la mia conoscenza e dando preferenza ad una ricerca
+    pre-creazione di una feature, per valutare una mancanza di conoscenze, oltre che, avermi fatto capire di dover
+    continuare a studiare!</p>
+<h3 id="asset-pipeline">Asset pipeline</h3>
+<p>Il loader delle sprite è chiaramente molto fragile, oltre ad utilizzare file di testo, non tiene conto di possibili
+    errori all&#39;interno dei file e caratteri invalidi, non ha bounds che limitino il caricamento di file troppo
+    grandi, non riconosce se il file è vuoto, in sostanza, si fida. Un sistema robusto valuterebbe
+    <strong>tutto</strong>: dimensioni, caratteri blacklistati/whitelistati, tutto supportato da un sistema di logging
+    chiaro e facile da leggere. </p>
+<h3 id="l-architettura-che-non-c-">L&#39;architettura che non c&#39;è</h3>
+<p>La mancanza di suddivisione di file, la mancanza di suddivisione fra .h e .cpp, la mancanza di una file structure
+    statica feature-based, classi senza single-responsibility, fiducia negli input, codice monolitico, insomma, si vede
+    che è un primo progetto insieme alla <strong>mancanza di un engine</strong>. Nei progetti futuri, tutto questo non è
+    più presente, l&#39;architettura, oltre che essere documentata, è definita priori, non in corso d&#39;opera, basti
+    guardare i progressi fatti in <strong>Rumble Smash</strong>.</p>
+<h3 id="belli-i-magic-numbers-no-scherzo">Belli i &quot;magic numbers&quot;, no, scherzo</h3>
+<p>Il progetto è pieno di magic numbers buttati qui è lì, vi immaginate un game designer che mette mano su questo
+    codice? No, infatti nessuno l&#39;ha fatto. Oltre ai magic numbers, c&#39;è un coupling troppo aggressivo con
+    dinamiche hardware e software, per intenderci, molte variabili riguardano sono pixel-bound o frame-bound, sono
+    difficili da debuggare e per i game designer impossibili da comprendere. La soluzione sarebbe stata creare
+    un&#39;infrastruttura physics-based. </p>
+<h3 id="commenti-style-guide-e-documentazione">Commenti, style guide e documentazione</h3>
+<p>Leggendo il codice, i commenti non sono del tutto assenti, anzi, spiegano in modo quasi esaustivo certe parti del
+    gioco, ma non è stata un&#39;abitudine mantenuta in tutti i punti. Per questo alcuni punti dell&#39;architettura
+    e&#39; poco chiaro, non è possibile comprendere chiaramente il &quot;<strong>perché</strong>&quot; dietro certe
+    scelte, oppure, semplicemente il loro funzionamento.
+    Il vero problema, però, risiede nella mancanza di una style guide che ha reso difficile la lettura e il debugging, a
+    posteriori, avere una style guide mi aiuta a <strong>ridurre il carico cognitivo a zero sulla forma</strong>, così
+    tutto il cervello va sul contenuto, piuttosto che su ogni inconsistenza, inoltre aumenta l&#39;ordine mentale e la
+    schematizzazione, rendendo il codice più facile da ricordare.
+    Oltre che una style guide, mancava una documentazione, chiaramente, anche qui i downsides sono ovvi, mancava una
+    mappa per poter comprendere il codice da esterno, ormai per me è inaccettabile non averla, motivo per cui sarà
+    onnipresente nei futuri progetti.</p>

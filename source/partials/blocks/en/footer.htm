@@ -1,0 +1,58 @@
+<section class="footer">
+	<div class="container">
+		<div class="row ">
+			<div class="col-lg-6">
+				<p class="mb-0">Copyrights © 2019. Designed & Developed by <a href="themefisher.com"
+						class="text-white">Themefisher.</a></p>
+				<p class="mb-0">Enhanced by <a
+						class="text-white">Raffaele "powpow" Castania. </a></p>
+
+			</div>
+			<div class="col-lg-6">
+				<div class="widget footer-widget text-lg-right mt-5 mt-lg-0">
+					<ul class="list-inline mb-0">
+						<li class="list-inline-item"><a href="https://github.com/0pow-pow0/" target="_blank"><i
+									class="ti-github mr-3"></i></a></li>
+						<li class="list-inline-item"><a href="https://www.linkedin.com/in/raffaele-castania-940b5b216/"
+								target="_blank"><i class="ti-linkedin mr-3"></i></a></li>
+						<li class="list-inline-item">
+							<button class="copy-btn" onclick="copyToClipboard('powpow6769')">
+								<i class="fa-brands fa-discord"></i></a>
+							</button>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- Toast Notification -->
+<div id="toast" class="toast">Nickname copied to clipboard</div>
+
+<script>
+	function showToast(message = "Nickname copied to clipboard") {
+		const toast = document.getElementById('toast');
+		toast.textContent = message;
+		toast.classList.add('show');
+		clearTimeout(toast._timeout);
+		toast._timeout = setTimeout(() => {
+			toast.classList.remove('show');
+		}, 2500);
+	}
+
+	function copyToClipboard(text) {
+		navigator.clipboard.writeText(text).then(() => {
+			showToast("Nickname copied to clipboard");
+		}).catch(() => {
+			// Fallback per browser vecchi
+			const input = document.createElement('input');
+			input.value = text;
+			document.body.appendChild(input);
+			input.select();
+			document.execCommand('copy');
+			document.body.removeChild(input);
+			showToast("Nickname copied to clipboard");
+		});
+	}
+</script>

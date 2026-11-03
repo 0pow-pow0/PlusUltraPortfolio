@@ -1,0 +1,12 @@
+{
+    "search.defaultViewMode": "list",
+    "search.exclude": {
+        "**/*.jpg": true,
+        "**/*.meta": true,
+        "**/*.png": true,
+        "**/*.PNG": true,
+        "old-pages/": true,
+        "old-pages/*": true
+    },
+    "search.quickOpen.includeHistory": false
+}

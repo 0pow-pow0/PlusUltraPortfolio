@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+
+<!--
+ //
+-->
+
+<html lang="zxx">
+
+<head>
+  <meta charset="utf-8">
+  <title>Raffele Castania Gameplay Programming Portfolio</title>
+
+  <!-- mobile responsive meta -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <!-- theme meta -->
+  <meta name="theme-name" content="thomson" />
+
+  <!-- ** Plugins Needed for the Project ** -->
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="plugins/bootstrap/bootstrap.min.css">
+  <link rel="stylesheet" href="plugins/themify/css/themify-icons.css">
+  <link rel="stylesheet" href="plugins/counto/animate.css">
+  <link rel="stylesheet" href="plugins/aos/aos.css">
+  <link rel="stylesheet" href="plugins/owl-carousel/owl.carousel.min.css">
+  <link rel="stylesheet" href="plugins/owl-carousel/owl.theme.default.min.css">
+  <link rel="stylesheet" href="plugins/magnific-popup/magnific-popup.css">
+  <link rel="stylesheet" href="plugins/animated-text/animated-text.css">
+
+  <!-- Main Stylesheet -->
+  <link href="css/style.css" rel="stylesheet">
+
+
+</head>
+
+<body>
+<!-- Header Start -->
+<nav class="navbar navbar-expand-lg  main-nav " id="navbar">
+	<div class="container">
+		<a class="navbar-brand" href="index-en.html">
+			<img style="width: 10%" src="images/Assets/little-deku-NOBG.png" alt="" class="img-fluid">
+		</a>
+
+		<button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample09"
+			aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="ti-align-justify"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbarsExample09">
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item  active"><a class="nav-link" href="index-en.html">Home</a></li>
+				<li class="nav-item  active"><a class="nav-link" href="index-en.html#portfolio">Projects</a></li>
+				<li class="nav-item"><a class="nav-link" href="/images/CV/CV - Game Dev - Definitive - EN.pdf">Resume</a></li>
+				<li class="nav-item nav-item-lang language-switcher-container">
+					<div class="language-switcher">
+						<div class="lang-toggle" role="group" aria-label="Language selection">
+							<a href="index.html" class="lang-btn" aria-label="Italiano" aria-pressed="false">
+								<span class="lang-text">IT</span>
+							</a>
+							<span class="lang-btn active" aria-label="English" aria-pressed="true">
+								<span class="lang-text">EN</span>
+							</span>
+							<div class="lang-slider"></div>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+<!-- Header Close -->
+<section class="page-title section pb-0">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="text-center">
+          <h1 class="text-capitalize mb-0 text-lg">Identity Seeker</h1>
+          <p class="mt-2">Team project (10 people) developed for Global Game Jam</p>
+        </div>
+      </div>
+    </div>
+  </div>  
+</section>
+
+<!-- ===== Table of Contents Partial ===== -->
+<button id="toc-toggle" class="toc-toggle" type="button" aria-expanded="false" aria-controls="toc-sidebar" aria-label="Apri indice pagina">
+  <img src="images/UI/list.svg" alt="Indice" class="toc-toggle__icon">
+</button>
+
+<aside id="toc-sidebar" class="toc-sidebar" role="navigation" aria-label="Indice pagina" aria-hidden="true">
+  <div class="toc-sidebar__header">
+    <h2 class="toc-sidebar__title">Indice</h2>
+    <button id="toc-close" class="toc-sidebar__close" type="button" aria-label="Chiudi indice">&#215;</button>
+  </div>
+  <nav class="toc-sidebar__nav">
+    <ul id="toc-list" class="toc-list"></ul>
+  </nav>
+</aside>
+
+<div id="toc-overlay" class="toc-overlay" aria-hidden="true"></div>
+<!-- ===== /Table of Contents Partial ===== -->
+<!-- Stili spostati in scss/table-of-contents.scss -->
+
+<script>
+  (function() {
+    'use strict';
+
+    var toggle = document.getElementById('toc-toggle');
+    var sidebar = document.getElementById('toc-sidebar');
+    var closeBtn = document.getElementById('toc-close');
+    var overlay = document.getElementById('toc-overlay');
+    var list = document.getElementById('toc-list');
+
+    if (!toggle || !sidebar || !list) return;
+
+    var observer = null;
+
+    function markLastItems(listEl) {
+      var items = listEl.querySelectorAll(':scope > .toc-item');
+      items.forEach(function(item, idx, arr) {
+        if (idx === arr.length - 1) {
+          item.classList.add('is-last');
+        } else {
+          item.classList.remove('is-last');
+        }
+        var nested = item.querySelector(':scope > .toc-list.nested');
+        if (nested) {
+          markLastItems(nested);
+        }
+      });
+    }
+
+    function build() {
+      list.innerHTML = '';
+      var headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+
+      headings.forEach(function(h, i) {
+        if (!h.id) {
+          h.id = 'toc-heading-' + i;
+        }
+      });
+
+      var rootUl = document.createElement('ul');
+      rootUl.className = 'toc-list';
+      var lastLiByLevel = {};
+
+      headings.forEach(function(h) {
+        var level = parseInt(h.tagName.charAt(1), 10);
+        if (level < 1 || level > 6) level = 2;
+
+        var li = document.createElement('li');
+        li.className = 'toc-item level-' + level;
+
+        var a = document.createElement('a');
+        a.href = '#' + h.id;
+        a.textContent = h.textContent.trim() || 'Senza titolo';
+        li.appendChild(a);
+
+        if (level === 1) {
+          rootUl.appendChild(li);
+        } else {
+          var parentLi = lastLiByLevel[level - 1];
+          if (parentLi) {
+            var childUl = parentLi.querySelector(':scope > ul.toc-list');
+            if (!childUl) {
+              childUl = document.createElement('ul');
+              childUl.className = 'toc-list nested';
+              parentLi.appendChild(childUl);
+              parentLi.classList.add('has-children');
+            }
+            childUl.appendChild(li);
+          } else {
+            rootUl.appendChild(li);
+          }
+        }
+
+        lastLiByLevel[level] = li;
+        for (var l = level + 1; l <= 6; l++) {
+          delete lastLiByLevel[l];
+        }
+      });
+
+      list.appendChild(rootUl);
+
+      markLastItems(rootUl);
+
+      list.querySelectorAll('.toc-item.has-children').forEach(function(li) {
+        var existing = li.querySelector(':scope > .toc-expand');
+        if (existing) return;
+
+        var btn = document.createElement('button');
+        btn.className = 'toc-expand';
+        btn.type = 'button';
+        btn.setAttribute('aria-expanded', 'false');
+        btn.textContent = '▶';
+
+        var a = li.querySelector(':scope > a');
+        a.prepend(btn);
+
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          e.preventDefault();
+          var expanded = btn.getAttribute('aria-expanded') === 'true';
+          btn.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+          li.classList.toggle('expanded');
+        });
+      });
+    }
+
+    list.addEventListener('click', function(e) {
+      var a = e.target.closest ? e.target.closest('a') : null;
+      if (!a) return;
+      e.preventDefault();
+      var target = document.querySelector(a.hash);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      closeSidebar();
+    });
+
+    function openSidebar() {
+      toggle.setAttribute('aria-expanded', 'true');
+      sidebar.setAttribute('aria-hidden', 'false');
+      overlay.setAttribute('aria-hidden', 'false');
+      toggle.classList.add('active');
+      sidebar.classList.add('open');
+      overlay.classList.add('open');
+    }
+
+    function closeSidebar() {
+      toggle.setAttribute('aria-expanded', 'false');
+      sidebar.setAttribute('aria-hidden', 'true');
+      overlay.setAttribute('aria-hidden', 'true');
+      toggle.classList.remove('active');
+      sidebar.classList.remove('open');
+      overlay.classList.remove('open');
+    }
+
+    toggle.addEventListener('click', function() {
+      var expanded = toggle.getAttribute('aria-expanded') === 'true';
+      if (expanded) closeSidebar(); else openSidebar();
+    });
+
+    closeBtn.addEventListener('click', closeSidebar);
+    overlay.addEventListener('click', closeSidebar);
+
+    window.initTableOfContents = build;
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', build);
+    } else {
+      build();
+    }
+
+    if (window.MutationObserver) {
+      observer = new MutationObserver(function(mutations) {
+        var changed = false;
+        mutations.forEach(function(m) {
+          if (m.type === 'childList' && m.addedNodes.length > 0) {
+            m.addedNodes.forEach(function(node) {
+              if (node.nodeType === 1 && node.matches && node.matches('h1, h2, h3, h4, h5, h6')) {
+                changed = true;
+              }
+              if (node.nodeType === 1 && node.querySelectorAll) {
+                if (node.querySelectorAll('h1, h2, h3, h4, h5, h6').length > 0) {
+                  changed = true;
+                }
+              }
+            });
+          }
+        });
+        if (changed) build();
+      });
+      observer.observe(document.body, { childList: true, subtree: true });
+    }
+  })();
+</script>
+
+<section class="section portfolio-single">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <img src="../images/portfolio/Identity-Seeker/GGJSite.png" alt="Identity Seeker" class="img-fluid w-100">
+            </div>
+
+            <div class="col-lg-6">
+                <div class="project-info">
+                    <h3 class="mb-4">Synopsis</h3>
+                    <p>Team project (10 people) developed for Global Game Jam in one week.</p>
+
+                    <div class="row mt-4">
+                        <div class="col-lg-6">
+                            <div class="info">
+                                <h5 class="mb-0">Year</h5>
+                                <p>GGJ 2026</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-6">
+                            <div class="info">
+                                <h5 class="mb-0">Engine</h5>
+                                <p>Unity</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-6">
+                            <div class="info">
+                                <h5 class="mb-0">Duration</h5>
+                                <p>1 Week (Game Jam)</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-6">
+                            <div class="info">
+                                <h5 class="mb-0">Team Size</h5>
+                                <p>10</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="btn-group-project d-flex gap-2 flex-wrap">
+                        <a href="#" class="btn btn-dark btn-small" target="_blank" rel="noopener">
+                            <i class="fab fa-github me-1"></i> GitHub
+                        </a>
+                        <a href="#" class="btn btn-danger btn-small" target="_blank" rel="noopener">
+                            <i class="fab fa-youtube me-1"></i> YouTube
+                        </a>
+                        <a href="#" class="btn btn-main btn-small">View Project</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Descrizione Progetto -->
+        <div class="row mt-5">
+            <div class="col-lg-12">
+                <div class="project-description-full">
+</div>
+            </div>
+        </div>
+        <div class="border-line"></div>
+        <div class="row mt-5 justify-content-center">
+            <div class="col-lg-6 text-center">
+                <a href="project-take-your-time-portfolio-single-page-en.html" class="btn btn-dark">Previous Work</a>
+                <a href="chicken-revenge-portfolio-single-page-en.html" class="btn btn-dark">Next Work</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="footer">
+	<div class="container">
+		<div class="row ">
+			<div class="col-lg-6">
+				<p class="mb-0">Copyrights © 2019. Designed & Developed by <a href="themefisher.com"
+						class="text-white">Themefisher.</a></p>
+				<p class="mb-0">Enhanced by <a
+						class="text-white">Raffaele "powpow" Castania. </a></p>
+
+			</div>
+			<div class="col-lg-6">
+				<div class="widget footer-widget text-lg-right mt-5 mt-lg-0">
+					<ul class="list-inline mb-0">
+						<li class="list-inline-item"><a href="https://github.com/0pow-pow0/" target="_blank"><i
+									class="ti-github mr-3"></i></a></li>
+						<li class="list-inline-item"><a href="https://www.linkedin.com/in/raffaele-castania-940b5b216/"
+								target="_blank"><i class="ti-linkedin mr-3"></i></a></li>
+						<li class="list-inline-item">
+							<button class="copy-btn" onclick="copyToClipboard('powpow6769')">
+								<i class="fa-brands fa-discord"></i></a>
+							</button>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- Toast Notification -->
+<div id="toast" class="toast">Nickname copied to clipboard</div>
+
+<script>
+	function showToast(message = "Nickname copied to clipboard") {
+		const toast = document.getElementById('toast');
+		toast.textContent = message;
+		toast.classList.add('show');
+		clearTimeout(toast._timeout);
+		toast._timeout = setTimeout(() => {
+			toast.classList.remove('show');
+		}, 2500);
+	}
+
+	function copyToClipboard(text) {
+		navigator.clipboard.writeText(text).then(() => {
+			showToast("Nickname copied to clipboard");
+		}).catch(() => {
+			// Fallback per browser vecchi
+			const input = document.createElement('input');
+			input.value = text;
+			document.body.appendChild(input);
+			input.select();
+			document.execCommand('copy');
+			document.body.removeChild(input);
+			showToast("Nickname copied to clipboard");
+		});
+	}
+</script>
+<!-- jQuery -->
+<script src="plugins/jQuery/jquery.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="plugins/bootstrap/bootstrap.min.js"></script>
+<script src="plugins/aos/aos.js"></script>
+<script src="plugins/owl-carousel/owl.carousel.min.js"></script>
+<script src="plugins/shuffle/shuffle.min.js"></script>
+<script src="plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+<script src="plugins/animated-text/animated-text.js"></script>
+<script src="plugins/counto/apear.js"></script>
+<script src="plugins/counto/counTo.js"></script>
+
+<!-- Language Switcher -->
+<script src="js/lang-switcher.js"></script>
+<!-- Main Script -->
+<script src="js/script.js"></script>
+
+</html>

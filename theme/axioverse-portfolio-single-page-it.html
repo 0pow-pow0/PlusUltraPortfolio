@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+
+<!--
+ //
+-->
+
+<html lang="zxx">
+
+<head>
+  <meta charset="utf-8">
+  <title>Raffele Castania Gameplay Programming Portfolio</title>
+
+  <!-- mobile responsive meta -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <!-- theme meta -->
+  <meta name="theme-name" content="thomson" />
+
+  <!-- ** Plugins Needed for the Project ** -->
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="plugins/bootstrap/bootstrap.min.css">
+  <link rel="stylesheet" href="plugins/themify/css/themify-icons.css">
+  <link rel="stylesheet" href="plugins/counto/animate.css">
+  <link rel="stylesheet" href="plugins/aos/aos.css">
+  <link rel="stylesheet" href="plugins/owl-carousel/owl.carousel.min.css">
+  <link rel="stylesheet" href="plugins/owl-carousel/owl.theme.default.min.css">
+  <link rel="stylesheet" href="plugins/magnific-popup/magnific-popup.css">
+  <link rel="stylesheet" href="plugins/animated-text/animated-text.css">
+
+  <!-- Main Stylesheet -->
+  <link href="css/style.css" rel="stylesheet">
+
+
+</head>
+
+<body>
+<!-- Header Start -->
+<nav class="navbar navbar-expand-lg  main-nav " id="navbar">
+	<div class="container">
+		<a class="navbar-brand" href="index.html">
+			<img style="width: 10%" src="images/Assets/little-deku-NOBG.png" alt="" class="img-fluid">
+		</a>
+
+		<button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample09"
+			aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="ti-align-justify"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbarsExample09">
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item  active"><a class="nav-link" href="index.html">Home</a></li>
+				<li class="nav-item  active"><a class="nav-link" href="index.html#portfolio">Progetti</a></li>
+				<li class="nav-item"><a class="nav-link" href="/images/CV/CV - Game Dev - Definitive - EN.pdf">Curriculum</a></li>
+				<li class="nav-item nav-item-lang language-switcher-container">
+					<div class="language-switcher">
+						<div class="lang-toggle" role="group" aria-label="Language selection">
+							<span class="lang-btn active" aria-label="Italiano" aria-pressed="true">
+								<span class="lang-text">IT</span>
+							</span>
+							<a href="index-en.html" class="lang-btn" aria-label="English" aria-pressed="false">
+								<span class="lang-text">EN</span>
+							</a>
+							<div class="lang-slider"></div>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+<!-- Header Close -->
+<section class="page-title section pb-0">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="text-center">
+          <h1 class="text-capitalize mb-0 text-lg">Axioverse</h1>
+          <p class="mt-2">Progetto solo dev - world building e sistemi</p>
+        </div>
+      </div>
+    </div>
+  </div>  
+</section>
+
+<!-- ===== Table of Contents Partial ===== -->
+<button id="toc-toggle" class="toc-toggle" type="button" aria-expanded="false" aria-controls="toc-sidebar" aria-label="Apri indice pagina">
+  <img src="images/UI/list.svg" alt="Indice" class="toc-toggle__icon">
+</button>
+
+<aside id="toc-sidebar" class="toc-sidebar" role="navigation" aria-label="Indice pagina" aria-hidden="true">
+  <div class="toc-sidebar__header">
+    <h2 class="toc-sidebar__title">Indice</h2>
+    <button id="toc-close" class="toc-sidebar__close" type="button" aria-label="Chiudi indice">&#215;</button>
+  </div>
+  <nav class="toc-sidebar__nav">
+    <ul id="toc-list" class="toc-list"></ul>
+  </nav>
+</aside>
+
+<div id="toc-overlay" class="toc-overlay" aria-hidden="true"></div>
+<!-- ===== /Table of Contents Partial ===== -->
+<!-- Stili spostati in scss/table-of-contents.scss -->
+
+<script>
+  (function() {
+    'use strict';
+
+    var toggle = document.getElementById('toc-toggle');
+    var sidebar = document.getElementById('toc-sidebar');
+    var closeBtn = document.getElementById('toc-close');
+    var overlay = document.getElementById('toc-overlay');
+    var list = document.getElementById('toc-list');
+
+    if (!toggle || !sidebar || !list) return;
+
+    var observer = null;
+
+    function markLastItems(listEl) {
+      var items = listEl.querySelectorAll(':scope > .toc-item');
+      items.forEach(function(item, idx, arr) {
+        if (idx === arr.length - 1) {
+          item.classList.add('is-last');
+        } else {
+          item.classList.remove('is-last');
+        }
+        var nested = item.querySelector(':scope > .toc-list.nested');
+        if (nested) {
+          markLastItems(nested);
+        }
+      });
+    }
+
+    function build() {
+      list.innerHTML = '';
+      var headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+
+      headings.forEach(function(h, i) {
+        if (!h.id) {
+          h.id = 'toc-heading-' + i;
+        }
+      });
+
+      var rootUl = document.createElement('ul');
+      rootUl.className = 'toc-list';
+      var lastLiByLevel = {};
+
+      headings.forEach(function(h) {
+        var level = parseInt(h.tagName.charAt(1), 10);
+        if (level < 1 || level > 6) level = 2;
+
+        var li = document.createElement('li');
+        li.className = 'toc-item level-' + level;
+
+        var a = document.createElement('a');
+        a.href = '#' + h.id;
+        a.textContent = h.textContent.trim() || 'Senza titolo';
+        li.appendChild(a);
+
+        if (level === 1) {
+          rootUl.appendChild(li);
+        } else {
+          var parentLi = lastLiByLevel[level - 1];
+          if (parentLi) {
+            var childUl = parentLi.querySelector(':scope > ul.toc-list');
+            if (!childUl) {
+              childUl = document.createElement('ul');
+              childUl.className = 'toc-list nested';
+              parentLi.appendChild(childUl);
+              parentLi.classList.add('has-children');
+            }
+            childUl.appendChild(li);
+          } else {
+            rootUl.appendChild(li);
+          }
+        }
+
+        lastLiByLevel[level] = li;
+        for (var l = level + 1; l <= 6; l++) {
+          delete lastLiByLevel[l];
+        }
+      });
+
+      list.appendChild(rootUl);
+
+      markLastItems(rootUl);
+
+      list.querySelectorAll('.toc-item.has-children').forEach(function(li) {
+        var existing = li.querySelector(':scope > .toc-expand');
+        if (existing) return;
+
+        var btn = document.createElement('button');
+        btn.className = 'toc-expand';
+        btn.type = 'button';
+        btn.setAttribute('aria-expanded', 'false');
+        btn.textContent = '▶';
+
+        var a = li.querySelector(':scope > a');
+        a.prepend(btn);
+
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          e.preventDefault();
+          var expanded = btn.getAttribute('aria-expanded') === 'true';
+          btn.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+          li.classList.toggle('expanded');
+        });
+      });
+    }
+
+    list.addEventListener('click', function(e) {
+      var a = e.target.closest ? e.target.closest('a') : null;
+      if (!a) return;
+      e.preventDefault();
+      var target = document.querySelector(a.hash);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      closeSidebar();
+    });
+
+    function openSidebar() {
+      toggle.setAttribute('aria-expanded', 'true');
+      sidebar.setAttribute('aria-hidden', 'false');
+      overlay.setAttribute('aria-hidden', 'false');
+      toggle.classList.add('active');
+      sidebar.classList.add('open');
+      overlay.classList.add('open');
+    }
+
+    function closeSidebar() {
+      toggle.setAttribute('aria-expanded', 'false');
+      sidebar.setAttribute('aria-hidden', 'true');
+      overlay.setAttribute('aria-hidden', 'true');
+      toggle.classList.remove('active');
+      sidebar.classList.remove('open');
+      overlay.classList.remove('open');
+    }
+
+    toggle.addEventListener('click', function() {
+      var expanded = toggle.getAttribute('aria-expanded') === 'true';
+      if (expanded) closeSidebar(); else openSidebar();
+    });
+
+    closeBtn.addEventListener('click', closeSidebar);
+    overlay.addEventListener('click', closeSidebar);
+
+    window.initTableOfContents = build;
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', build);
+    } else {
+      build();
+    }
+
+    if (window.MutationObserver) {
+      observer = new MutationObserver(function(mutations) {
+        var changed = false;
+        mutations.forEach(function(m) {
+          if (m.type === 'childList' && m.addedNodes.length > 0) {
+            m.addedNodes.forEach(function(node) {
+              if (node.nodeType === 1 && node.matches && node.matches('h1, h2, h3, h4, h5, h6')) {
+                changed = true;
+              }
+              if (node.nodeType === 1 && node.querySelectorAll) {
+                if (node.querySelectorAll('h1, h2, h3, h4, h5, h6').length > 0) {
+                  changed = true;
+                }
+              }
+            });
+          }
+        });
+        if (changed) build();
+      });
+      observer.observe(document.body, { childList: true, subtree: true });
+    }
+  })();
+</script>
+
+<section class="section portfolio-single">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <img src="../images/portfolio/Axioverse/Axioverse_SplashScreen 2.png" alt="Axioverse" class="img-fluid w-100">
+            </div>
+
+            <div class="col-lg-6">
+                <div class="project-info">
+                    <h3 class="mb-4">Sinossi</h3>
+
+                    <div class="row mt-4">
+                        <div class="col-lg-6">
+                            <div class="info">
+                                <h5 class="mb-0">Anno</h5>
+                                <p>2024</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-6">
+                            <div class="info">
+                                <h5 class="mb-0">Engine</h5>
+                                <p>Unity</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-6">
+                            <div class="info">
+                                <h5 class="mb-0">Durata</h5>
+                                <p>1 Settimana</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-6">
+                            <div class="info">
+                                <h5 class="mb-0">Team</h5>
+                                <p>1 (Solo Dev)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="btn-group-project d-flex gap-2 flex-wrap">
+                        <a href="https://github.com/0pow-pow0/-Axioverse-" class="btn btn-dark btn-small" target="_blank" rel="noopener">
+                            <i class="fab fa-github me-1"></i> GitHub
+                        </a>
+                        <a href="#" class="btn btn-danger btn-small" target="_blank" rel="noopener">
+                            <i class="fab fa-youtube me-1"></i> YouTube
+                        </a>
+                        <a href="#" class="btn btn-main btn-small">Vedi Progetto</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Descrizione Progetto -->
+        <div class="row mt-5">
+            <div class="col-lg-12">
+                <div class="project-description-full">
+                    <!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<title>Axioverse - Technical Portfolio</title>
+		<meta name="generator" content="Converted from Markdown" />
+		<style type="text/css">
+		@page {
+			size: 8.27in 11.69in;
+			margin: 0.79in
+		}
+
+		p {
+			margin-bottom: 0.1in;
+			line-height: 115%;
+			background: transparent
+		}
+
+		h1 {
+			margin-bottom: 0.08in;
+			background: transparent;
+			page-break-after: avoid
+		}
+
+		h1.western {
+			font-weight: bold;
+			font-size: 18pt;
+			font-family: "Liberation Sans", sans-serif
+		}
+
+		h1.cjk {
+			font-weight: bold;
+			font-size: 18pt;
+			font-family: "AR PL SungtiL GB"
+		}
+
+		h1.ctl {
+			font-weight: bold;
+			font-family: "Noto Sans Devanagari";
+			font-size: 18pt
+		}
+
+		blockquote {
+			margin-right: 0.39in;
+			margin-left: 0.39in;
+			background: transparent
+		}
+
+		h2 {
+			margin-top: 0.14in;
+			margin-bottom: 0.08in;
+			background: transparent;
+			page-break-after: avoid
+		}
+
+		h2.western {
+			font-weight: bold;
+			font-size: 16pt;
+			font-family: "Liberation Sans", sans-serif
+		}
+
+		h2.cjk {
+			font-weight: bold;
+			font-size: 16pt;
+			font-family: "AR PL SungtiL GB"
+		}
+
+		h2.ctl {
+			font-weight: bold;
+			font-family: "Noto Sans Devanagari";
+			font-size: 16pt
+		}
+
+		pre {
+			font-size: 10pt;
+			font-family: "Liberation Mono", monospace;
+			background: transparent
+		}
+
+		h3 {
+			margin-top: 0.1in;
+			margin-bottom: 0.08in;
+			background: transparent;
+			page-break-after: avoid
+		}
+
+		h3.western {
+			font-weight: bold;
+			font-size: 14pt;
+			font-family: "Liberation Sans", sans-serif
+		}
+
+		h3.cjk {
+			font-weight: bold;
+			font-size: 14pt;
+			font-family: "AR PL SungtiL GB"
+		}
+
+		h3.ctl {
+			font-weight: bold;
+			font-family: "Noto Sans Devanagari";
+			font-size: 14pt
+		}
+
+		h4 {
+			margin-top: 0.08in;
+			margin-bottom: 0.08in;
+			background: transparent;
+			page-break-after: avoid
+		}
+
+		h4.western {
+			font-weight: bold;
+			font-style: italic;
+			font-size: 13pt;
+			font-family: "Liberation Sans", sans-serif
+		}
+
+		h4.cjk {
+			font-weight: bold;
+			font-style: italic;
+			font-size: 13pt;
+			font-family: "AR PL SungtiL GB"
+		}
+
+		h4.ctl {
+			font-weight: bold;
+			font-style: italic;
+			font-family: "Noto Sans Devanagari";
+			font-size: 13pt
+		}
+
+		h5 {
+			margin-top: 0.08in;
+			margin-bottom: 0.04in;
+			background: transparent;
+			page-break-after: avoid
+		}
+
+		h5.western {
+			font-weight: bold;
+			font-size: 12pt;
+			font-family: "Liberation Sans", sans-serif
+		}
+
+		h5.cjk {
+			font-weight: bold;
+			font-size: 12pt;
+			font-family: "AR PL SungtiL GB"
+		}
+
+		h5.ctl {
+			font-weight: bold;
+			font-family: "Noto Sans Devanagari";
+			font-size: 12pt
+		}
+
+		td p {
+			widows: 0;
+			orphans: 0;
+			background: transparent
+		}
+
+		th p {
+			orphans: 0;
+			widows: 0;
+			text-align: center;
+			font-weight: bold;
+			background: transparent
+		}
+
+		h6 {
+			margin-top: 0.04in;
+			margin-bottom: 0.04in;
+			background: transparent;
+			page-break-after: avoid
+		}
+
+		h6.western {
+			font-weight: bold;
+			font-style: italic;
+			font-size: 12pt;
+			font-family: "Liberation Sans", sans-serif
+		}
+
+		h6.cjk {
+			font-weight: bold;
+			font-style: italic;
+			font-size: 12pt;
+			font-family: "AR PL SungtiL GB"
+		}
+
+		h6.ctl {
+			font-weight: bold;
+			font-style: italic;
+			font-family: "Noto Sans Devanagari";
+			font-size: 12pt
+		}
+
+		a:link {
+			color: #000080;
+			text-decoration: underline
+		}
+
+		table img {
+			max-width: 180px;
+			height: auto;
+			display: block;
+			margin: 0 auto;
+		}
+
+		.container img {
+			max-width: 100%;
+			height: auto;
+		}
+	</style>
+	</head>
+
+	<body>
+
+		<p lang="en-US" dir="ltr">
+			<div class="callout callout--warning">
+				<div class="callout__icon">⚠️</div>
+				<div class="callout__content">
+					<div class="callout__title">Disclaimer</div>
+					<p>
+						Il codice è stato scritto da me, non è stata sfruttata programmazione
+						agentica, anche se competente in quest'ambito. L'IA è stata utilizzata
+						solo
+						per ricerca didattica è come strumento alternativo al browser, il problema
+						da risolvere non e stato buttato in una chat, compromettendo la mia
+						capacità di ragionamento.
+					</p>
+				</div>
+			</div>
+			<h1 class="western">Axioverse — Technical Portfolio Document</h1>
+			<div class="callout callout--info">
+				<div class="callout__icon">ℹ️</div>
+				<div class="callout__content">
+					<div class="callout__title">Primo progetto!</div>
+					<p>Questo è il mio primo progetto mai realizzato!</p>
+				</div>
+			</div>
+			<p><b>Un platformer single-player che gira nativamente sulla console di
+					Windows! Realizzato senza alcun Engine!</b></p>
+			<p>Corri, salta e spara! Fatti strada tra il nero della console e nemici
+				animati da caratteri ASCII. Se prima li utilizzavi per spiegare a mamma cosa
+				volevi mangiare a cena, adesso caratteri e parole <b>SONO CONTRO DI TE!
+					SCONFIGGILI!</b> Tocca anche solo con un dito la bandierina e avrai
+				vinto.</p>
+			<hr>
+			<h2 class="western">🗿 State Machine a Bitmask | Bitwise Flags & Manual State
+				Management</h2>
+			<h3 class="western">🧭 CONTEXT</h3>
+			<p>Allora, il player. Dovevo sapere se stesse fermo, corresse, saltasse,
+				cadesse, sparasse. Ovviamente, la risposta giusta era utilizzare una state
+				machine, <b>magari sfruttando un'architettura divisa in classi che poi
+					convergesso, per composizione, dentro uno script che li gestisse</b>. Come
+				fatto per RumbleSmash - Portfolio - IT|Rumble Smash.</p>
+			<p>Però, io sono fico 😎.</p>
+			<p>Dunque, ho optato per gestire gli stati attraverso <b>i bit</b> (mi
+				diverto, vero?) <b>e delle bitmask</b>. Teoricamente attraverso un approccio
+				classico per le state machine, se io sto saltando e sparando e supponiamo
+				che quando sono in questo stato subisco il doppio dei danni, posso creare un
+				nuovo pseudostato per gestire interazioni e comportamenti speciali,
+				risolvendo, dunque, questo problema.</p>
+			<p>Invece, con le bitmask è leggermento diverso, perché per verificare se io
+				mi trovo in due stati contemporanemente mi basta applicare due maschere allo
+				stesso tempo.</p>
+			<p>Supponiamo che</p>
+			<div class="code-foldable">
+				<div class="code-foldable__header">
+					<img src="images/UI/cpp.svg" alt="C++" class="code-foldable__lang-icon">
+					<span class="code-foldable__title">States</span>
+					<button class="code-foldable__toggle" type="button" aria-expanded="false">
+						<img src="images/UI/front-arrow.svg" alt>
+					</button>
+				</div>
+				<div class="code-foldable__content hidden">
+					<pre><code>// 8 bit, ogni bit rappresenta uno stato.
+unsigned char current_active_states = 0;
+
+const int STATE_STILL     = 0b1;
+const int STATE_RUNNING   = 0b10;
+const int STATE_JUMPING   = 0b100;
+const int STATE_FALLING   = 0b1000;
+const int STATE_SHOOTING  = 0b10000;</code></pre>
+				</div>
+			</div>
+			<p>Per gestire i comportamenti derivanti dall'attivazione di 2 stati o piu'
+				faccio:</p>
+			<div class="code-foldable">
+				<div class="code-foldable__header">
+					<img src="images/UI/cpp.svg" alt="C++" class="code-foldable__lang-icon">
+					<span class="code-foldable__title">Controllare lo stato</span>
+					<button class="code-foldable__toggle" type="button" aria-expanded="false">
+						<img src="images/UI/front-arrow.svg" alt>
+					</button>
+				</div>
+				<div class="code-foldable__content hidden">
+					<pre><code>if ((current_active_states & STATE_JUMPING) && (current_active_states & STATE_SHOOTING))
+{
+	damageMultiplier = 2f;
+}</code></pre>
+				</div>
+			</div>
+			<h3 class="western">❓ WHY?</h3>
+			<p><b>Perché i bit e le bitmask invece di enum/state pattern
+					classico?</b></p>
+			<p>Il vero motivo era imparare a gestire i bit e manipolarli, dunque era più
+				un caso di studio che una vera e propria scelta architetturale, ma vediamo
+				comunque quali vantaggi esistono in questa architettura.</p>
+			<ul>
+				<li>
+					<p><b>Coesistenza di stati</b>: <font
+							face="Liberation Mono, monospace">collision_mask</font> può avere <font
+							face="Liberation Mono, monospace">GROUND | RIGHT_SIDE</font> insieme, con
+						altri metodi dovrei creare pseudostati.</p>
+				</li>
+				<li>
+					<p><b>Performance</b>: <font face="Liberation Mono, monospace">state_mask &
+							STATE_JUMPING</font> Le operazioni binarie sono semplicissime, in pratica
+						perfetto se voglio programmare ROM per il mio amato Game Boy Advance (è
+						successo), dove l'ottimizzazione è alla base.</p>
+				</li>
+				<li>
+					<p><b>Memoria</b>: 1 <font face="Liberation Mono, monospace">unsigned
+							char</font> significa 8 stati in 1 byte.</p>
+				</li>
+				<li>
+					<p><b>Estensibilità</b>: aggiungere <font
+							face="Liberation Mono, monospace">STATE_DASHING = 0b100000</font> non
+						tocca codice esistente,</p>
+				</li>
+			</ul>
+			<p>Inoltre, la semplicità del gioco mi ha permesso di optare per questa
+				soluzione, chiaramente per sistemi più complessi, avrei dovuto adottare
+				altre scelte.</p>
+			<h3 class="western">🛠️ HOW</h3>
+			<p>Ho creato una classe player e dopodiché ho aggiunto un parametro per
+				contenere i vari stati e il bit a cui corrisponde ogni stato.</p>
+			<div class="code-foldable">
+				<div class="code-foldable__header">
+					<img src="images/UI/cpp.svg" alt="C++" class="code-foldable__lang-icon">
+					<span class="code-foldable__title">Classe Player</span>
+					<button class="code-foldable__toggle" type="button" aria-expanded="false">
+						<img src="images/UI/front-arrow.svg" alt>
+					</button>
+				</div>
+				<div class="code-foldable__content hidden">
+					<pre><code>class Player
+{
+	// Definizione flag 
+	typedef unsigned char ENTITY_STATE;
+	public const int STATE_STILL     = 0b1;
+	public const int STATE_RUNNING   = 0b10;
+	public const int STATE_JUMPING   = 0b100;
+	public const int STATE_FALLING   = 0b1000;
+	public const int STATE_SHOOTING  = 0b10000;
+	
+	typedef int COLLISION_TYPE;
+	const int COLLISION_TYPE_GROUND     = 0b1;
+	const int COLLISION_TYPE_CEILING    = 0b10;
+	const int COLLISION_TYPE_LEFT_SIDE  = 0b100;
+	const int COLLISION_TYPE_RIGHT_SIDE = 0b1000;
+	
+	// Check O(1)
+	public bool is_entity_state(ENTITY_STATE s);
+	
+	// Setter semplice
+	public void set_entity_state(ENTITY_STATE new_state);
+}
+</code></pre>
+				</div>
+			</div>
+			<p><b>Utilizzo nel game loop (righe 1112-1136):</b></p>
+			<div class="code-foldable">
+				<div class="code-foldable__header">
+					<img src="images/UI/cpp.svg" alt="C++" class="code-foldable__lang-icon">
+					<span class="code-foldable__title">Controllare/Settare gli stati</span>
+					<button class="code-foldable__toggle" type="button" aria-expanded="false">
+						<img src="images/UI/front-arrow.svg" alt>
+					</button>
+				</div>
+				<div class="code-foldable__content hidden">
+					<pre><code>if (GetAsyncKeyState(VK_RIGHT)) {
+    p1.flipped = false;
+    p1.set_entity_state(STATE_RUNNING);  // Pulisce STILL/FALLING
+    p1.speed_x = PLAYER_SPEED_X;
+}
+if (GetAsyncKeyState(VK_SPACE) && 
+		p1.is_colliding(COLLISION_TYPE_GROUND)) {
+    p1.set_entity_state(STATE_JUMPING);
+    p1.speed_y = PLAYER_JUMP_FORCE;
+}</code></pre>
+				</div>
+			</div>
+			<hr>
+			<h2 class="western">⚽ Sistema di Collisione | Per-Char collision
+				detection</h2>
+			<h3 class="western">🧭 CONTEXT</h3>
+			<p>Dovevo creare le collisioni all'interno del gioco, dunque, per un gioco
+				eseguito in console, l'unica un'opzione era un array bidimensionale di
+				caratteri. Mi serviva, oltre che avere dei "blocchi" diversi, era necessario
+				che ognuno avesse un behaviour diverso, alcuni "blocchi" dovevano bloccarmi
+				il giocatore, altri no, se poi avessi voluto creare nuovi behaviour per
+				altri blocchi, dovevo rendere il codice estensibile per questo fine.</p>
+			<p>Dunque, ho sostanzialmente creato una "tilemap" fatta di unsigned char,
+				dove:</p>
+			<ul>
+				<li>
+					<p><font face="Liberation Mono, monospace">'='</font>: piattaforme</p>
+				</li>
+				<li>
+					<p><font face="Liberation Mono, monospace">'I'</font> = muri</p>
+				</li>
+				<li>
+					<p><font face="Liberation Mono, monospace">' '</font> = vuoto.</p>
+				</li>
+			</ul>
+			<p>Dopo aver risolto il problema della mappa, era necessario che creassi un
+				sistema di collisioni, l'idea era quella di sviluppare <b>un simil AABB con
+					continuous collision detection</b>, la CCD era necessaria, altrimenti
+				qualunque movimento superiore ad un "tile" avrebbe rotto le collisioni. Il
+				risultato è un algoritmo che controlla la mesh del personaggio e che
+				suddivide il movimento in "step", ognuno dei quali viene verificato, non
+				appena si verificare una collisione, l'entità viene traslata di un valore
+				pari alla distanza tra la posizione iniziale dell'entità e la prima
+				collisione verificatasi, per un progetto basato solamente su forme semplici,
+				è perfetto, magari non il meglio dell'ottimizzazione.</p>
+			<p>Ogni step verificato, la mesh del personaggio viene interamente
+				controllato l'overlap con i tile della mappa, visto che le mesh sono fatte
+				da caratteri ASCII, viene controllato ogni carattere in <b>World Space</b>
+				per verificare se sono avvenute collisioni. Per abbreviare, questo algoritmo
+				di CCD per-char viene detto CCDPC.</p>
+			<h3 class="western">❓ WHY?</h3>
+			<p><b>Perché hai scelto l'algoritmo CCDPC?</b></p>
+			<p>Verificare la collisione di ogni carattere della mesh non è dispendioso,
+				visto che le mesh sono relativemente piccole e hanno un tetto di grandezza
+				massimo, il quale è molto esiguo. Inoltre, era necessario dover controllare
+				ogni char, altrimenti ci sarebbero potute essere imperfezioni ottiche
+				importanti, considerando che il gioco si basa sul render di caratteri molto
+				grandi. Avrei potuto ottimizzare aggiungendo degli algoritmi in grado di
+				valutare le collisioni a priori, come algoritmi di broad phase, per poi
+				passare alla verifica della collisione per-char, ma non era necessario.
+				Inoltre, la <b>CCDPC</b> mi permette di realizzare meccaniche divertenti per
+				un platformer nonostante i suoi limiti. Dal punto di vista tempistico era la
+				scelta migliore.</p>
+			<h3 class="western">🛠️ HOW</h3>
+			<p><b>Collisione mappa (righe 174-351) — algoritmo per asse Y positivo
+					(caduta):</b></p>
+			<div class="code-foldable">
+				<div class="code-foldable__header">
+					<img src="images/UI/cpp.svg" alt="C++" class="code-foldable__lang-icon">
+					<span class="code-foldable__title">Collisione mappa (Gravità
+						semplificata)</span>
+					<button class="code-foldable__toggle" type="button" aria-expanded="false">
+						<img src="images/UI/front-arrow.svg" alt>
+					</button>
+				</div>
+				<div class="code-foldable__content hidden">
+					<pre><code>void entity::check_map_collision(wchar_t** map, int level_height, int level_width) {
+    reset_collision_states();
+    int translate_x = speed_x;
+    int translate_y = speed_y;
+
+    if (translate_y > 0) {  // Caduta
+        int piedi_y = sprite_height - 1;  // Solo i piedi
+        bool collided = false;
+        for (int step = 1; step <= speed_y; step++) {
+            for (int x = 0; x < sprite_width; x++) {
+                int coll_y = this->y + piedi_y + step;
+                int coll_x = this->x + x;
+                wchar_t tile = (coll_x >= level_width || coll_y >= level_height) 
+                    ? NO_CHAR : map[coll_y][coll_x];
+                
+                // Anti-tunneling: se già colliso e ora vuoto → stop immediato
+                if (collided && tile == L' ') {
+                    translate_y -= speed_y - (step - 1);
+                    step = speed_y; break;
+                }
+                
+                if (tile == L'=' || tile == L'I' || tile == NO_CHAR) {
+                    set_collision_state(COLLISION_TYPE_GROUND);
+                    collided = true;
+                    translate_y -= 1;  // Indietreggia di 1
+                    break;
+                }
+            }
+        }
+    }
+    // ... Y negativo (ceiling), X positivo (right), X negativo (left) identici ...
+    x += translate_x;
+    y += translate_y;
+}</code></pre>
+				</div>
+			</div>
+			<p><b>Punti chiave:</b></p>
+			<ul>
+				<li>
+					<p><font face="Liberation Mono, monospace">collided</font> flag previene
+						tunneling: una volta toccato solido, se step successivo trova vuoto → stop
+						immediato (evita "uscire" dal muro dall'altra parte ad alta velocità)</p>
+				</li>
+				<li>
+					<p>Solo punti rilevanti: <font
+							face="Liberation Mono, monospace">piedi_y</font> per ground, <font
+							face="Liberation Mono, monospace">testa_y=0</font> per ceiling, <font
+							face="Liberation Mono, monospace">limite_destro_x</font> per right, <font
+							face="Liberation Mono, monospace">0</font> per left — non controlla tutta
+						bbox ogni step</p>
+				</li>
+				<li>
+					<p>Out-of-bounds = muro (<font
+							face="Liberation Mono, monospace">NO_CHAR</font> trattato come solido) →
+						entità non esce dal livello</p>
+				</li>
+				<li>
+					<p>Ritorna flag per fisica: <font
+							face="Liberation Mono, monospace">is_colliding(COLLISION_TYPE_GROUND)</font>
+						abilita salto, <font face="Liberation Mono, monospace">RIGHT_SIDE</font>
+						blocca movimento dx</p>
+				</li>
+			</ul>
+			<p><b>Collisione entità-entità (righe 356-371, 728-777) — AABB + double
+					dispatch manuale:</b></p>
+			<div class="code-foldable">
+				<div class="code-foldable__header">
+					<img src="images/UI/cpp.svg" alt="C++" class="code-foldable__lang-icon">
+					<span class="code-foldable__title">Collisione entita-entita (AABB)</span>
+					<button class="code-foldable__toggle" type="button" aria-expanded="false">
+						<img src="images/UI/front-arrow.svg" alt>
+					</button>
+				</div>
+				<div class="code-foldable__content hidden">
+					<pre><code>// Base: AABB overlap test — righe 356-366
+bool entity::check_entity_collision(entity* e1) {
+    return (x < e1->x + e1->bounding_box_width  &&
+            x + bounding_box_width  > e1->x &&
+            y < e1->y + e1->bounding_box_height &&
+            y + bounding_box_height > e1->y);
+}
+
+virtual void evaluate_collision(entity* e1) = 0;
+
+void player::evaluate_collision(entity* e) {  // Player vs Enemy
+    if (e->entity_type == ENTITY_ENEMY) { hp--; e->destroy = true; }
+}
+void enemy::evaluate_collision(entity* e) {   // Enemy vs Bullet
+    if (e->entity_type == ENTITY_ALLY_BULLET) { e->destroy = true; destroy = true; }
+}
+void bullet::evaluate_collision(entity* e) { }  // Bullet: logica in map collision + lifetime</code></pre>
+				</div>
+			</div>
+			<p><b>Vantaggi:</b> Zero <font
+					face="Liberation Mono, monospace">dynamic_cast</font>, zero RTTI, <font
+					face="Liberation Mono, monospace">entity_type</font> = <font
+					face="Liberation Mono, monospace">unsigned char</font> → branch prediction
+				friendly, cache-friendly.</p>
+			<hr>
+			<h2 class="western">🎮 Il Player | Input, Fisica Arcade, Bullet
+				Management</h2>
+			<h3 class="western">🧭 CONTEXT</h3>
+			<p>Il player era l'entità "tuttofare". Input da tastiera (freccie + Z +
+				Spazio), fisica (gravità, attrito, salto), state machine bitmask, gestione
+				proiettili (max 1 alla volta, spawn da posizione arma), collisione mappa +
+				entità, rendering con flip orizzontale.</p>
+			<p>I proiettili hanno richiesto un po' di test, poiché un numero troppo alto
+				di munizioni rendeva tutto troppo semplice, inoltre, lo spawn dei proiettili
+				era pieno di edge-cases da risolvere, ad esempio:
+				"Se provo a sparare mentre sono davanti ad un muro?"</p>
+			<h3 class="western">❓ WHY?</h3>
+			<p><b>Perché fisica "arcade" (attrito lineare, gravità clamped) invece di un
+					approccio physics based?</b></p>
+			<p>Assolutamente non necessario, il sistema scelto mi permette di realizzare
+				un feeling classico del gioco, perfettamente in linea con gli obiettivi di
+				design del gioco. Inoltre, il limite era il terminale stesso, non potevo
+				avere numeri con la virgola, non servivano a niente, non potevano essere
+				considerati durante i movimenti sulla tilemap, basata su numeri interi.</p>
+			<h3 class="western">🛠️ HOW</h3>
+			<p><b>Input polling immediato (righe 1112-1136):</b></p>
+			<div class="code-foldable">
+				<div class="code-foldable__header">
+					<img src="images/UI/cpp.svg" alt="C++" class="code-foldable__lang-icon">
+					<span class="code-foldable__title">Input polling immediato</span>
+					<button class="code-foldable__toggle" type="button" aria-expanded="false">
+						<img src="images/UI/front-arrow.svg" alt>
+					</button>
+				</div>
+				<div class="code-foldable__content hidden">
+					<pre><code>if (GetAsyncKeyState(VK_RIGHT)) { p1.flipped=false; p1.set_entity_state(STATE_RUNNING); p1.speed_x=PLAYER_SPEED_X; }
+if (GetAsyncKeyState(VK_LEFT))  { p1.flipped=true;  p1.set_entity_state(STATE_RUNNING); p1.speed_x=-PLAYER_SPEED_X; }
+if (GetAsyncKeyState(VK_SPACE) && p1.is_colliding(COLLISION_TYPE_GROUND)) { 
+    p1.set_entity_state(STATE_JUMPING); p1.speed_y=PLAYER_JUMP_FORCE; 
+}
+if (GetAsyncKeyState(0x5A) && p1.can_spawn_bullets()) {  // 'Z'
+    p1.set_entity_state(STATE_SHOOTING);
+    p1.generate_bullet(active_level->map, active_level->level_width, active_level->level_height);
+}</code></pre>
+				</div>
+			</div>
+			<p><b>Physics update (riga 639-640) — chiamato DOPO collisione mappa:</b></p>
+			<div class="code-foldable">
+				<div class="code-foldable__header">
+					<img src="images/UI/cpp.svg" alt="C++" class="code-foldable__lang-icon">
+					<span class="code-foldable__title">Physics update (attrito +
+						gravita)</span>
+					<button class="code-foldable__toggle" type="button" aria-expanded="false">
+						<img src="images/UI/front-arrow.svg" alt>
+					</button>
+				</div>
+				<div class="code-foldable__content hidden">
+					<pre><code>void player::update() {
+    speed_x = speed_x - DECAYING_SPEED; if (speed_x < 0) speed_x = 0;  // Attrito
+    speed_y = speed_y + GRAVITY_FORCE;  if (speed_y > GRAVITY_FORCE) speed_y = GRAVITY_FORCE;  // Gravità + terminal velocity
+    if (hp <= 0) destroy = true;
+}</code></pre>
+				</div>
+			</div>
+			<p><b>Bullet spawn con check validità (righe 652-688):</b></p>
+			<div class="code-foldable">
+				<div class="code-foldable__header">
+					<img src="images/UI/cpp.svg" alt="C++" class="code-foldable__lang-icon">
+					<span class="code-foldable__title">Bullet spawn con check validita</span>
+					<button class="code-foldable__toggle" type="button" aria-expanded="false">
+						<img src="images/UI/front-arrow.svg" alt>
+					</button>
+				</div>
+				<div class="code-foldable__content hidden">
+					<pre><code>void player::generate_bullet(wchar_t** map, int level_width, int level_height) {
+    int new_x = flipped ? x : x + 4;  // Offset da punta arma (sprite 4x4)
+    int new_y = y + 1;
+    int speed_x = flipped ? -BULLET_SPEED_X : BULLET_SPEED_X;
+    
+    wchar_t tile = (new_y >= level_height || new_x >= level_width) ? NO_CHAR : map[new_y][new_x];
+    if (tile == L'=' || tile == L'I' || tile == L'~' || tile == NO_CHAR) return;  // Non spawnare in muro
+    
+    bull = new bullet(ENTITY_ALLY_BULLET);
+    bull->x = new_x; bull->y = new_y; bull->speed_x = speed_x;
+}</code></pre>
+				</div>
+			</div>
+			<p><b>Bullet lifecycle (righe 690-726):</b></p>
+			<div class="code-foldable">
+				<div class="code-foldable__header">
+					<img src="images/UI/cpp.svg" alt="C++" class="code-foldable__lang-icon">
+					<span class="code-foldable__title">Bullet lifecycle</span>
+					<button class="code-foldable__toggle" type="button" aria-expanded="false">
+						<img src="images/UI/front-arrow.svg" alt>
+					</button>
+				</div>
+				<div class="code-foldable__content hidden">
+					<pre><code>void player::update_bullets() { if (bull) bull->update(); }
+void player::check_destroy() { if (bull && bull->destroy) { delete bull; bull = nullptr; } }
+void player::check_map_collision_bullets(...) { if (bull) bull->check_map_collision(...); }</code></pre>
+				</div>
+			</div>
+			<hr>
+			<h2 class="western">📽️ Rendering Pipeline | Double Buffering + Virtual
+				Camera + ASCII Sprites</h2>
+			<h3 class="western">🧭 CONTEXT</h3>
+			<p>All'inizio usavo <font
+					face="Liberation Mono, monospace">system("cls")</font> + <font
+					face="Liberation Mono, monospace">cout</font> per stampare tutto.
+				Chiaramente era tutto sballato, la console sfarfallava e il cursore si
+				muoveva dentro la console.</p>
+			<p>Poi il problema della camera, in sostanza dovevo realizzare a tutti gli
+				effetti un "frustum", dato un livello 400×30 e uno schermo 130×30.
+				Chiaramente devo renderizzare solo la regione di mappa interessata alla
+				grandezza dello schermo.</p>
+			<p>Oltre a questo problema, dopo aver pensato a renderizzare, dovevo stampare
+				le entità sopra la mappa e comporre il "frame" finale per poterlo
+				renderizzare, senza contaminare la struttura originale della mappa. Per
+				questo ho fatto: <b>tre buffer separati</b>.</p>
+			<ul>
+				<li>
+					<p><font face="Liberation Mono, monospace">map</font> = dati livello
+						immutabili (da file). <font
+							face="Liberation Mono, monospace">wchar_t**</font></p>
+				</li>
+				<li>
+					<p><font face="Liberation Mono, monospace">buf</font> = composizione frame
+						corrente (map + entità in coordinate mondo). <font
+							face="Liberation Mono, monospace">wchar_t**</font></p>
+				</li>
+				<li>
+					<p><font face="Liberation Mono, monospace">screen</font> = buffer lineare
+						1D per <font
+							face="Liberation Mono, monospace">WriteConsoleOutputCharacter</font>.
+						<font face="Liberation Mono, monospace">wchar_t*</font></p>
+				</li>
+			</ul>
+			<h3 class="western">❓ WHY?</h3>
+			<p><b>Perché double buffering manuale (<font
+						face="Liberation Mono, monospace">map</font> → <font
+						face="Liberation Mono, monospace">buf</font> → <font
+						face="Liberation Mono, monospace">screen</font>)?</b></p>
+			<p>Era necessario dividere la responsabilità, in memoria mi serviva un copia
+				immutabile della mappa per poter effettuare la CD, poi mi serviva una
+				versione per comporre la scena ufficiale, stampando entità e proiettili,
+				senza influenzare la versione immutabile della mappà. Inoltre era necessario
+				avere un buffer in più per renderizzare sulla regione visibile disponibile
+				(la grandezza del terminale).</p>
+			<p><b>Perché <font
+						face="Liberation Mono, monospace">WriteConsoleOutputCharacter</font>
+					invece di <font face="Liberation Mono, monospace">std::cout</font>?</b></p>
+			<p>Ovviamente molto più ottimizzato, una singola syscall, piuttosto che una
+				quantità altissima per colpa di <font
+					face="Liberation Mono, monospace">std::cout</font>, inoltre evito il
+				flicker del cursore ed ho controllo totale sulla posizione dei cratteri.</p>
+			<h3 class="western">🛠️ HOW</h3>
+			<p><b>Level buffers (righe 815-842, 864-908):</b></p>
+			<p>Qui componiamo la scena finale, renderizziamo solo la porzione interessata
+				e generiamo l'array finale da passare <font
+					face="Liberation Mono, monospace">WriteConsoleOutputCharacter</font>.</p>
+			<div class="code-foldable">
+				<div class="code-foldable__header">
+					<img src="images/UI/cpp.svg" alt="C++" class="code-foldable__lang-icon">
+					<span class="code-foldable__title">Level buffers (double buffering)</span>
+					<button class="code-foldable__toggle" type="button" aria-expanded="false">
+						<img src="images/UI/front-arrow.svg" alt>
+					</button>
+				</div>
+				<div class="code-foldable__content hidden">
+					<pre><code>class level {
+    wchar_t** map;  // Da file, never changes
+    wchar_t** buf;  // Frame corrente
+    
+    void refresh_buffer() {  // Chiamato ogni frame
+        for (y) for (x) buf[y][x] = map[y][x];
+    }
+    
+    void draw(wchar_t* screen, camera* cam) {
+        for (int y = 0; y < SCREEN_HEIGHT; y++) {
+            for (int x = 0; x < SCREEN_WIDTH; x++) {
+                int src_x = cam->pan_x + x;
+                int src_y = cam->pan_y + y;
+                // FRUSTUM CULLING implicito
+                if (src_x >= level_width || src_y >= level_height)
+                    screen[y * SCREEN_WIDTH + x] = L' ';
+                else
+                    screen[y * SCREEN_WIDTH + x] = buf[src_y][src_x];
+            }
+        }
+        screen[SCREEN_WIDTH * SCREEN_HEIGHT - 1] = L'\0';
+    }
+};</code></pre>
+				</div>
+			</div>
+			<p>La camera si centra al giocatore, se non supera la prima, tranne quando si
+				trova ai limiti del livello, lì non si muove, non mantenendo il giocatore al
+				centro</p>
+			<p><b>Camera follow (righe 1174-1180):</b></p>
+			<div class="code-foldable">
+				<div class="code-foldable__header">
+					<img src="images/UI/cpp.svg" alt="C++" class="code-foldable__lang-icon">
+					<span class="code-foldable__title">Camera follow</span>
+					<button class="code-foldable__toggle" type="button" aria-expanded="false">
+						<img src="images/UI/front-arrow.svg" alt>
+					</button>
+				</div>
+				<div class="code-foldable__content hidden">
+					<pre><code>player_camera.pan_x = p1.x - 60; // hardcoded
+if (player_camera.pan_x < 0) player_camera.pan_x = 0;
+if (player_camera.pan_x + player_camera.width > active_level->level_width)
+    player_camera.pan_x = active_level->level_width - player_camera.width;</code></pre>
+				</div>
+			</div>
+			<p><b>Entity rendering con flip (righe 463-504):</b></p>
+			<div class="code-foldable">
+				<div class="code-foldable__header">
+					<img src="images/UI/cpp.svg" alt="C++" class="code-foldable__lang-icon">
+					<span class="code-foldable__title">Entity rendering con flip</span>
+					<button class="code-foldable__toggle" type="button" aria-expanded="false">
+						<img src="images/UI/front-arrow.svg" alt>
+					</button>
+				</div>
+				<div class="code-foldable__content hidden">
+					<pre><code>void entity::render_in_buffer(wchar_t** buf) {
+    if (flipped) {
+        for (y) for (x = sprite_width-1, x1=0; x >= 0; x--, x1++)
+            if (sprite[y][x] != L' ') buf[y + this->y][x1 + this->x] = sprite[y][x];
+    } else {
+        for (y) for (x)
+            if (sprite[y][x] != L' ') buf[y + this->y][x + this->x] = sprite[y][x];
+    }
+}</code></pre>
+				</div>
+			</div>
+			<p><b>Sequenza rendering per frame (righe 1110-1202):</b></p>
+			<p>Ogni entità si aggiunge al buffer <font
+					face="Liberation Mono, monospace">buf</font></p>
+			<div class="code-foldable">
+				<div class="code-foldable__header">
+					<img src="images/UI/cpp.svg" alt="C++" class="code-foldable__lang-icon">
+					<span class="code-foldable__title">Sequenza rendering per frame</span>
+					<button class="code-foldable__toggle" type="button" aria-expanded="false">
+						<img src="images/UI/front-arrow.svg" alt>
+					</button>
+				</div>
+				<div class="code-foldable__content hidden">
+					<pre><code>active_level->refresh_buffer();                    // 1. Pulisci buf con map
+p1.render_in_buffer(active_level->buf);            // 2. Player
+if (p1.bull) p1.bull->render_in_buffer(buf);       // 3. Bullet
+active_level->f.render_in_buffer(buf);             // 4. Flag
+active_level->render_enemies(buf);                 // 5. Nemici
+active_level->draw(screen.data, &player_camera);   // 6. Camera → linear screen
+WriteConsoleOutputCharacter(h_console, screen.data, SCREEN_WIDTH*SCREEN_HEIGHT, {0,0}, &dwBytesWritten);</code></pre>
+				</div>
+			</div>
+			<hr>
+			<h2 class="western">📦 Memory Management | RAII Manuale per Array 2D +
+				Ownership Semantics</h2>
+			<h3 class="western">🧭 CONTEXT</h3>
+			<p>Per il memory management, ho utilizzato strategie classiche, per le entità
+				significava allocare e distruggere nei rispettivi costruttori e distruttori,
+				per la mappa e i buffer, lo stesso.</p>
+			<p>Questo significa, nel caso dei buffer, che all'avvio si inizializzassero
+				alla grandezza della hmappa corrispondente, dunque, la grandezza del buffer
+				dipendeva dalla grandezza complessiva della mappa, descritta dai parametri
+				passati durante l'inizializzazione (<font
+					face="Liberation Mono, monospace">level_width</font> e <font
+					face="Liberation Mono, monospace">level_height</font>). Dopodiché, la mappa
+				veniva letta e immagazzinata in memoria.</p>
+			<p>Un procedimento analogo viene applicato per instanziare le sprite delle
+				entità.</p>
+			<h3 class="western">🛠️ HOW</h3>
+			<p><b>Entity distruttore (righe 141-156) — gestisce entrambe forme:</b></p>
+			<div class="code-foldable">
+				<div class="code-foldable__header">
+					<img src="images/UI/cpp.svg" alt="C++" class="code-foldable__lang-icon">
+					<span class="code-foldable__title">Entity distruttore</span>
+					<button class="code-foldable__toggle" type="button" aria-expanded="false">
+						<img src="images/UI/front-arrow.svg" alt>
+					</button>
+				</div>
+				<div class="code-foldable__content hidden">
+					<pre><code>~entity() {
+    if (sprite_height == 1 && sprite_width == 1) {  // Bullet 1x1
+        delete sprite[0];
+        delete sprite;
+    } else {  // Sprite rettangolare
+        for (int i = 0; i < sprite_height; i++) delete[] sprite[i];
+        delete sprite;  // delete (non delete[]) perché sprite = new wchar_t*[h]
+    }
+}</code></pre>
+				</div>
+			</div>
+			<p><b>Level map/buf (righe 828-862):</b></p>
+			<div class="code-foldable">
+				<div class="code-foldable__header">
+					<img src="images/UI/cpp.svg" alt="C++" class="code-foldable__lang-icon">
+					<span class="code-foldable__title">Level map/buf (allocazione)</span>
+					<button class="code-foldable__toggle" type="button" aria-expanded="false">
+						<img src="images/UI/front-arrow.svg" alt>
+					</button>
+				</div>
+				<div class="code-foldable__content hidden">
+					<pre><code>level(int w, int h) : level_width(w), level_height(h) {
+    buf = new wchar_t*[level_height];
+    map = new wchar_t*[level_height];
+    for (int i = 0; i < level_height; i++) {
+        buf[i] = new wchar_t[level_width];
+        map[i] = new wchar_t[level_width];
+    }
+}
+~level() {
+    for (int i = 0; i < level_height; i++) {
+        delete[] map[i]; delete[] buf[i];
+    }
+    delete map; delete buf;
+}</code></pre>
+				</div>
+			</div>
+			<p><b>Ownership bullet (righe 610, 683, 702-718):</b></p>
+			<div class="code-foldable">
+				<div class="code-foldable__header">
+					<img src="images/UI/cpp.svg" alt="C++" class="code-foldable__lang-icon">
+					<span class="code-foldable__title">Ownership bullet</span>
+					<button class="code-foldable__toggle" type="button" aria-expanded="false">
+						<img src="images/UI/front-arrow.svg" alt>
+					</button>
+				</div>
+				<div class="code-foldable__content hidden">
+					<pre><code>bullet* bull = nullptr;  // Raw pointer = owning pointer (convenzione documentata)
+void generate_bullet(...) { bull = new bullet(...); }
+void check_destroy() { if (bull && bull->destroy) { delete bull; bull = nullptr; } }</code></pre>
+				</div>
+			</div>
+			<hr>
+			<h2 class="western">📂 Asset Pipeline | Data-Driven Level & Sprite Loading da
+				File ASCII</h2>
+			<h3 class="western">🧭 CONTEXT</h3>
+			<p>Tutti gli asset renderizzati sono stati realizzati sfruttando
+				https://asciistudio.app/|un tool online per creare tilemap tramite
+				caratteri, dopodiché, ogni file risultante viene parsato via codice.</p>
+			<h3 class="western">❓ WHY?</h3>
+			<p><b>Perché file ASCII invece di JSON/XML/binario?</b></p>
+			<p>Da studente, ancora non sapevo manipolare bene file al di fuori dei
+				".txt", proprio per questo ho optato per questo tipo di file. I vantaggi
+				risiedono nella semplicità, ho potuto creare un parser con poche righe e
+				sfruttare tool semplicissi per realizzare gli assets.</p>
+			<h3 class="western">🛠️ HOW</h3>
+			<p><b>Entity loader (righe 508-536):</b></p>
+			<div class="code-foldable">
+				<div class="code-foldable__header">
+					<img src="images/UI/cpp.svg" alt="C++" class="code-foldable__lang-icon">
+					<span class="code-foldable__title">Entity loader (sprite da file)</span>
+					<button class="code-foldable__toggle" type="button" aria-expanded="false">
+						<img src="images/UI/front-arrow.svg" alt>
+					</button>
+				</div>
+				<div class="code-foldable__content hidden">
+					<pre><code>void entity::loader(string file) {
+    ifstream fs(file);
+    string str; int y = 0;
+    while (getline(fs, str)) {
+        for (int x = 0; x < str.length(); x++)
+            sprite[y][x] = (wchar_t)str[x];
+        y++;
+    }
+    fs.close();
+}</code></pre>
+				</div>
+			</div>
+			<p><b>Level loader (righe 912-942):</b></p>
+			<div class="code-foldable">
+				<div class="code-foldable__header">
+					<img src="images/UI/cpp.svg" alt="C++" class="code-foldable__lang-icon">
+					<span class="code-foldable__title">Level loader (mappa da file)</span>
+					<button class="code-foldable__toggle" type="button" aria-expanded="false">
+						<img src="images/UI/front-arrow.svg" alt>
+					</button>
+				</div>
+				<div class="code-foldable__content hidden">
+					<pre><code>void level::loader(string file) {
+    ifstream fs(file);
+    string str; int y = 0;
+    while (getline(fs, str)) {
+        for (int x = 0; x < str.length(); x++)
+            map[y][x] = (wchar_t)str[x];
+        y++;
+    }
+    refresh_buffer();  // Inizializza buf == map
+    fs.close();
+}</code></pre>
+				</div>
+			</div>
+			<hr>
+			<h2 class="western">⬇️ Game Loop | Fixed Timestep Polling + Single-Threaded
+				Deterministic</h2>
+			<h3 class="western">🧭 CONTEXT</h3>
+			<p>Il gameloop sfrutta semplici risoluzione per ovviare a problemi legati al
+				timing e alla mancanza di framecap. Ad esempio, l'update degli input è letto
+				ogni frame, ma eseguito a 6fps, per ovviare a problemi come velocità
+				supersoniche.</p>
+			<p>L'ordine del frame è costruito nel seguente modo:</p>
+			<p>1. Destroy check (bullet morti)</p>
+			<p>2. Input → stato + velocità</p>
+			<p>3. Physics update</p>
+			<p>4. Collision resolution (map & entity, separatamente)</p>
+			<p>5. Camera follow</p>
+			<p>6. Win check</p>
+			<p>7. Render composition</p>
+			<h3 class="western">❓ WHY?</h3>
+			<p><b>Perché questo ordine?</b></p>
+			<p>L'ordine segue una logica molto precisa, garbage collecting, input
+				gathering, update dei movimenti, risoluzione delle collisioni. La sequenza è
+				molto precisa poiché la logica è rigida, eseguire la valutazione delle
+				collisioni <b>PRIMA</b> del potrebbe rompere certe sezioni di gioco, poiché
+				il transform potrebbe essere in una posizione non valida fino al prossimo
+				check delle collisioni.</p>
+			<hr>
+			<h1 class="western">💀 Post Mortem</h1>
+			<h3 class="western">Limiti di conoscenza</h3>
+			<p>In quanto è stato il mio primo progetto "<b>Axioverse</b>" presenta palesi
+				problemi dovuti all'inesperienza e ad una mancanza di conoscenze,
+				banalmente, basti pensare al fatto che ho utilizzati puntatori puri senza
+				alcun motivo, quando le librerie standard forniscono gli smart pointers.
+				Questi limiti, mi hanno permesso di comprendere le mie lacune e di
+				proseguire affinando la mia conoscenza e dando preferenza ad una ricerca
+				pre-creazione di una feature, per valutare una mancanza di conoscenze, oltre
+				che, avermi fatto capire di dover continuare a studiare!</p>
+			<h3 class="western">Asset pipeline</h3>
+			<p>Il loader delle sprite è chiaramente molto fragile, oltre ad utilizzare
+				file di testo, non tiene conto di possibili errori all'interno dei file e
+				caratteri invalidi, non ha bounds che limitino il caricamento di file troppo
+				grandi, non riconosce se il file è vuoto, in sostanza, si fida. Un sistema
+				robusto valuterebbe <b>tutto</b>: dimensioni, caratteri
+				blacklistati/whitelistati, tutto supportato da un sistema di logging chiaro
+				e facile da leggere.</p>
+			<h3 class="western">L'architettura che non c'è</h3>
+			<p>La mancanza di suddivisione di file, la mancanza di suddivisione fra .h e
+				.cpp, la mancanza di una file structure statica feature-based, classi senza
+				single-responsibility, fiducia negli input, codice monolitico, insomma, si
+				vede che è un primo progetto insieme alla <b>mancanza di un engine</b>. Nei
+				progetti futuri, tutto questo non è più presente, l'architettura, oltre che
+				essere documentata, è definita priori, non in corso d'opera, basti guardare
+				i progressi fatti in <b>Rumble Smash</b>.</p>
+			<h3 class="western">Belli i "magic numbers", no, scherzo</h3>
+			<p>Il progetto è pieno di magic numbers buttati qui è lì, vi immaginate un
+				game designer che mette mano su questo codice? No, infatti nessuno l'ha
+				fatto. Oltre ai magic numbers, c'è un coupling troppo aggressivo con
+				dinamiche hardware e software, per intenderci, molte variabili riguardano
+				sono pixel-bound o frame-bound, sono difficili da debuggare e per i game
+				designer impossibili da comprendere. La soluzione sarebbe stata creare
+				un'infrastruttura physics-based.</p>
+			<h3 class="western">Commenti, style guide e documentazione</h3>
+			<p>Leggendo il codice, i commenti non sono del tutto assenti, anzi, spiegano
+				in modo quasi esaustivo certe parti del gioco, ma non è stata un'abitudine
+				mantenuta in tutti i punti. Per questo alcuni punti dell'architettura e'
+				poco chiaro, non è possibile comprendere chiaramente il "<b>perché</b>"
+				dietro certe scelte, oppure, semplicemente il loro funzionamento.</p>
+			<p>Il vero problema, però, risiede nella mancanza di una style guide che ha
+				reso difficile la lettura e il debugging, a posteriori, avere una style
+				guide mi aiuta a <b>ridurre il carico cognitivo a zero sulla forma</b>, così
+				tutto il cervello va sul contenuto, piuttosto che su ogni inconsistenza,
+				inoltre aumenta l'ordine mentale e la schematizzazione, rendendo il codice
+				più facile da ricordare.</p>
+			<p>Oltre che una style guide, mancava una documentazione, chiaramente, anche
+				qui i downsides sono ovvi, mancava una mappa per poter comprendere il codice
+				da esterno, ormai per me è inaccettabile non averla, motivo per cui sarà
+				onnipresente nei futuri progetti.</p>
+
+		</p>
+
+	</body>
+
+</html>
+                </div>
+            </div>
+        </div>
+        <div class="border-line"></div>
+        <div class="row mt-5 justify-content-center">
+            <div class="col-lg-6 text-center">
+                <a href="ssgrp-portfolio-single-page-it.html" class="btn btn-dark">Progetto Precedente</a>
+                <a href="the-oppressive-bubble-portfolio-single-page-it.html" class="btn btn-dark">Prossimo Progetto</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="footer">
+	<div class="container">
+		<div class="row ">
+			<div class="col-lg-6">
+				<p class="mb-0">Copyrights © 2019. Designed & Developed by <a href="themefisher.com"
+						class="text-white">Themefisher.</a></p>
+				<p class="mb-0">Enhanced by <a
+						class="text-white">Raffaele "powpow" Castania. </a></p>
+
+			</div>
+			<div class="col-lg-6">
+				<div class="widget footer-widget text-lg-right mt-5 mt-lg-0">
+					<ul class="list-inline mb-0">
+						<li class="list-inline-item"><a href="https://github.com/0pow-pow0/" target="_blank"><i
+									class="ti-github mr-3"></i></a></li>
+						<li class="list-inline-item"><a href="https://www.linkedin.com/in/raffaele-castania-940b5b216/"
+								target="_blank"><i class="ti-linkedin mr-3"></i></a></li>
+						<li class="list-inline-item">
+							<button class="copy-btn" onclick="copyToClipboard('powpow6769')">
+								<i class="fa-brands fa-discord"></i></a>
+							</button>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- Toast Notification -->
+<div id="toast" class="toast">Nickname copiato negli appunti</div>
+
+<script>
+	function showToast(message = "Nickname copiato negli appunti") {
+		const toast = document.getElementById('toast');
+		toast.textContent = message;
+		toast.classList.add('show');
+		clearTimeout(toast._timeout);
+		toast._timeout = setTimeout(() => {
+			toast.classList.remove('show');
+		}, 2500);
+	}
+
+	function copyToClipboard(text) {
+		navigator.clipboard.writeText(text).then(() => {
+			showToast("Nickname copiato negli appunti");
+		}).catch(() => {
+			// Fallback per browser vecchi
+			const input = document.createElement('input');
+			input.value = text;
+			document.body.appendChild(input);
+			input.select();
+			document.execCommand('copy');
+			document.body.removeChild(input);
+			showToast("Nickname copiato negli appunti");
+		});
+	}
+</script>
+<!-- jQuery -->
+<script src="plugins/jQuery/jquery.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="plugins/bootstrap/bootstrap.min.js"></script>
+<script src="plugins/aos/aos.js"></script>
+<script src="plugins/owl-carousel/owl.carousel.min.js"></script>
+<script src="plugins/shuffle/shuffle.min.js"></script>
+<script src="plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+<script src="plugins/animated-text/animated-text.js"></script>
+<script src="plugins/counto/apear.js"></script>
+<script src="plugins/counto/counTo.js"></script>
+
+<!-- Language Switcher -->
+<script src="js/lang-switcher.js"></script>
+<!-- Main Script -->
+<script src="js/script.js"></script>
+
+</html>

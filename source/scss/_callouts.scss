@@ -1,0 +1,72 @@
+.callout {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 4px solid;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 16px 0;
+}
+
+.callout__icon {
+  flex-shrink: 0;
+  font-size: 20px;
+  margin-top: 2px;
+}
+
+.callout__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.callout__title {
+  font-weight: 600;
+  margin-bottom: 6px;
+  font-size: inherit;
+}
+
+.callout__content p {
+  margin: 0;
+}
+
+.callout__content p + p {
+  margin-top: 8px;
+}
+
+.callout--default {
+  background: #f7f7f7;
+  border-color: #dedede;
+  color: #333;
+}
+
+.callout--info {
+  background: #eef7ff;
+  border-color: #007aff;
+  color: #0055a5;
+}
+
+.callout--success {
+  background: #f0fff4;
+  border-color: #22c55e;
+  color: #166534;
+}
+
+.callout--warning {
+  background: #fffbeb;
+  border-color: #f59e0b;
+  color: #713f12;
+}
+
+.callout--error {
+  background: #fef2f2;
+  border-color: #f44336;
+  color: #991b1b;
+}
+
+.callout--critical {
+  background: #fef2f2;
+  border-color: #f44336;
+  color: #991b1b;
+}

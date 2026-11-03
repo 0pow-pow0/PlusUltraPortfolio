@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+
+<!--
+ //
+-->
+
+<html lang="zxx">
+
+<head>
+  <meta charset="utf-8">
+  <title>Raffele Castania Gameplay Programming Portfolio</title>
+
+  <!-- mobile responsive meta -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <!-- theme meta -->
+  <meta name="theme-name" content="thomson" />
+
+  <!-- ** Plugins Needed for the Project ** -->
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="plugins/bootstrap/bootstrap.min.css">
+  <link rel="stylesheet" href="plugins/themify/css/themify-icons.css">
+  <link rel="stylesheet" href="plugins/counto/animate.css">
+  <link rel="stylesheet" href="plugins/aos/aos.css">
+  <link rel="stylesheet" href="plugins/owl-carousel/owl.carousel.min.css">
+  <link rel="stylesheet" href="plugins/owl-carousel/owl.theme.default.min.css">
+  <link rel="stylesheet" href="plugins/magnific-popup/magnific-popup.css">
+  <link rel="stylesheet" href="plugins/animated-text/animated-text.css">
+
+  <!-- Main Stylesheet -->
+  <link href="css/style.css" rel="stylesheet">
+
+
+</head>
+
+<body>
+<!-- Header Start -->
+<nav class="navbar navbar-expand-lg  main-nav " id="navbar">
+	<div class="container">
+		<a class="navbar-brand" href="index.html">
+			<img style="width: 10%" src="images/Assets/little-deku-NOBG.png" alt="" class="img-fluid">
+		</a>
+
+		<button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarsExample09"
+			aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="ti-align-justify"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbarsExample09">
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item  active"><a class="nav-link" href="index.html">Home</a></li>
+				<li class="nav-item  active"><a class="nav-link" href="index.html#portfolio">Progetti</a></li>
+				<li class="nav-item"><a class="nav-link" href="/images/CV/CV - Game Dev - Definitive - EN.pdf">Curriculum</a></li>
+				<li class="nav-item nav-item-lang language-switcher-container">
+					<div class="language-switcher">
+						<div class="lang-toggle" role="group" aria-label="Language selection">
+							<span class="lang-btn active" aria-label="Italiano" aria-pressed="true">
+								<span class="lang-text">IT</span>
+							</span>
+							<a href="index-en.html" class="lang-btn" aria-label="English" aria-pressed="false">
+								<span class="lang-text">EN</span>
+							</a>
+							<div class="lang-slider"></div>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+<!-- Header Close -->
+<section class="page-title section pb-0">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="text-center">
+          <h1 class="text-capitalize mb-0 text-lg">PuyoTetris</h1>
+          <p class="mt-2">Clone di PuyoPuyoTetris semplificato, realizzato in Unity 6</p>
+        </div>
+      </div>
+    </div>
+  </div>  
+</section>
+<!-- ===== Table of Contents Partial ===== -->
+<button id="toc-toggle" class="toc-toggle" type="button" aria-expanded="false" aria-controls="toc-sidebar" aria-label="Apri indice pagina">
+  <img src="images/UI/list.svg" alt="Indice" class="toc-toggle__icon">
+</button>
+
+<aside id="toc-sidebar" class="toc-sidebar" role="navigation" aria-label="Indice pagina" aria-hidden="true">
+  <div class="toc-sidebar__header">
+    <h2 class="toc-sidebar__title">Indice</h2>
+    <button id="toc-close" class="toc-sidebar__close" type="button" aria-label="Chiudi indice">&#215;</button>
+  </div>
+  <nav class="toc-sidebar__nav">
+    <ul id="toc-list" class="toc-list"></ul>
+  </nav>
+</aside>
+
+<div id="toc-overlay" class="toc-overlay" aria-hidden="true"></div>
+<!-- ===== /Table of Contents Partial ===== -->
+<!-- Stili spostati in scss/table-of-contents.scss -->
+
+<script>
+  (function() {
+    'use strict';
+
+    var toggle = document.getElementById('toc-toggle');
+    var sidebar = document.getElementById('toc-sidebar');
+    var closeBtn = document.getElementById('toc-close');
+    var overlay = document.getElementById('toc-overlay');
+    var list = document.getElementById('toc-list');
+
+    if (!toggle || !sidebar || !list) return;
+
+    var observer = null;
+
+    function markLastItems(listEl) {
+      var items = listEl.querySelectorAll(':scope > .toc-item');
+      items.forEach(function(item, idx, arr) {
+        if (idx === arr.length - 1) {
+          item.classList.add('is-last');
+        } else {
+          item.classList.remove('is-last');
+        }
+        var nested = item.querySelector(':scope > .toc-list.nested');
+        if (nested) {
+          markLastItems(nested);
+        }
+      });
+    }
+
+    function build() {
+      list.innerHTML = '';
+      var headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+
+      headings.forEach(function(h, i) {
+        if (!h.id) {
+          h.id = 'toc-heading-' + i;
+        }
+      });
+
+      var rootUl = document.createElement('ul');
+      rootUl.className = 'toc-list';
+      var lastLiByLevel = {};
+
+      headings.forEach(function(h) {
+        var level = parseInt(h.tagName.charAt(1), 10);
+        if (level < 1 || level > 6) level = 2;
+
+        var li = document.createElement('li');
+        li.className = 'toc-item level-' + level;
+
+        var a = document.createElement('a');
+        a.href = '#' + h.id;
+        a.textContent = h.textContent.trim() || 'Senza titolo';
+        li.appendChild(a);
+
+        if (level === 1) {
+          rootUl.appendChild(li);
+        } else {
+          var parentLi = lastLiByLevel[level - 1];
+          if (parentLi) {
+            var childUl = parentLi.querySelector(':scope > ul.toc-list');
+            if (!childUl) {
+              childUl = document.createElement('ul');
+              childUl.className = 'toc-list nested';
+              parentLi.appendChild(childUl);
+              parentLi.classList.add('has-children');
+            }
+            childUl.appendChild(li);
+          } else {
+            rootUl.appendChild(li);
+          }
+        }
+
+        lastLiByLevel[level] = li;
+        for (var l = level + 1; l <= 6; l++) {
+          delete lastLiByLevel[l];
+        }
+      });
+
+      list.appendChild(rootUl);
+
+      markLastItems(rootUl);
+
+      list.querySelectorAll('.toc-item.has-children').forEach(function(li) {
+        var existing = li.querySelector(':scope > .toc-expand');
+        if (existing) return;
+
+        var btn = document.createElement('button');
+        btn.className = 'toc-expand';
+        btn.type = 'button';
+        btn.setAttribute('aria-expanded', 'false');
+        btn.textContent = '▶';
+
+        var a = li.querySelector(':scope > a');
+        a.prepend(btn);
+
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          e.preventDefault();
+          var expanded = btn.getAttribute('aria-expanded') === 'true';
+          btn.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+          li.classList.toggle('expanded');
+        });
+      });
+    }
+
+    list.addEventListener('click', function(e) {
+      var a = e.target.closest ? e.target.closest('a') : null;
+      if (!a) return;
+      e.preventDefault();
+      var target = document.querySelector(a.hash);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      closeSidebar();
+    });
+
+    function openSidebar() {
+      toggle.setAttribute('aria-expanded', 'true');
+      sidebar.setAttribute('aria-hidden', 'false');
+      overlay.setAttribute('aria-hidden', 'false');
+      toggle.classList.add('active');
+      sidebar.classList.add('open');
+      overlay.classList.add('open');
+    }
+
+    function closeSidebar() {
+      toggle.setAttribute('aria-expanded', 'false');
+      sidebar.setAttribute('aria-hidden', 'true');
+      overlay.setAttribute('aria-hidden', 'true');
+      toggle.classList.remove('active');
+      sidebar.classList.remove('open');
+      overlay.classList.remove('open');
+    }
+
+    toggle.addEventListener('click', function() {
+      var expanded = toggle.getAttribute('aria-expanded') === 'true';
+      if (expanded) closeSidebar(); else openSidebar();
+    });
+
+    closeBtn.addEventListener('click', closeSidebar);
+    overlay.addEventListener('click', closeSidebar);
+
+    window.initTableOfContents = build;
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', build);
+    } else {
+      build();
+    }
+
+    if (window.MutationObserver) {
+      observer = new MutationObserver(function(mutations) {
+        var changed = false;
+        mutations.forEach(function(m) {
+          if (m.type === 'childList' && m.addedNodes.length > 0) {
+            m.addedNodes.forEach(function(node) {
+              if (node.nodeType === 1 && node.matches && node.matches('h1, h2, h3, h4, h5, h6')) {
+                changed = true;
+              }
+              if (node.nodeType === 1 && node.querySelectorAll) {
+                if (node.querySelectorAll('h1, h2, h3, h4, h5, h6').length > 0) {
+                  changed = true;
+                }
+              }
+            });
+          }
+        });
+        if (changed) build();
+      });
+      observer.observe(document.body, { childList: true, subtree: true });
+    }
+  })();
+</script>
+
+<section class="section portfolio-single">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <img src="../images/portfolio/PuyoTetris/PuyoTetrisBanner.jpg"
+                    alt="PuyoTetris" class="img-fluid w-100">
+            </div>
+
+            <div class="col-lg-6">
+                <div class="project-info">
+                    <h3 class="mb-4">Sinossi</h3>
+                    <p>PuyoTetris è un clone di PuyoPuyoTetris semplificato,
+                        realizzato in Unity 6 che concentra la complessità dove
+                        serve. Il risultato è un progetto 2D pensato per l'uso
+                        mobile, senza rinunciare a una modalità di controllo da
+                        tastiera utile su PC durante test e spluppo. Questo
+                        progetto è stato sviluppato parallelamente a Rumble
+                        Smash per la Nautilus Academy.</p>
+
+                    <div class="row mt-4">
+                        <div class="col-lg-6">
+                            <div class="info">
+                                <h5 class="mb-0">Anno</h5>
+                                <p>2026</p>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="info">
+                                <h5 class="mb-0">Engine</h5>
+                                <p>Unity</p>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="info">
+                                <h5 class="mb-0">Durata</h5>
+                                <p>5 Giorni</p>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="info">
+                                <h5 class="mb-0">Team</h5>
+                                <p>1 (Solo Dev)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="btn-group-project d-flex gap-2 flex-wrap">
+                        <a href="https://github.com/0pow-pow0/PuyoTetris" class="btn btn-dark btn-small"
+                            target="_blank" rel="noopener">
+                            <i class="fab fa-github me-1"></i> GitHub
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=S9KmJBJlCzI"
+                            class="btn btn-danger btn-small" target="_blank"
+                            rel="noopener">
+                            <i class="fab fa-youtube me-1"></i> YouTube
+                        </a>
+                        <a href="#" class="btn btn-main btn-small">Vedi
+                            Progetto</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Descrizione Progetto -->
+        <div class="row mt-5">
+            <div class="col-lg-12">
+                <div class="project-description-full">
+                    <!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<title></title>
+		<meta name="generator" content="LibreOffice 26.8.0.3 (Linux)" />
+		<meta name="created" content="00:00:00" />
+		<meta name="changed" content="00:00:00" />
+		<style type="text/css">
+		@page {
+			size: 8.27in 11.69in;
+			margin: 0.79in
+		}
+
+		p {
+			margin-bottom: 0.1in;
+			line-height: 115%;
+			background: transparent
+		}
+
+		h1 {
+			margin-bottom: 0.08in;
+			background: transparent;
+			page-break-after: avoid
+		}
+
+		h1.western {
+			font-weight: bold;
+			font-size: 18pt;
+			font-family: "Liberation Sans", sans-serif
+		}
+
+		h1.cjk {
+			font-weight: bold;
+			font-size: 18pt;
+			font-family: "AR PL SungtiL GB"
+		}
+
+		h1.ctl {
+			font-weight: bold;
+			font-family: "Noto Sans Devanagari";
+			font-size: 18pt
+		}
+
+		blockquote {
+			margin-right: 0.39in;
+			margin-left: 0.39in;
+			background: transparent
+		}
+
+		h2 {
+			margin-top: 0.14in;
+			margin-bottom: 0.08in;
+			background: transparent;
+			page-break-after: avoid
+		}
+
+		h2.western {
+			font-weight: bold;
+			font-size: 16pt;
+			font-family: "Liberation Sans", sans-serif
+		}
+
+		h2.cjk {
+			font-weight: bold;
+			font-size: 16pt;
+			font-family: "AR PL SungtiL GB"
+		}
+
+		h2.ctl {
+			font-weight: bold;
+			font-family: "Noto Sans Devanagari";
+			font-size: 16pt
+		}
+
+		pre {
+			font-size: 10pt;
+			font-family: "Liberation Mono", monospace;
+			background: transparent
+		}
+
+		h3 {
+			margin-top: 0.1in;
+			margin-bottom: 0.08in;
+			background: transparent;
+			page-break-after: avoid
+		}
+
+		h3.western {
+			font-weight: bold;
+			font-size: 14pt;
+			font-family: "Liberation Sans", sans-serif
+		}
+
+		h3.cjk {
+			font-weight: bold;
+			font-size: 14pt;
+			font-family: "AR PL SungtiL GB"
+		}
+
+		h3.ctl {
+			font-weight: bold;
+			font-family: "Noto Sans Devanagari";
+			font-size: 14pt
+		}
+
+		h4 {
+			margin-top: 0.08in;
+			margin-bottom: 0.08in;
+			background: transparent;
+			page-break-after: avoid
+		}
+
+		h4.western {
+			font-weight: bold;
+			font-style: italic;
+			font-size: 13pt;
+			font-family: "Liberation Sans", sans-serif
+		}
+
+		h4.cjk {
+			font-weight: bold;
+			font-style: italic;
+			font-size: 13pt;
+			font-family: "AR PL SungtiL GB"
+		}
+
+		h4.ctl {
+			font-weight: bold;
+			font-style: italic;
+			font-family: "Noto Sans Devanagari";
+			font-size: 13pt
+		}
+
+		h5 {
+			margin-top: 0.08in;
+			margin-bottom: 0.04in;
+			background: transparent;
+			page-break-after: avoid
+		}
+
+		h5.western {
+			font-weight: bold;
+			font-size: 12pt;
+			font-family: "Liberation Sans", sans-serif
+		}
+
+		h5.cjk {
+			font-weight: bold;
+			font-size: 12pt;
+			font-family: "AR PL SungtiL GB"
+		}
+
+		h5.ctl {
+			font-weight: bold;
+			font-family: "Noto Sans Devanagari";
+			font-size: 12pt
+		}
+
+		td p {
+			widows: 0;
+			orphans: 0;
+			background: transparent
+		}
+
+		th p {
+			orphans: 0;
+			widows: 0;
+			text-align: center;
+			font-weight: bold;
+			background: transparent
+		}
+
+		h6 {
+			margin-top: 0.04in;
+			margin-bottom: 0.04in;
+			background: transparent;
+			page-break-after: avoid
+		}
+
+		h6.western {
+			font-weight: bold;
+			font-style: italic;
+			font-size: 12pt;
+			font-family: "Liberation Sans", sans-serif
+		}
+
+		h6.cjk {
+			font-weight: bold;
+			font-style: italic;
+			font-size: 12pt;
+			font-family: "AR PL SungtiL GB"
+		}
+
+		h6.ctl {
+			font-weight: bold;
+			font-style: italic;
+			font-family: "Noto Sans Devanagari";
+			font-size: 12pt
+		}
+
+		a:link {
+			color: #000080;
+			text-decoration: underline
+		}
+
+		table img {
+			max-width: 180px;
+			height: auto;
+			display: block;
+			margin: 0 auto;
+		}
+
+		.container img {
+			max-width: 100%;
+			height: auto;
+		}
+	</style>
+	</head>
+
+	<body lang="en-US" link="#000080" vlink="#800000" dir="ltr">
+		<video controls
+			src="images/portfolio/puyotetris/PuyoTetrisGameplayCut_Low.mp4"
+			style="max-width: 100%; height: auto; display: block; margin: 0 auto;"
+			width="640"></video>
+		<div class="callout callout--warning">
+			<div class="callout__icon">⚠️</div>
+			<div class="callout__content">
+				<div class="callout__title">Disclaimer</div>
+				<p>Gli asset presenti nel gioco sono stati scaricati da
+					spriters-resource.com.</p>
+				<p>Il codice è stato scritto da me, non è stata sfruttata programmazione
+					agentica, anche se competente in quest'ambito. L'IA è stata utilizzata solo
+					per ricerca didattica è come strumento alternativo al browser, il problema
+					da risolvere non e stato buttato in una chat, compromettendo la mia
+					capacità di ragionamento.</p>
+			</div>
+		</div>
+
+		<h1 class="western">Convenzioni di lettura</h1>
+		<p>Le convenzioni di cui parlo riguardano l'inserimento di sezioni utili a
+			capire certe domande che ci si pone leggendo. Ecco quali sono:</p>
+		<ul>
+			<li>
+				<p>Sezione &quot;❓<b>WHY?</b>&quot;: utile per avere una chiara comprensione
+					del motivo per cui ho formulato una soluzione, dunque, spiega il mio
+					<b>ragionamento</b> e del mio <b>approccio alla risoluzione dei
+						problemi.</b></p>
+			</li>
+			<li>
+				<p>Sezione &quot;🧭 <b>CONTEXT!</b>&quot;: <b>utile per capire il
+						contesto</b> che contiene i problemi preesistenti che richiedevano una
+					soluzione.</p>
+			</li>
+			<li>
+				<p>Sezione &quot;🛠️ <b>HOW?</b>&quot;: <i>dalla teoria alla pratica</i>,
+					spiego come ho effettivamente realizzato una soluzione, magari il codice
+					scritto e le procedure seguite.</p>
+			</li>
+		</ul>
+
+		<div class="callout callout--warning">
+			<div class="callout__icon">⚠️</div>
+			<div class="callout__content">
+				<div class="callout__title">Ordine dei paragrafi</div>
+				<p>L'ordine dei paragrafi non segue il <b>REALE</b> workflow del progetto,
+					non partirò parlando di project scope e planning, poiché <b>metterò in cima
+						le sezioni di programmazione e problem solving</b>, le quali vengono
+					spiegate in modo tale da poter essere lette senza dover aver letto
+					necessariamente il contenuto dell'intera pagina. Se trovare molte
+					ripetizioni, questo è il motivo.</p>
+			</div>
+		</div>
+
+		<h1 class="western">Introduzione</h1>
+		<p>PuyoTetris è un clone di PuyoPuyoTetris semplificato, realizzato in Unity 6
+			che concentra la complessità dove serve. Il risultato è un progetto 2D
+			pensato per l'uso mobile, senza rinunciare a una modalità di controllo da
+			tastiera utile su PC durante test e sviluppo. Questo progetto è stato
+			sviluppato parallelamente a Rumble Smash per la Nautilus Academy.</p>
+
+		<h1 class="western">🔧 La Griglia - Metodologia di pensiero e di risoluzione
+			dei problemi</h1>
+
+		<h2 class="western">🧭 CONTEXT!</h2>
+		<p>La creazione della griglia è stata sicuramente la parte più complicata,
+			coordinate, conversioni di coordinate, conversioni in indice e così via,
+			questa era la sfida più difficile, poiché un semplice errore significava un
+			errore d'overflow oppure coordinate sballate dei pezzi e ricordiamoci che non
+			esiste un debugger per dei calcoli matematici errati xD.</p>
+		<p>All'inizio il problema più delicato è stato far convivere il mondo di Unity
+			con la scacchiera. In Tetris i pezzi cadono, più sei in basso, più il tuo
+			indice aumenta, ad esempio, un pezzo appena spawnato avrà Y = 0 mentre un
+			pezzo che ha raggiunto la fine della griglia sarà Y = (Altezza grliglia). In
+			Unity, invece, funziona al contrario. Dovevo quindi evitare che una scelta di
+			coordinate rendesse ambigui muri, fondo e blocchi già fissati.</p>
+		<p>Poi, un pezzo doveva essere spawnato tramite World Coordinates di unity, ma
+			convertito in indici per verificarne la sua posizione all'interno della
+			griglia, aspetta... adesso quel pezzo deve muoversi, allora dobbiamo
+			aggiornare l'indice e spostarci all'interno della griglia, poi aggiornare le
+			nostre World Coordinates sulla base della grandezza di ogni blocco della
+			griglia. E se la griglia si fosse spostata all'interno della scena Unity? La
+			trasformazione del tetramino doveva comprendere anche la posizione della
+			griglia nel mondo.</p>
+		<p>La soluzione di questi problemi era relativamente semplice in realtà,
+			richiedeva solo un buon uso degli operatori matematici fondamentali, la parte
+			difficile è stata comprendere profondamente la sfida logica affrontata e le
+			soluzioni, senza mai perdere il filo e non sbavare da nessuna parte, anche
+			perché un più al posto di un meno avrebbe completamente sballato un calcolo,
+			constringendomi a rivedere tutto.</p>
+		<p><b>Oltre che sulla parte logica, mi concentrerò sul metodo che ho
+				utilizzato per risolvere questo problema.</b></p>
+		<p><b>Prima di tutto ho preso carta e penna</b> ed ho realizzato un disegno
+			che rappresentasse una situazione di gameplay reale, per comprendere quali
+			sfide avrei dovuto affrontare prima ancora di dover toccare il codice.</p>
+		<p>❓ <b>WHY?</b></p>
+		<p>Il disegno mi ha permesso di comprendere a fondo le sfide logiche legate
+			alla realizzazione della griglia, qui non si parlava di problemi
+			architetturali del software, ma di problemi di logica strettamente dipendenti
+			dal contesto di cui facevano parte. In questo modo avevo una mappa che
+			potesse rispondere costanemente alle mie domande e che fosse in grado di
+			spiegare il problema persino ad uno sconosciuto, perderne traccia era
+			impossibile ed era assicurato che io avessi completa visione e comprensione
+			del problema in ogni sua forma.</p>
+		<p>(Idea del disegno che avevo fatto, AI GENERATED)</p>
+		<img
+			src="images/portfolio/puyotetris/Documento tecnico PowPowTetris-1793197925071.jpg"
+			alt="Documento tecnico PowPowTetris-1793197925071.jpg">
+		<p>Una volta compreso il problema, i parametri necessari e le sfide logiche da
+			affrontare, mi sono cimentato nella realizzazione, la quale comprendeva come
+			primo passo, la realizzazione della griglia. Ovviamente, la logica di tetris
+			ragiona in celle e griglie, non in pixel o fisica realistica, dunque, ho
+			sfruttato la logica degli array ed una logica basata su celle e non su
+			trasformazioni</p>
+
+		<h2 class="western">🛠️ HOW?</h2>
+		<p>TetrisLogic mantiene due array bidimensionali con indici [riga, colonna].
+			<code>GridMapValues[,]</code> conserva il tipo di un tile della griglia, la
+			tipologia è descritto dall'enumerazione <code>GridMapValues</code>, come
+			spiegato <a href="#modello-dati-tipizzato-della-partita">qui</a>. Le
+			tipologie di tile possono variare tra i seguenti:</p>
+		<ul>
+			<li>Vuoto.</li>
+			<li>Muro.</li>
+			<li>Tetramino.</li>
+			<li>Invalid. (Serve quando si prova a leggere un indice al di fuori della
+				griglia, molto utile per la condizione di GameOver ed altri edge
+				cases).</li>
+		</ul>
+		<p>Parallelamente <code>GameObject[,]</code> conserva, invece, il riferimento
+			ai GameObject dei tetramino piazzati in mappa, facilitando il processo di
+			eliminazione e lettura dei blocchi. Questa doppia rappresentazione separa la
+			domanda: &quot;Cosa occupa la cella?&quot;, dalla domanda: &quot;Quale
+			oggetto devo animare, spostare o distruggere?&quot;.</p>
+		<p><code>GridSquareBottomLeftToWorldCoords</code> e
+			<code>GridSquareCenterToWorldCoords</code> trasformano gli indici in
+			coordinate del mondo a partire da gridOrigin e dalla dimensione dei tile
+			della griglia, i quali vengono specificati tramite Inspector. Le funzioni
+			inverse, come intuibile, trasformano una qualunque coordinata in un indice
+			della griglia, tenendo conto del fatto che, nel modello scelto, la Y aumenta
+			verso il basso.</p>
+
+		<div class="code-foldable">
+			<div class="code-foldable__header">
+				<img src="images/UI/csharp.svg" alt="C#" class="code-foldable__lang-icon">
+				<span class="code-foldable__title">Funzioni di conversione delle
+					coordinate</span>
+				<button class="code-foldable__toggle" type="button" aria-expanded="false">
+					<img src="images/UI/front-arrow.svg" alt>
+				</button>
+			</div>
+			<div class="code-foldable__content hidden">
+				<pre><code>Vector3 GridSquareBottomLeftToWorldCoords(int squareX, int squareY)
+{
+    if (squareX < 0)
+        UtilityShit.Log("Indice X griglia minore di 0!", Color.red);
+
+    if (squareY < 0)
+        UtilityShit.Log("Indice Y griglia minore di 0!", Color.red);
+
+    if (squareX >= gridWidthInSquares)
+        UtilityShit.Log("Indice X griglia maggiore della larghezza!", Color.red);
+
+    if (squareY >= gridHeightInSquares)
+        UtilityShit.Log("Indice Y griglia maggiore della lunghezza!", Color.red);
+
+    Vector3 resultPos =
+        new Vector3
+        (
+            gridOrigin.transform.position.x + (squareX * gridSquareSize),
+            gridOrigin.transform.position.y - (squareY * gridSquareSize),
+            gridOrigin.transform.position.z
+        );
+
+    return resultPos;
+}
+
+Vector3 GridSquareCenterToWorldCoords(int squareX, int squareY)
+{
+    if (squareX < 0)
+        UtilityShit.Log("Indice X griglia minore di 0!", Color.red);
+
+    if (squareY < 0)
+        UtilityShit.Log("Indice Y griglia minore di 0!", Color.red);
+
+    if (squareX >= gridWidthInSquares)
+        UtilityShit.Log("Indice X griglia maggiore della larghezza!", Color.red);
+
+    if (squareY >= gridHeightInSquares)
+        UtilityShit.Log("Indice Y griglia maggiore della lunghezza!", Color.red);
+
+    Vector3 resultPos =
+        new Vector3
+        (
+            gridOrigin.transform.position.x + ((squareX * gridSquareSize)) + gridSquareSize / 2,
+            gridOrigin.transform.position.y - ((squareY * gridSquareSize)) - gridSquareSize / 2,
+            gridOrigin.transform.position.z
+        );
+
+    return resultPos;
+}</code></pre>
+			</div>
+		</div>
+
+		<div class="code-foldable">
+			<div class="code-foldable__header">
+				<img src="images/UI/csharp.svg" alt="C#" class="code-foldable__lang-icon">
+				<span class="code-foldable__title">Funzioni inverse</span>
+				<button class="code-foldable__toggle" type="button" aria-expanded="false">
+					<img src="images/UI/front-arrow.svg" alt>
+				</button>
+			</div>
+			<div class="code-foldable__content hidden">
+				<pre><code>int WorldCoordsToGridX(float x)
+{
+    float accordingToGridOriginX = x - gridOrigin.transform.position.x;
+    if (accordingToGridOriginX < 0 && accordingToGridOriginX > -1)
+        return -1;
+    return (int)accordingToGridOriginX;
+}
+
+int WorldCoordsToGridY(float y)
+{
+    float accordingToGridOriginY = y - gridOrigin.transform.position.y;
+    if (y <= gridOrigin.transform.position.y)
+        return Math.Abs((int)accordingToGridOriginY);
+    else
+        return -((int)accordingToGridOriginY);
+}</code></pre>
+			</div>
+		</div>
+
+		<h2 class="western">❓ WHY?</h2>
+		<h3 class="western">Perché la griglia è sviluppata in questo modo?</h3>
+		<p>Ho scelto una griglia logica perché un gioco a blocchi deve ragionare in
+			celle, non in pixel. È il modo più affidabile per sapere se un tetramino può
+			entrare in uno spazio, se ha toccato il fondo e se una riga è completa. Il
+			transform da solo non è una base sicura per le regole: dipende da
+			trasformazioni, pivot e arrotondamenti.</p>
+
+		<h1 class="western">🎫 Event-driven design again...</h1>
+		<p>Questo gioco è stato prodotto parallelamente a Rumble Smash, dunque, molti
+			pattern/architetture usati in RS sono presenti anche qui, come proprio questo
+			qui!. Vediamo il motivo per cui l'ho usato.</p>
+		<h2 class="western">🧭 CONTEXT!</h2>
+		<p>Come in qualunque gioco, una singola azione, ad esempio io che piazzo un
+			pezzo, può generare una catena di eventi, audio, particelle, animazioni,
+			aggiornamenti della ui o aggiornamenti della logica di gameplay. Ogni evento
+			che richiede più servizi con responsabilità singole diventa uno
+			UnityEvent.</p>
+		<h2 class="western">❓ WHY?</h2>
+		<h3 class="western">Perché ho usato un'approccio event-driven? Quali sono i
+			vantaggi?</h3>
+		<p>Sfruttando l'event-driven design ottengo vantaggi come: <b>ottimizzare</b>
+			l'utilizzo delle risorse al minimo indispensabile, <b>evitando del tutto il
+				pooling</b>; evitare le dipendenze circolari tra script, riducendo la
+			complessità; aumentare la <b>testabilità</b>, la <b>manutenibilità</b>, la
+			<b>riutizzabilità</b> e la <b>flessibilità</b> del codice. In questo progetto
+			è stato particolarmente utile per gestire le moltissime animazioni
+			parametriche, dunque dipendenti da molte righe di codice, gestirle senza
+			single-responsibility sarebbe stato doloroso.</p>
+		<h2 class="western">🛠️ HOW?</h2>
+		<p>TetrisLogic pubblica UnityEvent per movimento, rotazione, posa,
+			cancellazione righe, creazione pezzo, inizio partita e game over. Gli
+			ascoltatori sono collegati nella scena Tetris: FieldAudioManager riproduce le
+			clip, FieldAnimationManager anima i blocchi, UIInGame aggiorna punteggio e
+			anteprima, UIGameOver mostra o nasconde il pannello. L'evento onLineClear
+			trasporta anche lista dei blocchi, durata e numero di linee, dati sufficienti
+			perché i destinatari reagiscano senza interrogare direttamente la
+			griglia.</p>
+		<p>In questo progetto, a causa della velocità di sviluppo, non sono ho
+			eseguito degli approcci SOLID, ad esempio, si noti come
+			&quot;TetrisLogic&quot; contiene logiche miste, sia dei singoli tetramini che
+			dello stato del match, chiaramente questa è una lezione da imparare per il
+			post-mortem, anche se ne ero perfettamente consapevole durante la creazione,
+			ma per la fretta, ho scelto l'approccio più semplice. In ogni caso, la logica
+			event-driven persiste e viene applicata con efficenza.</p>
+		<img
+			src="images\portfolio\PuyoTetris\UnityEvents_PuyoTetris.png"
+			alt="MainMenu.png">
+
+		<h1 class="western">🤳 Controlli per mobile e desktop</h1>
+		<h2 class="western">🧭 CONTEXT!</h2>
+		<p>Il primo scoglio è stata la necessità di aver più tipi diversi di controlli
+			touch dovevo interpretare un movimento continuo del dito e trasformarlo in un
+			azione in-game. Se reagisco a ogni variazione minima, il pezzo si muove per
+			errore; se richiedo gesti troppo lunghi, il gioco sembra lento. Ho quindi
+			cercato un confine chiaro tra gesto involontario, swipe direzionale e
+			pressione prolungata, in questo modo il ritmo di gioco non si sarebbe potuto
+			spezzare.</p>
+		<h2 class="western">🛠️ HOW?</h2>
+		<p>Ho creato una struttura definita &quot;TouchManager&quot;, essa gestisce il
+			riconoscimento dei vari tipi di tocchi effettuati dall'utente. Alla fine di
+			un tocco la posizione iniziale e finale viene confrontata, se essa si trova
+			sotto una soglia, non viene riconosciuto come uno swipe. Poi, confrontando il
+			valore assoluto delle due componenti del delta decide se il gesto è
+			orizzontale o verticale e ne ricava una delle quattro direzioni.</p>
+
+		<div class="code-foldable">
+			<div class="code-foldable__header">
+				<img src="images/UI/csharp.svg" alt="C#" class="code-foldable__lang-icon">
+				<span class="code-foldable__title">Frammenti di codice per il detect dello
+					swipe</span>
+				<button class="code-foldable__toggle" type="button" aria-expanded="false">
+					<img src="images/UI/front-arrow.svg" alt>
+				</button>
+			</div>
+			<div class="code-foldable__content hidden">
+				<pre><code>using UnityEngine;
+using UnityEngine.InputSystem.EnhancedTouch;
+
+using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
+
+
+public enum DetectedTouchInput
+{
+    NONE,
+    STILL,
+    LONG_STILL_TOUCH,
+    SWIPE_UP,
+    SWIPE_LEFT,
+    SWIPE_RIGHT,
+    SWIPE_DOWN
+}
+
+
+public class TouchManager : MonoBehaviour
+{
+	// Things...
+	
+    // ? --- Viene ucciso ogni frame
+    public static DetectedTouchInput thisFrameTouchInput { get; private set; } 
+
+    // Update is called once per frame
+    void Update()
+    {
+        thisFrameTouchInput = DetectedTouchInput.NONE;
+
+        if (Touch.activeTouches.Count > 0)
+        {
+            Debug.Log("Touches: " + Touch.activeTouches.Count);
+            Touch touch = Touch.activeTouches[0];
+
+            switch (touch.phase)
+            {
+                case UnityEngine.InputSystem.TouchPhase.Began:
+                    startTouchPosition = touch.screenPosition;
+                    break;
+
+                case UnityEngine.InputSystem.TouchPhase.Stationary:
+                    stillTimeTimer += Time.deltaTime;
+                    if(stillTimeTimer >= stillTimeTolerance)
+                    {
+                        thisFrameTouchInput = DetectedTouchInput.LONG_STILL_TOUCH;
+                    }
+                    break;
+
+                case UnityEngine.InputSystem.TouchPhase.Ended:
+                    endTouchPosition = touch.screenPosition;
+                    DetectSwipe();
+                    break;
+            }
+        }
+    }
+    
+    void DetectSwipe()
+    {
+        Vector2 delta = endTouchPosition - startTouchPosition;
+
+        // ? --- Ignora swipe con spostamento minimo
+        if (delta.magnitude < swipeTolerance)
+            return;
+
+        // ? --- Orizzontale
+        if (Mathf.Abs(delta.x) > Mathf.Abs(delta.y))
+        {
+            if (delta.x > 0)
+            {
+                thisFrameTouchInput = DetectedTouchInput.SWIPE_RIGHT;
+                Debug.Log("Swipe Destra");
+            }
+            else
+            {
+                thisFrameTouchInput = DetectedTouchInput.SWIPE_LEFT;
+                Debug.Log("Swipe Sinistra");
+            }
+        }
+        // ? --- Verticale
+        else
+        {
+            if (delta.y > 0)
+            {
+                thisFrameTouchInput = DetectedTouchInput.SWIPE_UP;
+                Debug.Log("Swipe Alto");
+            }
+            else
+            {
+                thisFrameTouchInput = DetectedTouchInput.SWIPE_DOWN;
+                Debug.Log("Swipe Basso");
+            }
+        }
+    }
+
+	// Things...
+}</code></pre>
+			</div>
+		</div>
+
+		<p>In parallelo, vengono anche letti i comandi da tastiera, per poter
+			permettere una facile debugging.</p>
+
+		<h2 class="western">❓ WHY?</h2>
+		<h3 class="western">Come mai hai utilizzato questa struttura?</h3>
+		<p>Sfruttando le enum ho potuto creare un set di movimenti noto e definito,
+			non mutabile, leggendo da &quot;thisFrameTouchInput&quot; chiunque poteva
+			consocere lo stato del gesto effettuato dall'utente. Il risultato è un
+			livello di astrazione semplice: i gesti diventano un enum di comandi e la
+			logica di movimento non deve conoscere il dispositivo che li ha prodotti.</p>
+
+		<h1 class="western">🤠 Collisione predittiva e rotazione sicura</h1>
+		<h2 class="western">🧭 CONTEXT!</h2>
+		<p>La difficoltà è che un tetramino non è un punto. Ogni pezzo è composto da
+			quattro blocchi e tutti devono restare dentro il campo e fuori dalle celle
+			occupate. Controllare soltanto il pivot, ovviamente, non bastava. Ho quindi
+			ragionato sul futuro immediato del pezzo: prima immagino lo spostamento di
+			ogni blocco, poi decido se applicarlo, una collisione predittiva che mi
+			permette di risolvere il problema prima ancora che si crei, evitando a priori
+			overlap e collisioni, ma comunicandole in modo efficiente ai sistemi che se
+			ne occupano.</p>
+		<h2 class="western">❓ WHY?</h2>
+		<p>Volevo che un comando producesse sempre un risultato comprensibile: il
+			pezzo si sposta o rimane dov'è. In particolare, una rotazione vicino a un
+			muro o a blocchi già fissati non deve creare compenetrazioni, questo vale si
+			per il movimento che per la rotazione. Per ottenere questa coerenza, la
+			validazione deve avvenire prima di modificare lo stato definitivo.</p>
+		<h2 class="western">🛠️ HOW?</h2>
+		<p><code>CheckTetraminoCollisionOnGrid</code> itera sui blocchi del tetramino,
+			calcola la cella prevista sommando la traslazione in input e verifica due
+			condizioni: uscita dai limiti orizzontali o inferiori e presenza di un valore
+			TETRAMINO nella griglia. Il costo è costante nella pratica, perché un pezzo
+			standard ha al massimo quattro blocchi.</p>
+		<p><code>MoveActivePiece</code> controlla asse X e asse Y separatamente: se
+			una direzione è bloccata, l'altra non viene annullata per errore.</p>
+		<p>Per le rotazioni memorizzo il Quaternion del pivot del tetramino,
+			sfruttando le funzioni di conversioni, poi, applico 90 gradi ed eseguono un
+			controllo predittivo di collisione. Se si rileva una collisione, ripristino
+			la rotazione precedente; altrimenti notifico l'evento di posizionamento del
+			tetramino attivo, a cui sono iscritti servizi come
+			&quot;TetraminoAudioManager&quot; o &quot;TetraminoAnimationManager&quot; per
+			dirne due. Questo meccanismo risolve il problema delle rotazioni illegittime
+			senza introdurre una tabella esterna di pose.</p>
+
+		<div class="code-foldable">
+			<div class="code-foldable__header">
+				<img src="images/UI/csharp.svg" alt="C#" class="code-foldable__lang-icon">
+				<span class="code-foldable__title">Algoritmo di rotazione</span>
+				<button class="code-foldable__toggle" type="button" aria-expanded="false">
+					<img src="images/UI/front-arrow.svg" alt>
+				</button>
+			</div>
+			<div class="code-foldable__content hidden">
+				<pre><code>void RotateLeft()
+{
+    Quaternion originalRot =
+        activePiece.rotationPivot.transform.localRotation;
+
+    activePiece.rotationPivot.transform.localRotation =
+        Quaternion.Euler
+        (
+            activePiece.rotationPivot.transform.localEulerAngles.x,
+            activePiece.rotationPivot.transform.localEulerAngles.y,
+            activePiece.rotationPivot.transform.localEulerAngles.z
+            - 90f
+        );
+
+    bool hasCollided =
+            CheckTetraminoCollisionOnGrid(activePiece, 0, 0).generalCollision;
+
+    if (hasCollided)
+    {
+        activePiece.rotationPivot.transform.localRotation =
+            originalRot;
+    }
+    else
+    {
+        onPieceRotate.Invoke();
+    }
+}</code></pre>
+			</div>
+		</div>
+
+		<h1 class="western">🤰 Generazione dei tetramini e continuità della
+			partita</h1>
+		<h2 class="western">🧭 CONTEXT!</h2>
+		<p>Adesso era il momento di creare la &quot;pouch&quot; di tetris, questo
+			algoritmo è stato il precursore della randomicità controllata nel game
+			design, comprenderne il funzionamento non era solo necessario per ottimizzare
+			il gameplay di questo progetto, pure perché è uno stratagemma usatissimo
+			nell'ambito del game design. Parallelamente, mi serviva conoscere il pezzo
+			successivo per aggiornare l'icona di anteprima.</p>
+		<h2 class="western">❓ WHY?</h2>
+		<p>L'algoritmo definito &quot;pouch algorithm&quot; è utile per non affidare
+			l'estrazione di ogni pezzo a un meccanismo non deterministico. Una casualità
+			pura può ripetere a lungo lo stesso tipo e lasciare il giocatore senza una
+			forma utile: è formalmente casuale ma percepita come ingiusta e a lungo
+			andare frustrante. Ho preferito un ordine casuale che conservi una
+			distribuzione controllata, motivo per cui è stato ideato questo
+			algoritmo.</p>
+		<h2 class="western">🛠️ HOW?</h2>
+		<p>La funziona <code>CreateNewPiece</code> costruisce una lista mescolando i
+			sette prefab dei tetramini con <code>OrderBy</code> su un valore casuale.
+			Aggiunge un ottavo elemento casuale come ponte verso la pouch successiva,
+			generato separatamente dagli altri 7. Quando tutti i 7 pezzi vengono
+			utilizzato, l'8 pezzo viene utilizzato come riferimento per ricomporre gli
+			altri sei tetramini e prepara di nuovo l'elemento ponte. In questo modo
+			ciascun ciclo di sette pezzi mantiene la varietà completa, mentre la coda
+			resta pronta per l'anteprima in UI.</p>
+
+		<p
+			class="jump-text"><span>A</span><span>u</span><span>r</span><span>a</span><span>
+			</span><span>g</span><span>u</span><span>a</span><span>d</span><span>a</span>
+			<span>g</span><span>n</span><span>a</span><span>t</span><span>a</span><span>:
+			</span><span>
+			</span><span>1</span><span>0</span><span>0</span><span>
+			</span><span>🔥</span><span>.</span><span> </span>
+		</p>
+
+		<p><code>CreateNewPiece</code> istanzia il prefab previsto, lo mette sotto il
+			wrapper dei pezzi, verifica subito se lo spawn collide con un blocco già
+			fissato e, in quel caso, attiva il game over. Se lo spawn è valido, emette
+			l'evento che aggiorna la UI del prossimo tetramino. La generazione è quindi
+			collegata al ciclo partita ma non si mescola con l'interfaccia.</p>
+
+		<div class="code-foldable">
+			<div class="code-foldable__header">
+				<img src="images/UI/csharp.svg" alt="C#" class="code-foldable__lang-icon">
+				<span class="code-foldable__title">Algoritmo generazione pouch &amp;
+					Pezzo</span>
+				<button class="code-foldable__toggle" type="button" aria-expanded="false">
+					<img src="images/UI/front-arrow.svg" alt>
+				</button>
+			</div>
+			<div class="code-foldable__content hidden">
+				<pre><code>    void CreateNewPiece()
+    {
+        CheckAndCreateNewPouch();
+
+        // int randNum = UnityEngine.Random.Range(0, tetraminosTypes.Count);
+        // int randNum = UnityEngine.Random.Range(0, tetraminosTypes.Count);
+        // activePiece =
+        //     Instantiate(tetraminosTypes[randNum])
+        //     .GetComponent<Tetramino>();
+        activePiece = Instantiate(piecesPouch[pouchIndex])
+            .GetComponent<Tetramino>();
+
+        activePiece.transform.SetParent(tetraminosPiecesWrapper.transform);
+        activePiece.transform.position = 
+            GridSquareBottomLeftToWorldCoords(0, 0);
+        
+        // ? --- Se abbiamo colliso con un tetramino
+        // ? --- appena siamo spawnati significa che abbiamo perso
+
+        var colls = CheckTetraminoCollisionOnGrid(activePiece, 0, 0);
+
+        Debug.Log(colls); 
+        if(colls.onTetraminoCollision)
+        {
+            GameOverLogic();
+            return;
+        }
+
+        onPieceCreated.Invoke(activePiece);
+        Debug.Log("Piece created!");
+        pouchIndex++;
+    }
+
+    void CheckAndCreateNewPouch()
+    {
+        // ? --- La pouch avra' una grandezza di 8 pezzi, in modo tale
+        // ? --- che appena arriviamo al 7imo pezzo abbiamo l'8 come reference
+        // ? --- per creare una nuova pouch e non rimaniamo senza reference al prossimo
+        // ? --- pezzo nel caso in cui siamo al 7 index.
+        if(piecesPouch == null ||
+            piecesPouch.Count == 0)
+        {
+            var randomizedTetraminos = 
+                tetraminosTypes.OrderBy(x => UnityEngine.Random.value)
+                .ToList();
+            piecesPouch = randomizedTetraminos;
+
+            Debug.Log("List randTetrs: " + randomizedTetraminos);
+            int randomNum = UnityEngine.Random.Range(0,tetraminosTypes.Count);
+            Debug.Log("RandomNum: " + randomNum);
+            // ? --- 8 Pezzo
+            piecesPouch.Add(randomizedTetraminos[randomNum]);
+
+            pouchIndex = 0;
+
+            Debug.Log("Pouch created, size: " + piecesPouch.Count);
+        }
+        else
+        {
+            if(pouchIndex != 7)
+                return;
+
+            GameObject eightObjRef = piecesPouch[piecesPouch.Count-1];
+    
+            var randomizedTetraminos = 
+                tetraminosTypes.OrderBy(x => UnityEngine.Random.value)
+                .ToList();
+
+            Debug.Log("Has removedPiece: " + 
+            randomizedTetraminos.Remove(eightObjRef));
+            
+
+            piecesPouch.Clear();
+
+            // ? --- Aggiungiamo l'8 come 1
+            piecesPouch.Add(eightObjRef);
+
+            // ? --- Aggiungiamo i restanti 6
+            piecesPouch.AddRange(randomizedTetraminos);
+
+            int randomNum = UnityEngine.Random.Range(0, tetraminosTypes.Count);
+
+            piecesPouch.Add(tetraminosTypes[randomNum]);
+
+            pouchIndex = 0;
+
+
+            Debug.Log("Pouch REcreated, size: " + piecesPouch.Count);
+        }
+        
+    }</code></pre>
+			</div>
+		</div>
+
+		<h1 class="western">♟️ Pattern architetturali e strategie</h1>
+		<h2 class="western">Singleton leggero per servizi condivisi</h2>
+		<h3 class="western">🧭 CONTEXT!</h3>
+		<p>Alcuni servizi devono essere disponibili da più punti del gioco senza
+			passare manualmente ogni riferimento nella catena degli oggetti. Le coroutine
+			di utilità, lo stato del touch e il caricamento di alcuni prefab sono esempi
+			di risorse trasversali alla singola schermata o al singolo componente.</p>
+		<h3 class="western">❓ WHY?</h3>
+		<p>Per questi casi ho scelto una versione essenziale del Singleton, rapido e
+			semplice da realizzare, sufficiente a evitare ricerche ripetute nella
+			gerarchia e a rendere immediato l'accesso a un servizio già presente nella
+			scena. È una scelta circoscritta: il cuore della partita continua a ricevere
+			molte dipendenze dall'Inspector, invece di trasformare tutto in stato
+			globale.</p>
+		<h3 class="western">🛠️ HOW?</h3>
+		<p>TouchManager e PowUtilityU, ad esempio conservano una variabile statica
+			inst. Awake verifica se esiste già un'istanza e, in caso contrario, memorizza
+			quella corrente; il metodo statico Get restituisce il servizio o evoca un
+			errore se non è disponibile.</p>
+
+		<h2 class="western">🐛 Incapsulamento e configurazione serializzata</h2>
+		<h3 class="western">🧭 CONTEXT!</h3>
+		<p>Molte variabili del gioco devono essere regolabili durante il
+			bilanciamento: velocità di caduta, soglia degli swipe, dimensioni della
+			griglia, punteggi, clip e riferimenti agli oggetti. Lasciarle tutte pubbliche
+			renderebbe questi parametri error-prone in un contesto azienda o di
+			collaborazione.</p>
+		<h3 class="western">❓ WHY?</h3>
+		<p>Volevo mantenere l'accessibilità dell'Inspector senza rinunciare alla
+			protezione dello stato. Questa è la ragione per cui i dati sono spesso
+			serializzati ma esposti al resto del codice con proprietà a scrittura
+			privata.</p>
+		<h3 class="western">🛠️ HOW?</h3>
+		<p>Il codice usa sia campi privati annotati con SerializeField sia auto
+			property con field SerializeField e private set. Per esempio, i parametri
+			della griglia e gli AudioSource possono essere impostati dalla scena, mentre
+			gli altri componenti possono leggerli ma non assegnarli liberamente. È un uso
+			dell'incapsulamento contestualizzato agli attributi unici di Unity.</p>
+
+		<h2 class="western">🪵 Modello dati tipizzato della partita</h2>
+		<h3 class="western">🧭 CONTEXT!</h3>
+		<p>La logica della griglia ha bisogno di rappresentare: tipi diversi di tile,
+			in modo da poter descrivere behaviour diversi; pezzi disponibili; righe
+			candidate e riferimenti agli oggetti da modificare. Oltre la griglia, volevo
+			fosse possibile conoscere il tipo di pezzo disponibile, senza dover creare
+			classi a sé stanti, visto che avrei solo overcomplicato.</p>
+		<p>In sostanza, dovevo immagazzinare informazioni diverse fra loro ed era
+			necessario che ognuna di esse rappresentassse lo stato corretto, oppure nel
+			caso dei tile, la loro tipologia.</p>
+		<h3 class="western">❓ WHY?</h3>
+		<p>Ho scelto strutture fortemente tipizzate perché il dominio di Tetris è
+			naturalmente discreto. Un tile può assumere poche tipologie note a priori e
+			un pezzo appartiene a un insieme chiuso di forme che può assumere. Questo
+			rende le condizioni più leggibili e permette al compilatore di evidenziare
+			gli usi non validi, riducendo la possibilità di errori da parte di chi legge
+			e scrive, come nel caso in cui avessi usato delle stringhe per ottenere la
+			forma del pezzo.</p>
+		<h3 class="western">🛠️ HOW?</h3>
+		<p>Ho semplicemente sfruttato la struttura delle &quot;enum&quot;, ad esempio,
+			<code>GridMapValues</code> e <code>TetraminoTypes</code> sono enum che
+			rappresentano rispettivamente lo stato di un tile e la forma del pezzo. Poi,
+			muovendi nel contesto degli input, <code>DetectedTouchInput</code> svolge lo
+			stesso ruolo per i comandi touch. Gli array bidimensionali si basano su enum
+			e memorizzano la griglia e le referenze visive.</p>
+
+		<h2 class="western">⌛ Gestione del tempo e di azioni ritardate</h2>
+		<h3 class="western">🧭 CONTEXT</h3>
+		<p>Per gestire flussi d'azione non temporalmente ordinate ho realizzato una
+			libreria che sfrutta il sistema di coroutine di Unity. Dunque, se ad esempio,
+			dopo la cancellazione di una riga dovevo aspettare 0.5 secondi prima di
+			generare un nuovo pezzo, piuttosto che saturare il codice di coroutines, ho
+			sfruttato delle funzioni anonime costruibili sul momento.</p>
+		<h3 class="western">🛠️ HOW?</h3>
+		<p>PowUtilityU espone delle funzioni che permettono di ritardare l'esecuzione
+			di una funzione, come <code>DelayAction</code>, <code>DoActionUntil</code> e
+			<code>RepeatActionForFrame</code>. Ricevono Action o Func e avviano
+			IEnumerator che restituiscono WaitForSeconds oppure null al motore Unity.
+			Inoltre, l'ID unico della coroutine viene immagazzinato per poter manipolarlo
+			successivamente al suo utilizzo. Grazie al sistema di coroutine di Unity se
+			io chiamo una stessa funzione come coroutine, gli ID saranno sempre diversi,
+			in questo modo non si possono creare conflitti tra coroutine con lo stesso
+			behaviour.</p>
+		<h3 class="western">❓ WHY?</h3>
+		<p>La necessità di dover ritardare delle azioni in conseguenza di altre è
+			onnipresente nel GameDev, soprattutto in architetture event-driven. Delegati
+			e coroutine permettono di passare il comportamento da eseguire e di
+			distribuirlo nel tempo senza creare thread aggiuntivi né interrompere il
+			frame corrente o senza overhead aggiuntivo. Unite all'archietettura di
+			PowUtilityU sviluppata da me, posso sfruttarne le potenzialità senza la
+			necessità di creare codice boilerplate.</p>
+
+		<h1 class="western">💀 Post mortem</h1>
+		<h2 class="western">👥 TetrisLogic non rispetta la Single-Responsibility</h2>
+		<h3 class="western">Context</h>
+		<p>TetrisLogic gestisce troppe logiche differenti tra loro, ognuna delle quali
+			può essere disaccoppiata con relativa facilità. Per motivi legati al tempo,
+			come deadline da rispettare, ho dovuto snellire il periodo dedicato al design
+			architetturale.</p>
+		<h3 class="western">Errore</h3>
+		<p>Ho trasformato <code>TetrisLogic</code> in una classe centrale con troppe
+			responsabilità. Questo tipo di classe è comoda nelle prime fasi, perché basta
+			aprire un file per trovare quasi ogni regola; modificare certe parti di
+			codice, però, diventa molto più tedioso poiché una miriade di regole sono
+			strettamente legate fra di loro. Una correzione alla velocità di caduta, per
+			esempio, ed eccomi a navigare tra righe dedicate all'input, alla collisione e
+			alla gestione delle righe della griglia, in pratica il debug diventa
+			un'inferno.</p>
+		<h3 class="western">Come lo migliorerei</h3>
+		<p>Separerei il sistema in oggetti con compiti chiari:</p>
+		<ul>
+			<li><code>Board</code>: stato della griglia, verifica delle celle e
+				cancellazione delle righe;</li>
+			<li><code>PieceGenerator</code>: bag da sette pezzi e anteprima;</li>
+			<li><code>GameSession</code>: stato della partita e transizioni fra spawn,
+				caduta, clearing, pausa e game over;</li>
+		</ul>
+		<p>La classe Unity che oggi è <code>TetrisLogic</code> avrebbe il ruolo
+			d'orchestratore, fornirebbe degli eventi a cui iscriversi e li invocherebbe
+			quando utile notificando ogni sistema iscritto, non di contenere ogni
+			dettaglio dell'implementazione. Seguendo proprio il principio dell'Event
+			driven design.</p>
+
+		<h2 class="western">🤔 Gli stati della partita non sono esaustivi e non sono
+			epliciti</h2>
+		<h3 class="western">Context</h3>
+		<p>La cancellazione di una riga richiede una sequenza: rilevare le righe
+			piene, animare i blocchi, eliminarli, far scendere il resto e generare un
+			nuovo pezzo, tutto è rilegato a routine seguite da funzioni, non chiare se
+			non leggendo riga per riga il codice. In sostanza le routine di una partita
+			sono gestite da funzioni specifiche, annidate e nascoste tra righe di codice,
+			piuttosto che da classi e strutture solide in grado di descriverne in modo
+			esplicito il comportamento, anche per questo non è possibile risalire allo
+			stato della partita in real-time, ci si può solo iscrivere all'evento
+			corrispondente che rappresenta uno &quot;pseudo-stato&quot; della partita.
+			Questo non è necessariamente un problema, visto che i limiti del gioco erano
+			ben definiti prima della realizzazione del codice, questo sistema non
+			rappresenta un limite se rapportato alla grandezza raggiungibile del
+			progetto, ma visto che il post-mortem esiste per identificare i punti da
+			migliorare per prepararmi ad un contesto aziendale, allora sì che rappresenta
+			un problema.</p>
+		<h3 class="western">Errore</h3>
+		<p>Il meccanismo funziona, ma il limite è che lo stato della partita viene
+			dedotto da variabili indirette come <code>activePiece == null</code>,
+			<code>hasGameOver</code> e <code>Time.timeScale</code>. Questo rende
+			difficile sapere in quale fase si trova realmente il gioco e aumenta il
+			rischio di transizioni non previste, soprattutto con retry, pausa o modifiche
+			future alle animazioni.</p>
+		<h3 class="western">Come lo migliorerei</h3>
+		<p>Introdurrei una macchina a stati esplicita:</p>
+		<pre><code>Spawning -> Falling -> Locking -> Clearing -> Spawning
+                       |              |
+                       v              v
+                    GameOver        Paused</code></pre>
+		<p>Ogni stato sarebbe deducibile in real-time e dividerei la logica, evitando
+			la possibilità di eseguire comandi incoerenti al contesto dello stato di cui
+			fanno parte. Risalire ad un errore in un certo stato della partita sarebbe
+			molto più semplice grazia alla struttura esplicita e anche all'accoppiamento
+			ridotto fra gli stati.</p>
+
+		<h2 class="western">🤔 Ho usato UnityEvent e Singleton come scorciatoie senza
+			fissare confini più chiari</h2>
+		<h3 class="western">Context</h3>
+		<p>Ho usato <code>UnityEvent</code> per collegare gameplay, UI, audio e
+			animazioni direttamente nell'Inspector. Ho inoltre introdotto Singleton
+			leggeri per <code>TouchManager</code>, <code>PowUtilityU</code>, così da
+			recuperare servizi condivisi con un metodo statico <code>Get()</code>.</p>
+		<h3 class="western">Errore</h3>
+		<p>Queste scelte mi hanno permesso di lavorare rapidamente nella scena, ma
+			alcune dipendenze sono diventate meno visibili nel codice. Con gli eventi
+			configurati nell'Inspector posso dimenticare un listener o collegare un
+			metodo con parametri non più coerenti senza accorgermene durante una
+			revisione del solo codice. Con i Singleton, invece, rendo disponibili servizi
+			globali e devo gestire attentamente ciclo di vita, ordine di inizializzazione
+			e duplicati. Non considero questi strumenti sbagliati: l'errore è non aver
+			deciso in modo coerente quando usarli e quando preferire una dipendenza
+			esplicita.</p>
+		<h3 class="western">Come lo migliorerei</h3>
+		<p>Conserverei <code>UnityEvent</code> per il collegamento di feedback
+			audiovisivi, ma farei passare gli eventi fondamentali del dominio attraverso
+			interfacce o eventi C# espliciti. Per esempio, <code>GameSession</code>
+			potrebbe esporre <code>LineCleared</code> e <code>GameOver</code>, mentre un
+			presenter Unity li sottoscrive e li trasforma in UI e animazioni. L'obiettivo
+			è di ridurre il numero di Singleton, poi creerei un single-entry-point per
+			gestire le dipendenze durante l'inizializzazione di una scena di una partita,
+			mentre gli strumenti generici diventerebbero servizi piccoli e testabili.</p>
+
+		<h2 class="western">💠 Ho lasciato alcune configurazioni distribuite e
+			fragili</h2>
+		<h3 class="western">Context</h3>
+		<p>Punteggi, velocità, prefab, sprite delle icone, clip audio e riferimenti di
+			scena sono impostati in componenti diversi. Alcune operazioni caricano
+			risorse con stringhe, mentre il passaggio tra scene usa nomi scritti
+			direttamente nel codice.</p>
+		<h3 class="western">Errore</h3>
+		<p>La configurazione nell'Inspector è utile, ma ho lasciato dati collegati fra
+			loro in punti diversi. Aggiungere un nuovo tetramino o cambiare nome a una
+			scena richiede ricordarsi tutti i punti da aggiornare: generatori, icone,
+			colori, prefab e caricamenti. Questo aumenta il rischio di un progetto che
+			funziona in editor ma fallisce dopo una riorganizzazione degli asset.</p>
+		<h3 class="western">Come lo migliorerei</h3>
+		<p>Creerei uno o più <code>ScriptableObject</code> di configurazione. Ogni
+			tetramino avrebbe tipo, prefab, icona, eventuale colore e dati di rotazione;
+			una configurazione di partita conterrebbe punteggi e velocità. Per le scene
+			userei riferimenti o un catalogo centralizzato, evitando stringhe sparse. In
+			questo modo l'aggiunta di contenuto diventerebbe una modifica dati, non una
+			caccia a switch e riferimenti serializzati.</p>
+
+		<h2 class="western">🧪 Ho trascurato test e ho utilizzato uno strumento di
+			logging fragile</h2>
+		<h3 class="western">Context</h3>
+		<p>Le conseguenze a cascata degli errori precedenti si cristallizzano in
+			difficoltà nel testare il codice. Non solo, ma la maggior parte del controllo
+			è stata fatta provando la scena e stampando molti <code>Debug.Log</code>. Per
+			un prototipo visivo è un modo naturale per procedere, ma la griglia contiene
+			regole discrete che si prestano molto bene a test automatici. Inoltre, un
+			<code>Debug.Log</code> funziona solo nel breve termine, in sistemi complessi
+			è necessario dover immagazzinare molte informazioni di stato e poterle
+			filtrare in base al contesto del problema che si sta cercando di risolvere.
+			In pratica, serve un sistema di logging molto più robusto di un semplice
+			<code>Debug.Log</code>.</p>
+		<h3 class="western">Errore</h3>
+		<ul>
+			<li>Non ho isolato abbastanza i moduli da Unity per poterli testare in modo
+				veloce. Questo rende più difficile dimostrare che collisione, rotazione,
+				cancellazione multipla e generazione rispettino sempre le stesse invarianti,
+				ad esempio.</li>
+			<li>Ho sfruttato strumenti di logging non esaustivi. Ad esempio, avrei potuto
+				sfruttare il logging package.</li>
+		</ul>
+		<h3 class="western">Come lo migliorerei</h3>
+		<p>Scriverei test edit mode sul dominio puro, prima ancora dei play mode
+			test:</p>
+		<ul>
+			<li>un pezzo non può uscire da sinistra, destra o fondo;</li>
+			<li>una rotazione non può sovrapporsi a celle occupate;</li>
+			<li>una riga piena viene rimossa e le righe superiori scendono
+				correttamente;</li>
+			<li>due o più righe cancellate nello stesso turno vengono compattate
+				nell'ordine giusto;</li>
+			<li>ogni bag contiene una volta ciascuno dei sette tipi;</li>
+			<li>la preview coincide con il prossimo pezzo estratto.</li>
+		</ul>
+		<p>Aggiungerei poi controlli di sviluppo espliciti nel modello, come
+			dimensioni coerenti delle matrici e celle sempre valide. Parallelamente,
+			avrei sfruttato il logging package.</p>
+
+	</body>
+
+</html>
+                </div>
+            </div>
+        </div>
+        <div class="border-line"></div>
+        <div class="row mt-5 justify-content-center">
+            <div class="col-lg-6 text-center">
+                <a href="rumble-smash-portfolio-single-page-it.html"
+                    class="btn btn-dark">Progetto Precedente</a>
+                <a href="project-take-your-time-portfolio-single-page-it.html"
+                    class="btn btn-dark">Prossimo Progetto</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="footer">
+	<div class="container">
+		<div class="row ">
+			<div class="col-lg-6">
+				<p class="mb-0">Copyrights © 2019. Designed & Developed by <a href="themefisher.com"
+						class="text-white">Themefisher.</a></p>
+				<p class="mb-0">Enhanced by <a
+						class="text-white">Raffaele "powpow" Castania. </a></p>
+
+			</div>
+			<div class="col-lg-6">
+				<div class="widget footer-widget text-lg-right mt-5 mt-lg-0">
+					<ul class="list-inline mb-0">
+						<li class="list-inline-item"><a href="https://github.com/0pow-pow0/" target="_blank"><i
+									class="ti-github mr-3"></i></a></li>
+						<li class="list-inline-item"><a href="https://www.linkedin.com/in/raffaele-castania-940b5b216/"
+								target="_blank"><i class="ti-linkedin mr-3"></i></a></li>
+						<li class="list-inline-item">
+							<button class="copy-btn" onclick="copyToClipboard('powpow6769')">
+								<i class="fa-brands fa-discord"></i></a>
+							</button>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- Toast Notification -->
+<div id="toast" class="toast">Nickname copiato negli appunti</div>
+
+<script>
+	function showToast(message = "Nickname copiato negli appunti") {
+		const toast = document.getElementById('toast');
+		toast.textContent = message;
+		toast.classList.add('show');
+		clearTimeout(toast._timeout);
+		toast._timeout = setTimeout(() => {
+			toast.classList.remove('show');
+		}, 2500);
+	}
+
+	function copyToClipboard(text) {
+		navigator.clipboard.writeText(text).then(() => {
+			showToast("Nickname copiato negli appunti");
+		}).catch(() => {
+			// Fallback per browser vecchi
+			const input = document.createElement('input');
+			input.value = text;
+			document.body.appendChild(input);
+			input.select();
+			document.execCommand('copy');
+			document.body.removeChild(input);
+			showToast("Nickname copiato negli appunti");
+		});
+	}
+</script>
+<!-- jQuery -->
+<script src="plugins/jQuery/jquery.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="plugins/bootstrap/bootstrap.min.js"></script>
+<script src="plugins/aos/aos.js"></script>
+<script src="plugins/owl-carousel/owl.carousel.min.js"></script>
+<script src="plugins/shuffle/shuffle.min.js"></script>
+<script src="plugins/magnific-popup/jquery.magnific-popup.min.js"></script>
+<script src="plugins/animated-text/animated-text.js"></script>
+<script src="plugins/counto/apear.js"></script>
+<script src="plugins/counto/counTo.js"></script>
+
+<!-- Language Switcher -->
+<script src="js/lang-switcher.js"></script>
+<!-- Main Script -->
+<script src="js/script.js"></script>
+
+</html>

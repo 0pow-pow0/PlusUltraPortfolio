@@ -1,0 +1,77 @@
+.code-foldable {
+  border: 1px solid #dedede;
+  border-radius: 8px;
+  margin: 24px 0;
+  overflow: hidden;
+  background: #fff;
+}
+
+.code-foldable__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: #f7f7f7;
+  border-bottom: 1px solid #dedede;
+  cursor: pointer;
+}
+
+.code-foldable__lang-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.code-foldable__title {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+  color: #333;
+}
+
+.code-foldable__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.code-foldable__toggle img {
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+  transition: transform 0.2s ease;
+}
+
+.code-foldable__toggle[aria-expanded="true"] img {
+  transform: rotate(90deg);
+}
+
+.code-foldable__content {
+  padding: 16px;
+  overflow: auto;
+  max-height: 400px;
+}
+
+.code-foldable__content pre {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.code-foldable__content code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.code-foldable__content.hidden {
+  display: none;
+}

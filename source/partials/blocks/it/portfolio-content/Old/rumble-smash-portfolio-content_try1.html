@@ -1,0 +1,679 @@
+<hr>
+<p>tags:</p>
+<ul>
+	<li>MyWay/Portfolio</li>
+	<li>Apps/Linkedin</li>
+	<li>MyWay/Projects/RumbleSmash
+		created: 2026-08-16 18:42
+		embed-image: &quot;[[Title.png]]&quot;</li>
+</ul>
+<hr>
+<h1 id="disclaimer">Disclaimer</h1>
+<p><mark style="background: #FF5582A6;">Ogni cosa è stata realizzata da me.
+		Eccezion fatta per la pixel art.</mark></p>
+<h1 id="convenzioni-di-lettura">Convenzioni di lettura</h1>
+<p> Le convenzioni di cui parlo riguardano l&#39;inserimento di sezioni utili a capire certe domande che ci si pone
+	leggendo. Ecco quali sono: </p>
+<ul>
+	<li>Sezione &quot;❓<strong>WHY?</strong>&quot;: utile per avere una chiara comprensione del motivo per cui ho
+		formulato una soluzione, dunque, spiega il mio <strong>ragionamento</strong> e del mio <strong>approccio alla
+			risoluzione dei problemi.</strong></li>
+	<li>Sezione &quot;🧭 <strong>CONTEXT!</strong>&quot;: <strong>utile per capire il contesto</strong> che contiene i
+		problemi preesistenti che richiedevano una soluzione.</li>
+	<li>Sezione &quot;🛠️ <strong>HOW?</strong>&quot;: <em>dalla teoria alla pratica</em>, spiego come ho effettivamente
+		realizzato una soluzione, magari il codice scritto e le procedure seguite.</li>
+</ul>
+<blockquote>
+	<p>[!NOTE] Note sulla struttura
+		L&#39;ordine delle sezioni privilegia <strong>programmazione e problem solving</strong> (core tecnico) rispetto
+		al workflow cronologico. Le sezioni sono scritte per essere leggibili indipendentemente — potrai trovare
+		ripetizioni intenzionali di contesto per autonomia di lettura.</p>
+</blockquote>
+<p><mark style="background: #FF5582A6;">E&#39; probabile che alcune sezioni siano incomplete, saranno
+		aggiunte/aggiornate succcessivamente.</mark></p>
+<blockquote>
+	<p>[!NOTE] Aggiungi indice
+		Aggiungi indice !TODO</p>
+	<p>[!WARNING] Ordine dei paragrafi
+		L&#39;ordine dei paragrafi non segue il <strong>REALE</strong> workflow del progetto, non partirò parlando di
+		project scope e planning, poiché <strong>metterò in cima le sezioni di programmazione e problem
+			solving</strong>, le quali vengono spiegate in modo tale da poter essere lette senza dover aver letto
+		necessariamente il contenuto dell&#39;intera pagina. Se trovare molte ripetizioni, questo è il motivo.</p>
+</blockquote>
+<h1 id="introduzione">Introduzione</h1>
+<p>!TODO aggiungi video introduttivo</p>
+<p>Rumble Smash è un progetto accademico, sviluppato per la Nautilus, il tempo di produzione effettivo ammonta a poco
+	meno di 3 mesi.</p>
+<p>Rumble Smash nasce dall&#39;idea di divertire senza pretese, prendi il controller avvia una partita e vinci a suon di
+	risate. Il suo gameplay rapido ed intuitivo inserisce in te dosi di adrenalina e divertimento, da sfruttare molto
+	male nel dialogo con il proprio avversario. L&#39;idea di Rumble Smash è di divertire attraverso la competizione col
+	proprio rivale, una buona dose di riflessi e abilità col pad porteranno il giocatore a cavalcare la curva
+	d&#39;apprendimento domandano sempre di più alla loro tecnica, creando un meccanismo di competizione con sé stessi e
+	con il proprio avversario, rendendo il perfezionamento della propria tecnica una delle variabili da cui il giocatore
+	trae appagamento e soddisfazione. </p>
+<p>La sua idea semplice nasconde delle sfide non indifferenti, da affrontare armandosi di tabelle e buoni principi di
+	game design.</p>
+<h1 id="programmazione-problem-solving">Programmazione &amp; Problem Solving</h1>
+<blockquote>
+	<p>[!WARNING]
+		In basso ad ogni sezione, se disponibili, <strong>troverete i diagrammi UML</strong> realizzati per comprendere
+		il problema a priori e poi svilupparlo.</p>
+</blockquote>
+<h2 id="-approccio-mentale">🧠 Approccio mentale</h2>
+<p>Prima di scrivere codice, ogni sistema complesso (Ball FSM, Player Jump/Dash, Sequencer) è stato modellato su
+	<strong>diagrammi UML</strong> (stati, transizioni, sequence diagram per event flow). Questo ha permesso:</p>
+<ul>
+	<li><strong>Identificare edge case</strong> prima dell&#39;implementazione</li>
+	<li><strong>Avere riferimento visivo</strong> durante debug</li>
+	<li><strong>Tenere traccia della logica dell&#39;architettura e</strong> delle <strong>problematiche
+			identificate</strong> durante la fase di realizzazione degli UML in modo da:<ul>
+			<li><strong>Avere una visione coerente</strong> e facile da raggiungere dell&#39;architettura, semplificando
+				<strong>modifiche</strong>, <strong>aggiunte</strong> e <strong>comprensione generale</strong>.</li>
+			<li><strong>Ridurre gli errori e le regressioni</strong>, prevenendo errori architetturali post creazione
+				del codice, evitando spese di tempo non fruttifere.</li>
+			<li>Facilitare l&#39;integrazione nella codebase di personale esterno (anche se ero solo xD).</li>
+		</ul>
+	</li>
+</ul>
+<p>Successivamente, <strong>ogni feature ideata è stata testata rapidamente in isolamento, tramite semplici
+		prototipi</strong>, (es. <code>AddForce</code> math, dash physics) prima di integrare. Questo riduce regressioni
+	e permette esperimenti rischiosi, dal punto di vista di game design, invece, mi permette di capire se l&#39;idea sia
+	divertente col pad in mano.</p>
+<h2 id="-event-driven-come-obiettivo">🎫 Event-driven come obiettivo</h2>
+<p>Prima ancora di parlare delle effettive sfide affrontate, voglio discutere sulla logica persistente in ogni parte del
+	gioco, utilizzata per praticamente tutti gli script che animano il gioco. Non mi dilungherò nelle sezioni a
+	rispiegare ciò che ho scritto qui, ma in un contesto diverso, linkerò direttamente questa sezione.</p>
+<p>Praticamente tutto il progetto adotta un <strong>pattern Observer/Event-Driven pervasivo</strong> come principale
+	meccanismo di disaccoppiamento tra sistemi. Ogni manager espone <code>UnityEvent</code> pubblici che <strong>UI,
+		Camera, VFX e altri manager</strong> sottoscrivono in <code>Start()</code> senza alcuna reference diretta tra
+	producer e consumer.</p>
+<h3 id="-context-">🧭 CONTEXT!</h3>
+<p>Avere a che fare con più script che devono passarsi informazioni in un determinato momento è una sfida non
+	indifferente. Prendiamo l&#39;esempio del player, esso deve gestire cose come: Particles, Audio, Feedback nella UI,
+	Feedback grafico, Animazioni dello scheletro e altre mille categorie di problemi diverse.</p>
+<h3 id="-why-">❓ WHY?</h3>
+<h4 id="perch-ho-usato-un-approccio-event-driven-quali-sono-i-vantaggi-">Perché ho usato un&#39;approccio event-driven?
+	Quali sono i vantaggi?</h4>
+<p>Sfruttando l&#39;event-driven design ottengo vantaggi come: <strong>ottimizzare</strong> l&#39;utilizzo delle risorse
+	al minimo indispensabile, <strong>evitando del tutto il pooling</strong>; evitare le dipendenze circolari tra
+	script, riducendo la complessità; aumentare la <strong>testabilità</strong>, la <strong>manutenibilità</strong>, la
+	<strong>riutizzabilità</strong> e la <strong>flessibilità</strong> del codice. </p>
+<p>In questo modo è molto più semplice poter gestire tutte le variabili legate al player, posso rimuovere feedback
+	grafici invasivi durante il testing, aggiungere mock per semplificare la realizzazione di certe feature, disattivare
+	la fisica, l&#39;audio e così via.</p>
+<h3 id="-how-">🛠️ HOW?</h3>
+<p>Come descritto nel diagramma UML, insieme alla struttura del prefab dell&#39;entità, gli script di seguito espongono
+	degli eventi a cui tramite codice o tramite Inspector mi iscrivo. </p>
+<pre><code class="lang-horizontal">#### Struttura STATICA del prefab di ogni entità (semplificata)
+<img src="images/portfolio/rumble-smash/portfolio-content/RumbleSmash - Portfolio - IT-1790605837748.webp" alt="RumbleSmash - Portfolio - IT-1790605837748.webp">
+- Una struttura standard per i prefab semplifica la leggibilità e la manutenibilità di ogni entità.
+</code></pre>
+<h4 id="overview-esempi-di-script-che-espongono-si-iscrivono-ad-eventi">Overview esempi di script che espongono/si
+	iscrivono ad eventi</h4>
+<pre><code class="lang-horizontal"><img src="images/portfolio/rumble-smash/portfolio-content/RumbleSmash-Event_Drive-ExposedEvents.png" alt="RumbleSmash-Event_Drive-ExposedEvents.png">
+<span class="hljs-comment">---</span>
+<img src="images/portfolio/rumble-smash/portfolio-content/RumbleSmash-Event_Drive-ExposedEvents-2.png" alt="RumbleSmash-Event_Drive-ExposedEvents-2.png">
+</code></pre>
+<p>```cs title:&quot;Esempio di listener - PlayerParticleManager.cs&quot;
+	plr.pj.onDoppioScattoStart.AddListener(
+	() =&gt;
+	{
+	dashTrailsFather.transform.position =
+	plr.transform.position;</p>
+<pre><code>    <span class="hljs-built_in">float</span> newAngle = 
+        Vector2.SignedAngle(
+            Vector2.right,
+            plr.pj.doppioScattoDirection
+        );
+    dashTrailsFather.<span class="hljs-built_in">transform</span>.localRotation =
+        Quaternion.Euler(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, newAngle);
+
+    // ? --- Altrimenti il cambio di posizione fatto prima gia'
+    // ? --- creerebbe trails
+    foreach(TrailRenderer <span class="hljs-built_in">tr</span> <span class="hljs-keyword">in</span> dashTrails)
+    {
+        <span class="hljs-built_in">tr</span>.Clear();
+    }
+
+    foreach(TrailRenderer <span class="hljs-built_in">tr</span> <span class="hljs-keyword">in</span> dashTrails)
+    {
+        <span class="hljs-built_in">tr</span>.emitting = <span class="hljs-literal">true</span>;
+    }
+
+    // Libreria custom realizzta da me
+    PowUtilityU.Get().RepeatActionForFrame(
+        () =&gt;
+        {
+            dashTrailsFather.<span class="hljs-built_in">transform</span>.<span class="hljs-built_in">position</span> =
+                plr.<span class="hljs-built_in">transform</span>.<span class="hljs-built_in">position</span>;                       
+        },
+        plr.pj.DOPPIOSCATTO_FRAME_DURATION
+    );
+}
+</code></pre>
+<p>);</p>
+<pre><code>
+
+<span class="stata">## 🗿 FSM Template, pulito, facile, scalabile | State pattern &amp; Curiosly Recurring Template Pattern
+<h3>🧭 CONTEXT</h3>
+Per varie parti del progetto ho usato una **FSM** poiché le caratteristiche del problema rientravano a pennello negli schemi <span class="hljs-keyword">di</span> una FSM. Nel progetto ne sono presenti parecchie, perché, oltre ai noti vantaggi delle FSM, mi aiutano parecchio a strutturare <span class="hljs-keyword">la</span> logica <span class="hljs-keyword">di</span> un'entità nella mia mente.
+Poiché nel progetto ce ne sono poco meno <span class="hljs-keyword">di</span> una decina ho deciso <span class="hljs-keyword">di</span> sfruttare <span class="hljs-keyword">la</span> metaprogrammazione **per evitare <span class="hljs-keyword">la</span> creazione <span class="hljs-keyword">di</span> codice boilerplate**.
+
+<h3>❓ WHY?</h3>
+<h5>Perché hai utilizzato delle FSM?</h5>
+Le FSM mi permettono <span class="hljs-keyword">di</span> strutturare il behaviour delle entità con chiarezza, anche <span class="hljs-keyword">se</span> potrebbe significare overcomplicare leggermente, **il vantaggio che si ottiene <span class="hljs-keyword">in</span> termini <span class="hljs-keyword">di</span> leggibilità, mantenibilità <span class="hljs-keyword">e</span> comprensibilità del behaviour <span class="hljs-keyword">di</span> ogni entità rende ogni downside irrilevante.**
+
+<h5>Perché hai usato i template?</h5>
+Forse un po' ovvia <span class="hljs-keyword">la</span> risposta, <span class="hljs-keyword">ma</span> il motivo era evitare codice boilerplate per diversi tipi <span class="hljs-keyword">di</span> FSM, sfruttando, dunque, il motivo dell'esistenza dei template.
+
+<h3>🛠️ HOW?</h3>
+Dunque, sfruttando le fondamenta della metaprogrammazione, ho realizzato una classe template tramite i **generics <span class="hljs-keyword">di</span> C#** per velocizzare <span class="hljs-keyword">la</span> realizzazione <span class="hljs-keyword">di</span> FSM generiche, permettendo, dunque, <span class="hljs-keyword">di</span> poterle applicare <span class="hljs-keyword">in</span> più contesti con facilità.
+Le FSM sono sfruttate <span class="hljs-keyword">in</span> moltissime parti del progetto, pertanto, per evitare <span class="hljs-keyword">la</span> creazione <span class="hljs-keyword">di</span> codice boilerplate era sensato sfruttare
+
+Sfruttando <span class="hljs-keyword">l</span>'architettura base delle FSM ne ho semplicemente generalizzato i parametri per permettere <span class="hljs-keyword">l</span>'integrazione con ogni tipo.
+
+```horizontal 
+<h4>FSM <span class="hljs-keyword">e</span> BaseState **non generici**</h4>
+<img src="images/portfolio/rumble-smash/portfolio-content/RumbleSmash - Portfolio - IT-1790936527576.webp" alt="RumbleSmash - Portfolio - IT-1790936527576.webp"></span>
+</code></pre>
+<p>Dovevo copiare ed incollare per ricreare una FSM di ogni entità :(.</p>
+<pre><code class="lang-horizontal">#### FSM e BaseState **generici**
+<img src="images/portfolio/rumble-smash/portfolio-content/RumbleSmash - Portfolio - IT-1790937434714.webp" alt="RumbleSmash - Portfolio - IT-1790937434714.webp">
+</code></pre>
+<p><mark style="background: #FF5582A6;">In questo modo tutte le nuove FSM, ad esempio PlayerFSM, possono sfruttare la
+		logica delle FSM senza scrivere alcuna riga di codice, sfruttando unicamente la composizione e
+		l&#39;ereditarietà.
+	</mark></p>
+<p><mark style="background: #FFF3A3A6;">Aura guadagnata: 100 🔥.</mark></p>
+<h2 id="-la-palla">⚽ La palla</h2>
+<h3 id="in-generale-finitestatemachine-scriptableobjects">In generale #FiniteStateMachine #ScriptableObjects</h3>
+<p>La palla era chiaramente una delle parti più importanti del gioco, fisica e feedback dovevano viaggiare alla stessa
+	frequenza d&#39;onda, altrimenti il giocatore avrebbe potuto vivere un&#39;esperienza troppo frustrante o poco
+	intuitiva.
+	Analizziamo le peculiarità che rendono la palla di rumble smash <strong>unica!</strong></p>
+<h4 id="-context">🧭 CONTEXT</h4>
+<p>Volvevo che la palla avesse dei comportamenti diversi in base alla sua velocità, in modo da renderne il comportamento
+	unico. A basse velocità si sarebbe dovuta comportare come una normale palla, con parametri fisici standardi, ma a
+	medie ed alte velocità sarebbe diventata una palla in stile breakout, zero fisica e completa conservazione del suo
+	momentum ad ogni collisione, praticamente inarrestabile, cambiando, così, completamente l&#39;approccio dei
+	giocatori ad essa e il loro playstyle. </p>
+<p>Per necessità di gameplay era anche fondamentale poter distinguere le velocità della palla, ad esempio, ad alte
+	velocità avrebbe potuto effettuare più punti, o come in questo caso, avrebbe fatto più danni, poiché le porte hanno
+	degli scudi.</p>
+<blockquote>
+	<p>[!info] Nomenclatura
+		Per semplicità ogni range di velocità in cui il comportamento varia, è definito <strong>stage</strong>.</p>
+</blockquote>
+<table>
+	<thead>
+		<tr>
+			<th>Ball Stage</th>
+			<th>Caratteristiche</th>
+			<th>Preview</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td><strong><span style="color:rgb(255, 0, 0)">Low Velocity (Ball Stage 1)</span></strong></td>
+			<td>- Fisica realistica con <strong>coefficente di rimbalzo simile ad una pallina rimbalzante.</strong><br>-
+				<strong>Danno</strong> minimo. (Vedi la sezione di game design per capire questo punto).<br>- Influenza
+				della <strong>gravità pari a 0.8</strong> (normalizzato).</td>
+			<td>![[Stage1_Edited (2).mp4]]</td>
+		</tr>
+		<tr>
+			<td><strong><span style="color:rgb(255, 0, 0)">Medium Velocity (Ball Stage 2)</span></strong></td>
+			<td>- <strong>Danno</strong> aumentato.<br>- <strong>Frames di impatto</strong> alla collisione con un muro,
+				utili per fornire secondi per ragionare al giocatore e per rendere l&#39;esperienze più fluida.<br>-
+				<strong>Zero influenza della gravità.</strong><br>- <strong>Coefficente di rimbalzo quasi
+					massimo</strong>, in modo che la conservazione del moto non sia massima, dunque, perde leggermente
+				velocità.<br>- <strong>Feedback grafici</strong> differenti.</td>
+			<td>![[Stage2ToStage1_Edited (2) 1.mp4]]</td>
+		</tr>
+		<tr>
+			<td><strong><span style="color:rgb(255, 0, 0)">Max Velocity (Ball Stage 3)</span></strong></td>
+			<td>- Tetto massimo di velocità, <strong>non può andare oltre X velocità</strong>, anche se colpita.<br>- I
+				<strong>frame di impatto</strong> durano un pochino di più.<br>- <strong>Feedback grafici</strong>
+				differenti.<br>- <strong>Danno</strong> massimo (Vedi la sezione di game design per capire questo
+				punto).<br>- <strong>Coefficente di rimbalzo al massimo</strong>, dunque, <strong>totale conservazione
+					del moto.</strong><br>- Poiché conserva tutta la sua veclocità senza fermarsi, <strong>la palla
+					rimane in questo stage per X secondi</strong>, se un giocatore la colpisce il timer si resetta. Allo
+				scadere del timer ritorna allo stage 2, settandosi alla velocità massima raggiungibile senza uscire da
+				quello stage. !TODO IN REALTa&#39; CAMBIA IL COEFFICENTE DI RIMBALZO.</td>
+			<td>![[Stage3ToStage1_LightPlay_Edited (2).mp4]]</td>
+		</tr>
+	</tbody>
+</table>
+<h4 id="-why-">❓ WHY?</h4>
+<h5 id="perch-hai-usato-una-fsm-">Perché hai usato una FSM?</h5>
+<p>L&#39;architettura della FSM mi ha permesso di ottenere un completo controllo sugli stati (stage) e i parametri della
+	palla, potendo gestire l&#39;inizializzazione e l&#39;update dei parametri dipendenti dagli stati della palla,
+	questo grazie alle funzioni di &quot;EnterState, UpdateState &amp; ExitState&quot; di ogni stato della FSM, le quali
+	mi hanno permesso di agire su tutti i parametri e richiamare le giuste funzioni con estrema facilità, adattandomi a
+	più contesti e necessità, oltre che agli stati della palla. Inoltre, ho una chiara struttura degli stati della palla
+	e ne guadagno in termini di leggibilità e mantenibilità. </p>
+<p>Mi baso sul modello realizzato qui: [[RumbleSmash - Portfolio - IT#🗿 FSM Template, pulito, facile, scalabile State
+	pattern &amp; Curiosly Recurring Template Pattern|FSM Template]].</p>
+<h3 id="colpire-la-palla">Colpire la palla</h3>
+<h4 id="-context">🧭 CONTEXT</h4>
+<p>Volevo che il feeling del gameplay fosse naturale e rapido, optare per una fisica coerente e realistica della palla
+	non era un&#39;opzione che mi permettesse di raggiungere questo scopo.
+	Dunque, ho optato per piegare alla fisica a necessità più <strong>arcade</strong>, vediamo come.</p>
+<p>Per massimizzare la rapidità del gameplay ho fatto in modo che la palla conservasse completamente il suo moto, dunque
+	ogni colpo ricevuto e comunicato attraverso un OnTriggerEnter, non influenzasse in alcun modo la
+	<strong>magnitudine</strong> della sua velocità. Per questo ho creato un metodo AddForce() custom.</p>
+<p>```cs title:Ball.cs
+	public void AddForce(Vector2 force, int chargeAdd)
+	{
+	// ? --- Obtains direction of the force
+	Vecotr2 forceDir = force.normalized;
+	Vector2 linearVel = rb.linearVelocity;</p>
+<pre><code><span class="hljs-comment">// ? --- Arcade babyyyyyy</span>
+rb.linearVelocity = Vector2.zero;
+Vector2 resultingChargeForce =
+    <span class="hljs-keyword">new</span> <span class="hljs-type">Vector2</span>
+    (
+        <span class="hljs-comment">// Instantly changes direction without losing force</span>
+        forceDir.x * linearVel.magnitude +
+        forceDir.x * chargeAdd,
+        forceDir.y * linearVel.magnitude +
+        forceDir.y* chargeAdd
+    );
+rb.AddForce(resultingChargeForce, ForceMode2D.Impulse);
+</code></pre>
+<p>}</p>
+<pre><code>
+Il calcolo conserva **il modulo della velocità preesistente** della palla, utilizzandolo come componente per il vettore risultante finale. <span class="hljs-keyword">La</span> direzione della forza ricevuta dal giocatore viene invece normalizzata, poiché rappresenta unicamente <span class="hljs-keyword">la</span> direzione del colpo inferto, così posso sfruttarlo per modificare <span class="hljs-keyword">la</span> direzione del moto della palla **senza alterare <span class="hljs-keyword">la</span> sua velocità accumulata**. 
+Durante il calcolo il vettore risultante viene influenzato dalla potenza del colpo del player. Vedi <span class="hljs-keyword">la</span> sezione dedicata al [[#🎮 Il Player|player]].
+
+<h4>❓ WHY?</h4>
+
+<h5>Perché hai scelto questo algoritmo?</h5>
+Come detto, i motivi dietro queste scelte risiedono nel feeling finale che volevo dare al gioco. Ovviamente una fisica realistica <span class="hljs-keyword">e</span> dei rimbalzi coerenti alla realtà avrebbe rallentato il gioco, allontanandosi dal mio obiettivo descritto nel GDD. <span class="hljs-keyword">L</span>'intento era quello <span class="hljs-keyword">di</span> creare un misto tra fisica reliastica, durante lo stage iniziale della palla, <span class="hljs-keyword">e</span> fisica arcade, <span class="hljs-keyword">la</span> quale subentra negli altri stage. 
+<h3>Un mare <span class="hljs-keyword">di</span> parametri</h3>
+<h4>🧭 CONTEXT</h4>
+I parametri della palla tra gestione <span class="hljs-keyword">di</span> fisica, collisioni, impact frames <span class="hljs-keyword">e</span> edge cases ha richiesto <span class="hljs-keyword">la</span> creazione <span class="hljs-keyword">di</span> **30+ parametri**, motivo per cui era sensato racchiudere tutto dentro uno ScriptableObject.
+Vedi sotto per il risultato.
+
+
+<h4>❓ WHY?</h4>
+<h5>Perché hai usato gli Scriptable Object?</h5>
+Utilizzando gli ScriptableObject ho potuto centralizzare completamente tutte le variabili <span class="hljs-keyword">di</span> gameplay, inoltre, ho sfruttato <span class="hljs-keyword">la</span> loro integrazione con <span class="hljs-keyword">l</span>'inspector per testare differenti <span class="hljs-keyword">set</span> <span class="hljs-keyword">di</span> parametri <span class="hljs-keyword">in</span> Play Mode, **evitando lunghi tempi <span class="hljs-keyword">di</span> compilazione**, accorciando drasticamente il tempo dedicato al testingm, **alle scelte <span class="hljs-keyword">di</span> game design** <span class="hljs-keyword">e</span> centralizzando, inoltre, più parametri derivanti da script diversi.
+Lo stesso approccio è stato dedicato ai parametri del giocatore per i medesimi motivi.
+
+| ScriptableObject                                                                     | Preview                                               | Dimostrazione <span class="hljs-keyword">in</span>-game                 |
+| ------------------------------------------------------------------------------------ | ----------------------------------------------------- | ------------------------------------- |
+| **&lt;span style=<span class="hljs-string">"color:rgb(255, 0, 0)"</span>&gt;<span class="hljs-keyword">SO</span> parametri <span class="hljs-keyword">di</span> gameplay della palla&lt;/span&gt;**   | <img src="images/portfolio/rumble-smash/portfolio-content/RumbleSmash - Portfolio - IT-1790260161931.webp" alt="RumbleSmash - Portfolio - IT-1790260161931.webp"> | ![[Ball_SOs_Demonstration (3).mp4]]   |
+| **&lt;span style=<span class="hljs-string">"color:rgb(255, 0, 0)"</span>&gt;<span class="hljs-keyword">SO</span> parametri <span class="hljs-keyword">di</span> gameplay del giocatore&lt;/span&gt;** | <img src="images/portfolio/rumble-smash/portfolio-content/RumbleSmash - Portfolio - IT-1790260453584.webp" alt="RumbleSmash - Portfolio - IT-1790260453584.webp"> | ![[Player_SOs_Demonstration (2).mp4]] |
+
+<h3>Event-driven Feedback grafici &amp; UI communication</h3>
+<span class="hljs-keyword">L</span>'approccio utilizzato per fornire informazioni alla UI è event-driven, per capire meglio come funziona puoi vedere i seguenti paragrafi:
+- [[RumbleSmash - Portfolio - IT#🗿 FSM Template, pulito, facile, scalabile State pattern &amp; Curiosly Recurring Template Pattern|Event-driven system]] 
+
+```horizontal 
+<h5>Listener <span class="hljs-keyword">e</span> Invoker <span class="hljs-keyword">di</span> Ball.<span class="hljs-keyword">cs</span></h5>
+<img src="images/portfolio/rumble-smash/portfolio-content/RumbleSmash - Portfolio - IT-1791282798322.webp" alt="RumbleSmash - Portfolio - IT-1791282798322.webp">
+</code></pre>
+<h2 id="-il-player">🎮 Il Player</h2>
+<p><strong>Il giocatore era parte integrante dei pilastri fondamentali</strong> che animano l&#39;esperienza di gioco,
+	in quanto pupazzo controllabile dall&#39;user finale, era fondamentale che il suo controllo fosse in linea con il
+	resto dei parametri di gioco e che i suoi movimenti fossero intuitivi e coerenti.
+	L&#39;altro obiettivo che la gestione del movimento doveva raggiungere riguardava <strong>il processo di
+		apprendimento</strong>: il movimento del personaggio doveva essere semplice a tal punto da poter essere
+	comprensibile per tutti, <strong>ma doveva contenere delle caratteristiche che spingessero il giocatore a
+		perfezionare e sperimentare.</strong></p>
+<p>Banalmente la meccanica da dover imparare a sfruttare era il &quot;dash&quot;, difficile da usare, poiché richiedeva
+	riflessi e capacità di prevedere le mosse della palla e dell&#39;avversario. Ma vediamo quali sono state le sfide
+	che ho dovuto affrontare per la realizzazione della logica del personaggio.</p>
+<h3 id="gestire-gli-stati-fsm-event-driven-design">Gestire gli stati | FSM &amp; Event-driven design</h3>
+<h4 id="-context">🧭 CONTEXT</h4>
+<p>Il movimento del giocatore comprendeva più mosse possibili, come:</p>
+<ul>
+	<li>Movimento</li>
+	<li>Salto</li>
+	<li>Kick</li>
+	<li>Charged Kick</li>
+	<li>Dash</li>
+</ul>
+<table>
+	<thead>
+		<tr>
+			<th>Stato</th>
+			<th>Caratteristiche</th>
+			<th>Preview</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Kick</td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>Charge</td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>Dash</td>
+			<td></td>
+		</tr>
+	</tbody>
+</table>
+<h4 id="-why-">❓WHY?</h4>
+<h3 id="gestire-il-mare-di-parametri-del-player">Gestire il mare di parametri del player</h3>
+<p>I parametri del player sono racchiuse in uno scriptable object, seguendo lo stesso approccio descritto [[#Un mare di
+	parametri|nel paragrafo della palla]].</p>
+<h2 id="-il-sequencer-e-gli-eventables-template-method-pattern-state-pattern-per-met-">📽️ Il Sequencer e gli eventables
+	| Template method pattern &amp; State pattern per metà</h2>
+<p>Volevo che Rumble Smash avesse un bel tutorial, volevo dargli personalità attraverso <strong>il dialogo e stupire con
+		delle animazioni semplici ma d&#39;impatto.</strong>
+	L&#39;idea era quella di avere un tutorial basato su mini-missioni da completare mentre il nostro &quot;Coach&quot;
+	premiava il nostro talento attraverso delle linee di dialogo.
+	!TODO RILEGGI ! todo scrivi meglio il motivo per cui hai realizzato QUESTA SOLUZIONE</p>
+<h3 id="-context">🧭 CONTEXT</h3>
+<p>Rendere un gioco alla portata di tutti è complicato, motivo per cui spesso i giochi decidono di tartassarci con
+	tutorial noiosissimo o tanti wall-of-text. L&#39;intenzione era proprio quella di creare un tutorial per
+	<strong>Rumble Smash</strong> poco noioso, tanto interattivo e un pelino interessante.</p>
+<p>L&#39;idea era quella di dover completare delle <strong>piccole missioni</strong> mentre il personaggio del nostro
+	&quot;Coach&quot; ci premiava per il nostro talento attraverso delle <strong>linee di dialogo</strong>. Il tutto
+	animato ed abbellito con delle fighissime animazioni, nonché delle semplici cutscene.</p>
+<p>Volevo poter controllare tutto con estrema facilità, permettendo di attivare dialoghi, cutscenes e missioni a
+	piacimento, sfruttando l&#39;interfaccia dell&#39;inspector. In pratica, era importante anche che avesse la
+	<strong>modularità</strong> come caratteristica architetturale, in modo che potessi intercambiare missione con
+	dialoghi, con missioni e con cutscene, in questo modo avrei potuto muovermi con più agilità dal punto di vista
+	creativo.
+	Inoltre, volevo che l&#39;architettura fosse Game Designer-proof, in modo tale che chiunque potesse creare nuovi
+	dialoghi con linee di testo e velocità di scorrimento personalizzate, spostare missioni e riarrangiare cutscenes.
+</p>
+<p>Inoltre, dovevo triggherare missioni, cutscene e dialoghi in sequenza solo DOPO la conclusione di &quot;evento&quot;
+	o, ad esempio, l&#39;esecuzione di una cutscene. Non potevo integrare i dialoghi/missioni con la Timeline perché
+	avrebbe richiesto una manipolazione del tempo di esecuzione della cutscene che avrebbe semplicemente overcomplicato
+	il problema. ! TODO CONTROLLA</p>
+<p><strong>Il Sequencer</strong>
+	Per poter creare un sistema del genere era necessario che ci fosse un &quot;direttore d&#39;orchestra&quot; che
+	riuscisse a gestire differenti tipi di asset con facilità, attivandoli e disattivandoli a comando, il nome di questo
+	script è &quot;<strong>Sequencer</strong>&quot;.
+	Il <strong>Sequencer</strong> non fa altro che eseguire un set di asset secondo la logica FIFO, esegue il primo
+	asset, non appena le sue condizione di conclusione si avverano, passa al prossimo, fino a che non li ha eseguiti
+	tutti in modo sequenziale.</p>
+<pre><code class="lang-horizontal"># Logica di esecuzione del Sequencer
+<img src="images/portfolio/rumble-smash/portfolio-content/RumbleSmash - Portfolio - IT-1790699797364.webp" alt="RumbleSmash - Portfolio - IT-1790699797364.webp">
+</code></pre>
+<p>Per fare in modo che il Sequencer potesse gestire il passaggio fra i diversi tipi di asset senza conoscerne il
+	behaviour, ognuno degli asset doveva necessariamente avere come padre una classe nota con metodi comuni a tutti i
+	figli, il padre di cui parlo prende il nome di &quot;<strong>Eventable</strong>&quot;. In sostanza stavo sfruttando
+	<strong>PRINCIPALMENTE</strong> (ci sono degli influssi di altri pattern, come il Command pattern e lo state
+	pattern, ma non ne possiede tutte le peculiarità, dunque rientra meglio nel TMDP) il &quot;<strong>Template method
+		design
+		pattern</strong>&quot; grazie al quale ho racchiuso metodi comuni tra tutti i figli. I</p>
+<p>Ogni &quot;Eventable&quot; possiede una variabile che ne contiene lo stato, essendo che il Sequencer dovrà ciclare
+	fra i vari asset, deve sapere anche quando farlo e per saperlo legge la variabile <strong>EventableState</strong>
+</p>
+<pre><code class="lang-horizontal"><img src="images/portfolio/rumble-smash/portfolio-content/RumbleSmash - Portfolio - IT-1790699125158.webp" alt="RumbleSmash - Portfolio - IT-1790699125158.webp">
+</code></pre>
+<p>Per riassumere:</p>
+<ul>
+	<li><strong>Template Method pattern</strong>: <code>Sequencer</code> chiama <code>OnStart()</code> →
+		<code>Update()</code> ogni frame → <code>OnEnd()</code> quando <code>state == QUIT</code></li>
+	<li><code>EventableState</code> macchina stati semplice: <code>PENDING</code> → <code>START</code> →
+		<code>UPDATE</code> (loop) → <code>QUIT</code> (richiesto da subclass) → <code>ENDED</code></li>
+</ul>
+<p>Ogni figlio di Eventable, invece è uno ScriptableObject che rappresenta un asset, ognuno dei quali ha behaviour e
+	parametri personalizzati, come ad esempio: &quot;Dialogue&quot;, &quot;Cutscene&quot;, &quot;Mission&quot;.</p>
+<h4 id="foto-di-sos-creati">Foto di SOs creati</h4>
+<pre><code class="lang-horizontal"># Dialogue
+<img src="images/portfolio/rumble-smash/portfolio-content/RumbleSmash - Portfolio - IT-1790778127561.webp" alt="RumbleSmash - Portfolio - IT-1790778127561.webp">
+<span class="hljs-section">- Posso persino cambiare l'aspetto del baloon del dialogo modificando il prefab base di partenza.
+---</span>
+<h1>Mission</h1>
+<img src="images/portfolio/rumble-smash/portfolio-content/RumbleSmash - Portfolio - IT-1790778117206.webp" alt="RumbleSmash - Portfolio - IT-1790778117206.webp">
+<img src="images/portfolio/rumble-smash/portfolio-content/RumbleSmash - Portfolio - IT-1790778123296.webp" alt="RumbleSmash - Portfolio - IT-1790778123296.webp">
+<span class="hljs-section">- Behaviour unici per ogni missione
+---</span>
+<h1>Cutscenes</h1>
+<img src="images/portfolio/rumble-smash/portfolio-content/RumbleSmash - Portfolio - IT-1790778111667.webp" alt="RumbleSmash - Portfolio - IT-1790778111667.webp">
+<span class="hljs-bullet">- </span>Aspetta semplicemente che il TimelineAsset finisca la sua riproduzione
+</code></pre>
+<h3 id="-why-">❓ WHY?</h3>
+<h4 id="-perch-ho-scelto-questa-struttura-per-il-sequencer-e-gli-eventable-"><strong>Perché ho scelto questa struttura
+		per il Sequencer e gli Eventable?</strong></h4>
+<p>La struttura del Sequencer è semplice volutamente, i bisogni che questa archietettura dovevano soddisfare erano
+	essenziali.
+	Avevo la necessità di integrare molti asset diversi fra loro senza strutture condizionali complesse, dunque, questa
+	era la strada più corta.
+	<strong>Il template method pattern</strong> mi ha permesso di astrarre i metodi comuni utili per sfruttare gli asset
+	in tempo reale, come la funzione <strong>Update()</strong> che ha un beahviour differente per ogni asset, ad
+	esempio, nei dialoghi il beavhoiur è controllare ogni frame per verificare l&#39;input dell&#39;utente per passare
+	alla prossima riga, oppure, per una missione, controllare ogni frame se le condizioni di conclusione sono
+	soddisfatte.
+	Spostando il behaviour al codice dell&#39;asset stesso che deriva da <strong>Eventable</strong> il Sequencer li
+	gestisce con facilità estrema, senza avere alcuna conoscenza del behaviour.
+</p>
+<h4 id="-perch-gli-eventable-sono-sos-"><strong>Perché gli Eventable sono SOs?</strong></h4>
+<p>Sfruttando i SOs ho potuto realizzare un&#39;architettura <strong>data-driven, in cui posso sfruttare
+		l&#39;integrazione in Inspector, riutilizzare gli asset e testarli singolarmente indipendentemente dalla
+		scena.</strong> Inoltre i SOs sono facilmente editabili da chiunque (designer-proof!!!! 😎) aggiungere e
+	rimuovere dialoghi è diventata una semplice questione di click! Insieme a questo, posso utilizzare lo stesso asset
+	con più Sequencer, indipendentemente dalla scena in cui è.</p>
+<h2 id="-single-entry-point-composition-root-bootstrap-scene-study-case">📦 Single-Entry-Point | Composition
+	Root/Bootstrap Scene, Study case</h2>
+<p>L&#39;utilizzo di questo pattern è più dovuto al fatto che ne volevo studiare l&#39;utilità e perché la mia mente
+	funziona meglio con dei pattern (ADHD be like).
+	Inoltre, all&#39;interno del progetto c&#39;erano dei piccoli problemi legati al temporal-coupling, risolvibili in
+	questo modo. </p>
+<h4 id="-why">❓ WHY</h4>
+<h5 id="perch-hai-scelto-di-utilizzare-il-sep-">Perché hai scelto di utilizzare il SEP?</h5>
+<p>Il SEP mi ha permesso di: semplificare la lettura della scena; <strong>di seguirne l&#39;ordine di inizializzazione
+		con molta facilità</strong> tramite codice senza essere bombardato da molteplici GameObject; <strong>risolvere
+		facilmente problemi di dipendenze e di temporal coupling</strong>; <strong>mi ha obbligato a categorizzare gli
+		oggetti</strong> in scena per poterli poi istanziare da script (ottenendo gli ovvi vantaggi del semplice
+	ordine); mi permetteva di <strong>creare un loading screen</strong> non finto (non realizzato per motivi di tempo).
+	Inoltre, il vero vantaggio è derivato dall&#39;approfondirne la conoscenza e comprensione, dato che è un pattern
+	industry-standard.</p>
+<h4 id="-context">🧭 CONTEXT</h4>
+<p>L&#39;intento era realizzare il SEP per le scene di build del gioco, le quali contenevano oltre 100 GameObject. Le
+	referenze dovevano essere facilmente sostituibili con nuovi componenti per stare al passo delle modifiche di
+	progetto. </p>
+<h4 id="-how-">🛠️ HOW?</h4>
+<p>La modalità è stata semplice, prima di tutto ho creato prefab di ogni singolo GameObject, serializzandole
+	coerentemente al loro tipo e calcolando il loro transform sempre basandomi sul root della scena, senza manipolazioni
+	dovuti ai transform del padre, altrimenti durante la inizializzazione le posizioni sarebbero state completamente
+	sballate.</p>
+<p>Dopodiché, ho realizzato lo script di bootstrap con tutte le reference utili della scena, in questo modo se avessi
+	voluto cambiare delle reference con asset alternativi avrei potuto farlo tranquillamente.
+	Nel caso della UI, ma come per tutte le altre reference, ad esempio, modificare un tipo di schermata con un modello
+	differente era solo questione di drag &#39;n drop.</p>
+<pre><code class="lang-horizontal"><img src="images/portfolio/rumble-smash/portfolio-content/RumbleSmash - Portfolio - IT-1791220269770.webp" alt="RumbleSmash - Portfolio - IT-1791220269770.webp">
+</code></pre>
+<p>Successivamente, ho diviso gli asset per categorie e li ho inizializzati nel seguente ordine</p>
+<ol>
+	<li>Manager</li>
+	<li>Entities</li>
+	<li>Manager Entities Refs</li>
+	<li>Level</li>
+	<li>Manager Level Refs</li>
+	<li>UI
+		Come si vede i managers compaiono più volte, poiché ho preferito suddividere l&#39;inizializzazione e la
+		configurazione per dargli priorità in cima alla lista.
+		<strong>Teoricamente non è utile</strong>, poiché gli oggetti che cercano reference <strong>al di fuori</strong>
+		di loro stessi lo fanno nella funzione &quot;Start()&quot; (good practices save us 🤗), quando le configurazioni
+		saranno già tutte completate dal bootstrap. Ma per evitare debugging inutile ho preferito questo approccio.
+	</li>
+</ol>
+<p>Il risultato converge in queste due semplici funzioni:</p>
+<p>```cs title:BootstrapMultiplayerScene.cs
+	void Initiator()
+	{
+	InitializeManagers();
+	InitializeEntities();
+	InitializeManagersEntitiesReferences();
+	InitializeLevel();
+	InitializeManagersLevelReferences();
+	InitializeUI();
+	}</p>
+<p>void Start()
+	{
+	Initiator();
+	}</p>
+<pre><code>##### Risultato <span class="hljs-keyword">in</span>-game
+```horizontal 
+!<span class="hljs-string">[[Bootstrap_Scene_Demonstration (2).mp4]]</span>
+<span class="hljs-comment">---</span>
+<img src="images/portfolio/rumble-smash/portfolio-content/RumbleSmash - Portfolio - IT-1791276071993.webp" alt="RumbleSmash - Portfolio - IT-1791276071993.webp">
+</code></pre>
+<h2 id="-match-flow-state-pattern-fsm">⬇️ Match Flow | State Pattern &amp; FSM</h2>
+<h4 id="-context">🧭 CONTEXT</h4>
+<p><em>Bene, adesso scendiamo in campo, i giocatori devono giocare, <strong>attivano i loro device</strong>,
+		<strong>mostrano le loro skin</strong> in una schermata apposita, <strong>aspettano il fischio
+			d&#39;inizio</strong>, qualche secondo e poi... GOAL!!!!!!! Bene, hanno segnato, <strong>lasciamogli spazio
+			per celebrare le loro gesta</strong>. Basta così, <strong>AI POSTI DI PARTENZA</strong>, 3... 2... 1... VIA,
+		DI NUOVO!
+		Tre a zero, beh, vittoria schiacciante, aspetta il perdente non si arrende, vuole risfidare il vincente, bene
+		così, non ti arrendere, <strong>ricominciamo</strong>!</em></p>
+<p>Di che stavo parlando? Beh, è ovvio, parlo di &quot;<strong>Match Flow</strong>&quot;!
+	Per &quot;<strong>Match Flow</strong>&quot; intendo una struttura rigida che scandisce le fasi di una partita,
+	ognuna delle parti del match flow deve soddisfare requisiti diversi, ad esempio, se abbiamo appena segnato 3 reti,
+	terminiamo la nostra partita e chiediamo al giocatore se vuole rigiocare, questo avviene nella fase
+	&quot;<strong>Match End</strong>&quot; del &quot;Match Flow&quot;. Ad ogni goal, invece, resettiamo la posizione dei
+	giocatori e gli facciamo aspettare il fischio d&#39;inizio.</p>
+<p>In sostanza, stiamo parlando di un problema complicato legato agli eventi, dobbiamo fare in modo che ogni fase
+	avvenga solo ed esclusivamente dopo un&#39;altra, ognuna di queste fasi ha un comportamento unico, come ad esempio
+	dell&#39;audio, delle grafiche o della logica a sé, dobbiamo fare in modo che all&#39;azione di gameplay il
+	&quot;<strong>Match flow</strong>&quot; risponda di conseguenza. Inoltre, vogliamo che sia flessibile, se voglio
+	riarrangiare il flow non voglio modificare l&#39;intera infrasttruttura.
+	Beh, l&#39;approccio più sensato è ovviamente un <strong>event-driven design</strong>! </p>
+<p>Ho deciso anche, di sfruttare il <strong>Singleton design pattern</strong> per il codice dedito alla gestione del
+	&quot;Match flow&quot;, al suo interno è presente la logica event-driven. Lo classe è chiamata
+	&quot;**MatchManager&quot;.</p>
+<h5 id="-why">❓ WHY</h5>
+<h6 id="come-mai-hai-scelto-un-event-driven-design-">Come mai hai scelto un event-driven design?</h6>
+<p>Il motivo risiede nella facilità di manipolazione: se possiamo collegare una fase all&#39;altra, a cascata, tramite
+	eventi, e collegare il resto delle fasi agli eventi di gameplay corretti, il match flow sarebbe facilissimo da
+	modificare insieme all&#39;ordine di apparizione per fasi più scriptate.</p>
+<h6 id="-come-mai-hai-scelto-il-singleton-design-pattern-per-il-match-manager-"><strong>Come mai hai scelto il Singleton
+		Design Pattern per il Match Manager?</strong></h6>
+<p>Poiché il match manager è unico all&#39;interno della scena e non ne possono esistere di altri è naturale pensare al
+	Singleton pattern per sfruttarne la sua prima peculiarità: l&#39;unicità. Inoltre, posso referenziare il
+	MatchManager per aggiungere listener agli eventi con ulteriore semplicità.</p>
+<h5 id="fasi-di-un-match">Fasi di un match</h5>
+<p>Prima di vedere le fasi di un match, è importante sapere che un match si struttura in massimo 5 round, ognuno dei
+	quali termina appena viene segnato un punto, il primo che arriva a 3 ha vinto! Al termin di un match è possibile
+	riavviare infinite volte, farlo non trigghererà schermate come quella per il setup degli input o l&#39;animazione di
+	pre-match.</p>
+<p>Ad ogni fase di un match corrisponde un evento a cui collegarsi per ascoltare.
+	Accanto le caratteristiche che ottiene in seguito al behaviour dei listener quando si invoca.</p>
+<table>
+	<thead>
+		<tr>
+			<th>Nome Fase</th>
+			<th>Caratteristiche</th>
+			<th>Preview</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td><span style="color:rgb(255, 0, 0)"><b>Pre Match Screen</b></span></td>
+			<td>- Chiama l&#39;evento PreMatchScreen, risultando in questo.<br>- Viene chiamato una volta per sessione
+				di gioco.</td>
+			<td>![[MatchFlow_FirstTimeMatchStart.mp4\</td>
+			<td>50x50]]</td>
+		</tr>
+		<tr>
+			<td><strong><span style="color:rgb(255, 0, 0)">Match Begin Event</span></strong></td>
+			<td>- Chiamato all&#39;inizio di una partita, chiamato sempre dopo un restart.</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td><strong><span style="color:rgb(255, 0, 0)">Match Restart Event</span></strong></td>
+			<td>- Si appoggia a Match Begin ma resetta i valori di gameplay necessari a reiniziare un match, tipo il
+				contatore dei goal.</td>
+			<td>![[MatchFlow_MatchEndRoutine&amp;MatchRestartRoutine.mp4]]</td>
+		</tr>
+		<tr>
+			<td><strong><span style="color:rgb(255, 0, 0)">Match End Event</span></strong></td>
+			<td>- Determina la fine di un match.<br>- Stacca gli input ai giocatori, permettendogli solo di navigare
+				nella UI.<br>- Ferma variabili di gioco non utili.<br>- La ui si iscrive per triggherare una schermata
+				per restartare.</td>
+			<td>![[RumbleSmash - Portfolio - IT-1790784280273.webp]]</td>
+		</tr>
+		<tr>
+			<td><span style="color:rgb(255, 0, 0)"><b>Round Begin Countdown </b></span></td>
+			<td>- Stacca Input.<br>- Countdown.<br>- Resetta posizioni.</td>
+			<td>![[Matchflow_RoundStartRoutine.mp4]]</td>
+		</tr>
+		<tr>
+			<td><strong><span style="color:rgb(255, 0, 0)">Round Begin Event</span></strong></td>
+			<td>- Chiamato da round begin countdown, al termine del countdown.<br>- Attiva input giocatore</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td><strong><span style="color:rgb(255, 0, 0)">Round End Event</span></strong></td>
+			<td>- Aspetta qualche secondo prima di richiamare il round start.</td>
+			<td>![[MatchFlow_RoundEndRoutine.mp4]]</td>
+		</tr>
+	</tbody>
+</table>
+<p>La logica che &quot;invoca&quot; ogni evento è affidata alle singole fasi o al MatchManager stesso, nel caso in cui
+	avvenga sequenzialmente. Le fasi sono costruite sulla base del template della FSM realizzato e lo <strong>State
+		pattern</strong>.</p>
+<pre><code class="lang-horizontal">##### Diagramma degli stati di una partita
+<img src="images/portfolio/rumble-smash/portfolio-content/RumbleSmash - Portfolio - IT-1790962493216.webp" alt="RumbleSmash - Portfolio - IT-1790962493216.webp">
+- Ogni fase/stato chiama l<span class="hljs-string">'evento associato</span>
+</code></pre>
+<p>Di seguito una sequenza semplificata che rappresenta la catena di &quot;Invoke()&quot; di un match avviato per la
+	prima volta.</p>
+<pre><code class="lang-horizontal">##### Sequenza semplificata tra eventi del MatchManager e UI
+<img src="images/portfolio/rumble-smash/portfolio-content/RumbleSmash - Portfolio - IT-1791301784764.webp" alt="RumbleSmash - Portfolio - IT-1791301784764.webp">
+Il punto di inizio di ogni freccia rappresenta chi invoca, mentra la parte finale chi ascolta e agisce subito dopo un <span class="hljs-string">"Invoke()"</span>
+</code></pre>
+<h5 id="-why">❓ WHY</h5>
+<h6 id="sembra-tu-stia-overcomplicando-utilizzando-una-fsm-sicuro-sia-l-approccio-giusto-">Sembra tu stia
+	overcomplicando utilizzando una fsm, sicuro sia l&#39;approccio giusto?</h6>
+<p>In realtà credo sia più una scelta personale, essendo che avevo completo libero arbitrio sulle scelte del design ho
+	intrapreso questa strada.
+	Le FSM, per me, rendono l&#39;architettura particolarmente chiara e facile da ricordare, inoltre, sono più semplici
+	da esplicare e rappresentare. <strong>L&#39;impatto prestazionale è quasi nullo</strong> da architetture più
+	complesse, magari basate su enum. La leggibilità aumenta grazie all&#39;utilizzo di un pattern statico e conosciuto
+	nel progetto.</p>
+<h4 id="-how-">🛠️ HOW?</h4>
+<p>Realizzare il Match Flow è stato particolarmente semplice, poiché ho utilizzato il template esplicato [[#🗿 FSM
+	Template, pulito, facile, scalabile State pattern &amp; Curiosly Recurring Template Pattern|nella sezione della
+	FSM]], insime a questo ho sfruttato la logica [[#🎫 Event-driven come obiettivo|event-driven]].
+	Poi ho aggiunto dei parametri come il delay di inizio round e di fine round ed il gioco è fatto!</p>
+<h1 id="programmazione-post-mortem-lezioni-imparate">Programmazione - Post Mortem - Lezioni imparate</h1>
+<h1 id="introduzione-project-scope-planning">Introduzione — Project Scope &amp; Planning</h1>
+<p>Prima di iniziare lo sviluppo di <strong>Rumble Smash</strong>, ho definito uno scope preciso per il progetto e
+	identificato le principali sfide che avrei dovuto affrontare durante la produzione, passi essenziali per poter
+	rispettare la deadline di Maggio. Per strutturare questa fase di pre-produzione ho redatto sin da subito un
+	<strong>Game Design Document (GDD),</strong> utilizzandolo come riferimento per definire sia gli obiettivi del
+	progetto, per avere una completa visione d&#39;insieme del progetto, sia per poter stimare il tempo di realizzazione
+	di ogni componente che lo animava, in modo da poter consegnare entro la deadline.</p>
+<p>Il GDD raccoglieva gli elementi fondamentali dell&#39;esperienza che volevo realizzare, tra cui:</p>
+<ul>
+	<li><strong>Concept e visione del progetto</strong>, definendo l&#39;idea alla base del gioco e l&#39;esperienza che
+		volevo offrire al giocatore.</li>
+	<li><strong>Core gameplay mechanics</strong>, sviscerate in profondità e confrontate con le altre, al fine di poter
+		valutare la sensatezza delle meccaniche ideate.</li>
+	<li><strong>Win/Lose Conditions</strong>, definendo le condizioni secondo le quali avveniva un successo o un
+		fallimento per il giocatore durante una partita.</li>
+	<li><strong>Art Direction e Art Style</strong>, stabilendo una direzione visiva coerente da mantenere durante
+		<strong>TUTTA</strong> la pipeline di produzione. Non è andata molto bene :(.</li>
+</ul>
+<p>Parallelamente al GDD ho inizializzato un workspace su <strong>Notion</strong> all&#39;interno del quale ho
+	realizzato una roadmap basata su <strong>milestone</strong>, supportandomi con il disegno del gioco dipinto nel GDD.
+</p>
+<p>Ogni milestone, ognuna formata da funzionalità e obiettivi da raggiungere, non rappresentava nient&#39;altro che una
+	vertical slice del progetto, arrivando ad una nuova milestone si raggiungeva anche una nuova build <strong>valida e
+		giocabile</strong> del progetto, con funzionalità aggiuntive.</p>
+<h3 id="why-">WHY?</h3>
+<p>Ho scelto di strutturare la fase di pre-produzione attraverso GDD e un workspace dedicato su Notion perché, prima
+	ancora di affrontare le problematiche implementative, avevo bisogno di definire con precisione cosa avrei dovuto
+	sviluppare, quale esperienza volessi fornire al giocatore e la coerenza e la sensatezza delle meccaniche ideate.</p>
+<p>La redazione del GDD mi ha consentito di trasformare l&#39;idea iniziale in milestone concrete nella roadmap su
+	Notion, distinguendo ciò che era realmente necessario per la vertical slice dalle funzionalità secondarie che
+	avrebbero potuto compromettere il rispetto della deadline.</p>
+<p>GDD e Notion hanno quindi avuto due funzioni complementari: il primo definiva cosa e perché costruire, mentre il
+	secondo definiva come suddividere e verificare lo sviluppo nel tempo.</p>
+<p><img src="images/portfolio/rumble-smash/portfolio-content/RumbleSmash - Portfolio - EN 1-1787160060603.webp" alt="RumbleSmash - Portfolio - EN 1-1787160060603.webp">
+	Al tempo le avevo chiamate EPIC per conciliarmi con il workflow che utilizza Jira.</p>
+<p><mark style="background: #FF5582A6;">TO CONTINUE</mark></p>

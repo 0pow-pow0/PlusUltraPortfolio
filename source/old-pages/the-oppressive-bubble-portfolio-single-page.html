@@ -1,0 +1,108 @@
+@@include('header.htm')
+@@include('blocks/nav-2.htm')
+@@include('blocks/page-title.htm', {
+"title": "The Oppressive Bubble",
+"description": "Progetto Global Game Jam - puzzle/platformer atmosferico"
+})
+
+<section class="section portfolio-single">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <img src="images/portfolio/TheOppressiveBubble/GameOverCropped_33kb.jpg" alt="The Oppressive Bubble" class="img-fluid w-100">
+            </div>
+
+            <div class="col-lg-6">
+                <div class="project-info">
+                    <h3 class="mb-4">Sinossi</h3>
+                    <p>Puzzle/platformer atmosferico sviluppato per Global Game Jam in una settimana.</p>
+
+                    <div class="row mt-4">
+                        <div class="col-lg-6">
+                            <div class="info">
+                                <h5 class="mb-0">Year</h5>
+                                <p>2024</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-6">
+                            <div class="info">
+                                <h5 class="mb-0">Engine</h5>
+                                <p>Unity</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-6">
+                            <div class="info">
+                                <h5 class="mb-0">Duration</h5>
+                                <p>1 Week (Game Jam)</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-6">
+                            <div class="info">
+                                <h5 class="mb-0">Team Size</h5>
+                                <p>1 (Solo Dev)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="btn-group-project d-flex gap-2 flex-wrap">
+                        <a href="#" class="btn btn-dark btn-small" target="_blank" rel="noopener">
+                            <i class="fab fa-github me-1"></i> GitHub
+                        </a>
+                        <a href="#" class="btn btn-danger btn-small" target="_blank" rel="noopener">
+                            <i class="fab fa-youtube me-1"></i> YouTube
+                        </a>
+                        <a href="#" class="btn btn-main btn-small">View Project</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Descrizione Progetto -->
+        <div class="row mt-5">
+            <div class="col-lg-12">
+                <div class="project-description-full">
+                    <h3 class="mb-4">Descrizione</h3>
+                    <p>
+                        The Oppressive Bubble è un puzzle/platformer 2D atmosferico sviluppato 
+                        interamente in solitaria durante una Game Jam in 7 giorni. 
+                        Il giocatore controlla una bolla intrappolata in un ambiente opprimente,
+                        dovendo risolvere puzzle ambientali per fuggire.
+                    </p>
+
+                    <h4 class="mt-4 mb-3">Sistemi Implementati</h4>
+                    <ul>
+                        <li>Controller 2D fisico-based per movimento bolla (physics-based movement)</li>
+                        <li>Sistema di puzzle basati su pressione, rimbalzo, galleggiamento</li>
+                        <li>Meccanica core: compressione/espansione bolla per superare ostacoli</li>
+                        <li>Level design: 5 livelli con difficoltà progressiva</li>
+                        <li>Sistema di checkpoint e respawn istantaneo</li>
+                        <li>Atmosfera: post-processing, lighting, audio ambientale</li>
+                        <li>Game manager: stati, transizioni, UI minima</li>
+                    </ul>
+
+                    <h4 class="mt-4 mb-3">Sfide Affrontate</h4>
+                    <p>
+                        Sviluppo completo (code + design + integrazione asset) in solitaria in 7 giorni.
+                        La sfida principale è stata la fisica della bolla: renderla "giocabile" e 
+                        responsiva pur essendo physics-based, senza frustrare il giocatore.
+                        Ottimizzazione per build WebGL per condivisione jam.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="border-line"></div>
+        <div class="row mt-5 justify-content-center">
+            <div class="col-lg-6 text-center">
+                <a href="axioverse-portfolio-single-page.html" class="btn btn-dark">Previous Work</a>
+                <a href="rumble-smash-portfolio-single-page.html" class="btn btn-dark">Next Work</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+@@include('blocks/footer.htm')
+@@include('footer.htm')

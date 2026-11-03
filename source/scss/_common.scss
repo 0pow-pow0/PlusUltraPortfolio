@@ -1,0 +1,298 @@
+.section{
+	padding: 120px 0px;
+}
+
+.section-sm{
+	padding: 60px 0px;
+}
+
+.btn{
+	padding: 18px 38px;
+	border: 2px solid transparent;
+	text-transform: uppercase;
+	border-radius:0px;
+	font-size: 14px;
+	line-height: 14px;
+	font-weight: 600;
+	box-shadow: rgb(153, 153, 153) 0px 0px 0px 0px;
+
+	 &:focus{
+	    outline: 0px;
+	    border: 0px;
+	    box-shadow: none;
+	  }
+}
+
+.btn-main{
+	background: $primary-color;
+	color: $white;
+
+	&:hover{
+		color: $white!important;
+		background: $black;
+	}
+}
+
+.btn-black{
+	background: $black;
+	color: $white;
+
+	&:hover{
+		background: $primary-color;
+		color: $white;
+	}
+}
+
+.btn-white{
+	background: $white;
+	color: $black;
+	border-color: $white;
+
+	&:hover{
+		background: transparent;
+		color: $white;
+	}
+}
+
+
+a{
+	color: $black;
+	-webkit-transition: all .25s ease;
+	   -moz-transition: all .25s ease;
+	    -ms-transition: all .25s ease;
+	     -o-transition: all .25s ease;
+	        transition: all .25s ease;
+
+	&:hover{
+		color: $primary-color;
+		text-decoration: none;
+		outline:none;
+	}
+
+}
+
+
+
+.bg-primary{
+	background: $primary-color!important;
+}
+
+.bg-secondary{
+	background: $secondary-color!important;
+}
+.bg-extra{
+	background: $extra-color!important;
+}
+
+.text-color{
+	color: $primary-color;
+}
+
+.page-title{
+	h1{
+		position: relative;
+		padding-bottom: 30px;
+
+		&:after{
+			position: absolute;
+			content:"";
+			left: 50%;
+			bottom:0px;
+			width: 40px;
+			height: 2px;
+			margin-left: -25px;
+			background: $primary-color;
+		}
+	}
+}
+
+
+@include mobile{
+	h2, .h2 {
+	    font-size: 32px;
+	    line-height: 43px;
+	}
+}
+
+@include mobile-xs{
+	h2, .h2 {
+	    font-size: 32px;
+	    line-height: 43px;
+	}
+}
+
+/* ===================================
+   Language Switcher
+   =================================== */
+
+.language-switcher-container
+{
+  align-content: center;
+}
+
+.language-switcher {
+.lang-toggle {
+    display: inline-flex;
+    position: relative;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
+    padding: 3px;  /* reduced from 4px */
+    overflow: hidden;
+    align-items: center;  /* vertically center buttons */
+    box-sizing: border-box;
+  }
+
+  .lang-btn {
+    position: relative;
+    z-index: 2;
+    background: transparent;
+    border: none;
+    color: rgb(132 132 132 / 70%);
+    font-size: 10px;  /* reduced from 12px */
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;  /* reduced from 0.5px */
+    padding: 4px 12px;  /* reduced from 6px 16px */
+    border-radius: 36px;  /* slightly smaller */
+    cursor: pointer;
+    transition: color 0.3s ease;
+    white-space: nowrap;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      color: #000;  /* darker on hover */
+    }
+
+    &.active {
+      color: #fff !important;  /* white text on red slider - high contrast */
+    }
+
+    .lang-text {
+      display: inline-block;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+  }
+
+  .lang-slider {
+    position: absolute;
+    top: 3px;  /* matches toggle padding */
+    left: 3px;  /* matches toggle padding */
+    height: calc(100% - 6px);  /* matches toggle padding * 2 */
+    background: #f44336 !important;  /* explicit red - $primary-color */
+    border-radius: 36px;  /* matches button radius */
+    box-shadow: 0 2px 6px rgba(244, 67, 54, 0.5);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 1;
+    pointer-events: none;
+    /* Initial fallback width - will be overridden by JS */
+    width: 30px;
+    transform: translateX(0);
+  }
+
+  /* JS will handle positioning via inline styles */
+  /* Fallback for no-JS - positioned based on active button */
+  .lang-btn[data-lang="it"].active ~ .lang-slider {
+    transform: translateX(0);
+    width: 30px;
+    background: #f44336 !important;
+  }
+
+  .lang-btn[data-lang="en"].active ~ .lang-slider {
+    transform: translateX(calc(100% + 3px));  /* matches toggle padding */
+    width: 30px;
+    background: #f44336 !important;
+  }
+
+  /* Animation on language change */
+  .lang-switching .lang-slider {
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .lang-switching .lang-btn {
+    transition: color 0.2s ease;
+  }
+
+  /* Mobile adjustments */
+  @include mobile {
+    .lang-toggle {
+      padding: 2px;
+    }
+
+    .lang-btn {
+      font-size: 9px;
+      padding: 3px 10px;
+    }
+
+    .lang-slider {
+      top: 2px;
+      height: calc(100% - 4px);
+    }
+  }
+
+  /* Align with navbar nav-links */
+  .navbar-nav .nav-item > .language-switcher {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 0 15px;  /* match nav-link horizontal padding */
+    margin: 0;
+  }
+
+  .navbar-nav .nav-item > .language-switcher .lang-toggle {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 3px;  /* internal padding for slider */
+  }
+
+  /* Ensure nav-item with language switcher aligns properly */
+  .navbar-nav .nav-item.nav-item-lang {
+    display: flex;
+    align-items: center;
+  }
+
+  /* Standalone class for li containing language switcher */
+  .nav-item-lang {
+    display: flex;
+    align-items: center;
+  }
+
+  /* Utility: force flex center alignment */
+  .flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* Page transition animation on language change */
+.lang-page-transition {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.lang-page-transition.loaded {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+table td img,
+table th img {
+    display: block !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+table td,
+table th {
+    text-align: center !important;
+    align-content: center !important;
+}

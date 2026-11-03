@@ -1,0 +1,89 @@
+@@include('header.htm')
+@@include('blocks/en/nav-2.htm')
+@@include('blocks/page-title.htm', {
+"title": "PuyoTetris",
+"description": "Classic Puyo Puyo / Tetris clone developed in 5 days"
+})
+
+@@include('blocks/table-of-contents.htm')
+
+<section class="section portfolio-single">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <img src="../images/portfolio/PuyoTetris/PuyoTetrisBanner.jpg"  alt="PuyoTetris" class="img-fluid w-100">
+            </div>
+
+            <div class="col-lg-6">
+                <div class="project-info">
+                    <h3 class="mb-4">Synopsis</h3>
+                    <p>Classic Puyo Puyo / Tetris clone developed in 5 days as a programming exercise.</p>
+
+                    <div class="row mt-4">
+                        <div class="col-lg-6">
+                            <div class="info">
+                                <h5 class="mb-0">Year</h5>
+                                <p>2026</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-6">
+                            <div class="info">
+                                <h5 class="mb-0">Engine</h5>
+                                <p>Unity</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-6">
+                            <div class="info">
+                                <h5 class="mb-0">Duration</h5>
+                                <p>5 Days</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-6">
+                            <div class="info">
+                                <h5 class="mb-0">Team Size</h5>
+                                <p>1 (Solo Dev)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="btn-group-project d-flex gap-2 flex-wrap">
+                        <a href="https://github.com/0pow-pow0/PuyoTetris" class="btn btn-dark btn-small" target="_blank" rel="noopener">
+                            <i class="fab fa-github me-1"></i> GitHub
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=S9KmJBJlCzI" class="btn btn-danger btn-small" target="_blank" rel="noopener">
+                            <i class="fab fa-youtube me-1"></i> YouTube
+                        </a>
+                        <a href="#" class="btn btn-main btn-small">View Project</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Descrizione Progetto -->
+        <div class="row mt-5">
+            <div class="col-lg-12">
+                <div class="project-description-full">
+                    @@include("fragments\callout-critical.html",
+                    {
+                        title: "Errors Ahead!",
+                        description: "This page is going under heavy review sessions, this means that errors will be corrected."
+                    })
+                    @@include("blocks/en/portfolio-content/puyotetris-portfolio-content-en.html")
+            </div>
+        </div>
+        <div class="border-line"></div>
+        <div class="row mt-5 justify-content-center">
+            <div class="col-lg-6 text-center">
+                <a href="rumble-smash-portfolio-single-page-en.html" class="btn btn-dark">Previous Work</a>
+                <a href="project-take-your-time-portfolio-single-page-en.html" class="btn btn-dark">Next Work</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+@@include('blocks/en/footer.htm')
+@@include('footer.htm')

@@ -1,0 +1,185 @@
+// ============================================================
+// Stili per il Table of Contents (indice pagina)
+// ============================================================
+
+#toc-toggle {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 1100;
+    width: 96px;
+    height: 96px;
+    background: #f44336;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    transition: transform 0.2s, background 0.2s;
+    animation: toc-bounce 5s ease-in-out;
+}
+
+@keyframes toc-bounce {
+    0%   { transform: scale(1); }
+    10%  { transform: scale(1.3); }
+    20%  { transform: scale(0.9); }
+    30%  { transform: scale(1.15); }
+    40%  { transform: scale(0.95); }
+    50%  { transform: scale(1.08); }
+    60%  { transform: scale(0.98); }
+    70%  { transform: scale(1.04); }
+    80%  { transform: scale(0.99); }
+    90%  { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+#toc-toggle:hover { background: #d32f2f; }
+#toc-toggle.active { background: #666; }
+
+#toc-toggle .toc-toggle__icon {
+    width: 56px;
+    height: 56px;
+    pointer-events: none;
+    display: block;
+    filter: brightness(0) invert(1);
+}
+
+#toc-sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: min(380px, 90vw);
+    height: 100vh;
+    max-height: 100vh;
+    background: #fff;
+    border-left: 1px solid #dedede;
+    box-shadow: -4px 0 12px rgba(0,0,0,0.1);
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    z-index: 1200;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+#toc-sidebar.open { transform: translateX(0); }
+
+.toc-sidebar__header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #dedede;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+.toc-sidebar__title { margin: 0; font-size: 18px; font-weight: 600; }
+.toc-sidebar__close {
+    background: transparent;
+    border: none;
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+    color: #666;
+    padding: 0 4px;
+}
+
+.toc-sidebar__nav {
+    overflow-y: auto;
+    flex: 1;
+    padding: 12px;
+}
+
+.toc-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 12px;
+    position: relative;
+}
+
+.toc-item {
+    position: relative;
+    margin: 0;
+    padding-left: 20px;
+}
+
+/* Bottone espandi/chiudi */
+.toc-item > a > .toc-expand {
+    position: absolute;
+    left: 4px;
+    top: 50%;
+    transform: translateY(-50%) rotate(0deg);
+    width: 12px;
+    height: 12px;
+    background: transparent;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    line-height: 1;
+    transition: transform 0.2s ease;
+}
+
+.toc-item.expanded > a > .toc-expand {
+    transform: translateY(-50%) rotate(90deg);
+    transition: transform 0.2s ease;
+}
+
+.toc-item > a {
+    position: relative;
+    display: block;
+    padding: 3px 8px 3px 20px;
+    color: #333;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background 0.15s;
+}
+
+.toc-item a:hover { background: #f7f7f7; }
+.toc-item a:focus { outline: 2px solid #f44336; }
+
+.toc-item.level-2 > a { padding-left: 40px; }
+.toc-item.level-3 > a { padding-left: 56px; }
+.toc-item.level-4 > a { padding-left: 72px; }
+.toc-item.level-5 > a { padding-left: 88px; }
+.toc-item.level-6 > a { padding-left: 104px; }
+
+/* Sotto-liste nascoste di default */
+.toc-item > .toc-list.nested {
+    display: none;
+    margin-top: 2px;
+    padding-left: 12px;
+    margin-left: 4px;
+}
+
+.toc-item.expanded > .toc-list.nested {
+    display: block;
+}
+
+#toc-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(2px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+    z-index: 1150;
+}
+#toc-overlay.open { opacity: 1; visibility: visible; }
+
+@media (max-width: 767px) {
+    #toc-toggle { bottom: 20px; right: 20px; width: 48px; height: 48px; font-size: 20px; }
+    #toc-sidebar { width: 85vw; }
+}
