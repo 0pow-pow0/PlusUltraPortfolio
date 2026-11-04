@@ -227,8 +227,8 @@
 				<p>
 					Alcuni asset in pixel art sono stati scaricati da itch.io, tutto il resto
 					è stato realizzato da me, dagli asset grafici agli script.
-				<br/>
-				<br/>
+					<br />
+					<br />
 					Il codice è stato scritto da me, non è stata sfruttata programmazione
 					agentica, anche se competente in quest'ambito. L'IA è stata utilizzata solo
 					per ricerca didattica è come strumento alternativo al browser, il problema
@@ -348,7 +348,7 @@
 				esperimenti rischiosi, dal punto di vista di game design, invece, mi
 				permette di capire se l'idea sia divertente col pad in mano.
 			</p>
-			<h2 class="western">🎫 Event-driven come obiettivo</h2>
+			<h2 id="Event-driven-Design" class="western">🎫 Event-driven come obiettivo</h2>
 			<p>Prima ancora di parlare delle effettive sfide affrontate, voglio
 				discutere sulla logica persistente in ogni parte del gioco,
 				utilizzata per praticamente tutti gli script che animano il gioco.
@@ -456,7 +456,7 @@ plr.pj.onDoppioScattoStart.AddListener(
 );</code></pre>
 				</div>
 			</div>
-			<h2 class="western">
+			<h2 id="FSM-Template" class="western">
 				🗿 FSM Template, pulito, facile, scalabile | State pattern &amp;
 				Curiosly Recurring Template Pattern</h2>
 			<h3 class="western">🧭 CONTEXT</h3>
@@ -675,9 +675,10 @@ plr.pj.onDoppioScattoStart.AddListener(
 				necessità, oltre che agli stati della palla. Inoltre, ho una chiara
 				struttura degli stati della palla e ne guadagno in termini di
 				leggibilità e mantenibilità.</p>
-			<p>Mi baso sul modello realizzato qui: [[RumbleSmash - Portfolio -
-				IT#🗿 FSM Template, pulito, facile, scalabile State pattern &amp;
-				Curiosly Recurring Template Pattern|FSM Template]].</p>
+			<p>Mi baso sul modello realizzato
+				<a href="#FSM-Template">
+					qui
+				</a>. </p>
 			<h3 class="western">Colpire la palla</h3>
 			<h4 class="western">🧭 CONTEXT</h4>
 			<p>Volevo che il feeling del gameplay fosse naturale e rapido, optare
@@ -835,15 +836,13 @@ plr.pj.onDoppioScattoStart.AddListener(
 			<h3 class="western">Event-driven Feedback grafici &amp; UI
 				communication</h3>
 			<p>L'approccio utilizzato per fornire informazioni alla UI è
-				event-driven, per capire meglio come funziona puoi vedere i seguenti
-				paragrafi:</p>
-			<ul>
-				<li>
-					<p>[[RumbleSmash - Portfolio - IT#🗿 FSM Template, pulito,
-						facile, scalabile State pattern &amp; Curiosly Recurring Template
-						Pattern|Event-driven system]]</p>
-				</li>
-			</ul>
+				event-driven, per capire meglio come funziona puoi vedere i 
+				<a href="#Event-driven-Design">
+					seguenti
+					paragrafi 
+				</a>
+				.</p>
+
 			<h4>Listener e Invoker di Ball.cs</h4>
 			<p>
 				<img

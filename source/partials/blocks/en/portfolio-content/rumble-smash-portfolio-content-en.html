@@ -227,11 +227,12 @@
 				<p>
 					Some pixel art assets were downloaded from itch.io, everything else
 					it was created by me, from the graphic assets to the scripts.
-				<br/>
-				<br/>
+					<br />
+					<br />
 					The code was written by me, no programming was used
 					agentic, even if competent in this area. AI was only used
-					for educational research it is as an alternative tool to the browser, the problem
+					for educational research it is as an alternative tool to the browser, the
+					problem
 					to be resolved was not thrown into a chat, compromising my
 					reasoning ability.
 				</p>
@@ -239,7 +240,8 @@
 		</div>
 		<h1 class="western">Reading conventions</h1>
 		<p>The conventions I am talking about concern the insertion of sections
-			useful to understand certain questions that arise while reading. Here are the ones
+			useful to understand certain questions that arise while reading. Here are the
+			ones
 			they are:</p>
 		<ul>
 			<li>
@@ -264,7 +266,8 @@
 			<div class="callout__icon">⚠️</div>
 			<div class="callout__content">
 				<div class="callout__title">Notes on the structure</div>
-				<p>The order of the paragraphs does not follow the REAL workflow of the project,
+				<p>The order of the paragraphs does not follow the REAL workflow of the
+					project,
 					I won't start by talking about project scope and planning, since I will put
 					at the top the programming and problem solving sections, which
 					are explained in such a way that they can be read without having to
@@ -281,7 +284,8 @@
 		<p>Rumble Smash is an academic project, developed for the
 			Nautilus, the actual production time amounts to just under 3
 			months.</p>
-		<p>Rumble Smash was born from the idea of having fun without pretensions, take the
+		<p>Rumble Smash was born from the idea of having fun without pretensions, take
+			the
 			controller start a game and win with laughter. His
 			fast and intuitive gameplay puts doses of adrenaline in you and
 			fun, to be exploited very badly in dialogue with one's own
@@ -348,19 +352,20 @@
 				risky experiments, from a game design point of view, however, I
 				allows you to understand if the idea is fun with the pad in hand.
 			</p>
-			<h2 class="western">🎫 Event-driven as an objective</h2>
+			<h2 id="Event-driven-Design" class="western">🎫 Event-driven as an
+				objective</h2>
 			<p>Before even talking about the actual challenges faced, I want
 				discuss the persistent logic in every part of the game,
 				used for practically all the scripts that animate the game.
 				I won't go through the sections to re-explain what I wrote
 				here, but in a different context, I will link directly to this section.</p>
-			<p>Practically the entire project adopts a <b>pattern
-					Pervasive Observer/Event-Driven</b> as the main mechanism
+			<p>Practically the entire project adopts a <b>pattern
+					Pervasive Observer/Event-Driven</b> as the main mechanism
 				decoupling between systems. Every manager
-				exposes <font
-					face="Liberation Mono, monospace">UnityEvent</font> public
-				that <b>UI, Camera, VFX and other managers</b> subscribe
-				in <font face="Liberation Mono, monospace">Start()</font> without
+				exposes <font
+					face="Liberation Mono, monospace">UnityEvent</font> public
+				that <b>UI, Camera, VFX and other managers</b> subscribe
+				in <font face="Liberation Mono, monospace">Start()</font> without
 				no direct reference between producer and consumer.</p>
 			<h3 class="western">🧭 CONTEXT!</h3>
 			<p>Dealing with multiple scripts that need to pass information to each other
@@ -456,15 +461,16 @@ plr.pj.onDoppioScattoStart.AddListener(
 );</code></pre>
 				</div>
 			</div>
-			<h2 class="western">
+			<h2 id="FSM-Template" class="western">
 				🗿 FSM Template, clean, easy, scalable | State patterns &
 				Curiosly Recurring Template Pattern</h2>
 			<h3 class="western">🧭 CONTEXT</h3>
 			<p>For various parts of the project I used a <b>FSM</b> because the
 				characteristics of the problem fit perfectly into the schemes of
-				an FSM. There are several of them in the project, because, in addition to the
+				an FSM. There are several of them in the project, because, in addition to
+				the
 				known advantages of FSM, they help me a lot to structure the logic
-				of an entity in my mind. Because there are some in the project
+				of an entity in my mind. Because there are some in the project
 				just under a dozen I decided to take advantage of metaprogramming
 				<b>to avoid creating boilerplate code</b>.
 			</p>
@@ -484,7 +490,7 @@ plr.pj.onDoppioScattoStart.AddListener(
 			<p>So, exploiting the foundations of metaprogramming, I
 				created a template class using the <b>generics of C#</b> for
 				speed up the creation of generic FSMs, thus allowing
-				to be able to apply them in multiple contexts with ease. The FSMs are
+				to be able to apply them in multiple contexts with ease. The FSMs are
 				exploited in many parts of the project, therefore, to avoid the
 				creating boilerplate code it made sense to exploit</p>
 			<p>By exploiting the basic architecture of the FSM I simply
@@ -504,7 +510,7 @@ plr.pj.onDoppioScattoStart.AddListener(
 			<p>
 				This way all new FSMs, such as PlayerFSM, can
 				exploit the FSM logic without writing any lines of code,
-				exploiting composition and inheritance alone. </p>
+				exploiting composition and inheritance alone. </p>
 			<p
 				class="jump-text"><span>A</span><span>u</span><span>r</span><span>a</span><span>
 				</span><span>g</span><span>u</span><span>a</span><span>d</span><span>a</span>
@@ -518,7 +524,7 @@ plr.pj.onDoppioScattoStart.AddListener(
 			<p>The ball was clearly one of the most important parts of the
 				game, physics and feedback had to travel at the same frequency
 				wave, otherwise the player could have had an experience
-				too frustrating or not very intuitive. Let's analyze the peculiarities
+				too frustrating or not very intuitive. Let's analyze the peculiarities
 				that make the rumble smash ball <b>unique!</b></p>
 			<h4 class="western">🧭 CONTEXT</h4>
 			<p>I wanted the ball to have different behaviors based on the
@@ -576,10 +582,10 @@ plr.pj.onDoppioScattoStart.AddListener(
 						<td width="33%"
 							style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
 							<p>
-								- Realistic physics with <b>bounce coefficient similar to
-									a bouncing ball.</b><br>- <b>Damage</b> minimal damage. (See the
+								- Realistic physics with <b>bounce coefficient similar to
+									a bouncing ball.</b><br>- <b>Damage</b> minimal damage. (See the
 								game design section to understand this point).<br>- Influence
-								of <b>gravity equal to 0.8</b> (normalized).</p>
+								of <b>gravity equal to 0.8</b> (normalized).</p>
 						</td>
 						<td width="33%"
 							style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
@@ -600,15 +606,15 @@ plr.pj.onDoppioScattoStart.AddListener(
 						<td width="33%"
 							style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
 							<p>
-								- <b>Damage</b> increased.<br>
-								- <b>Impact frames</b> at
+								- <b>Damage</b> increased.<br>
+								- <b>Impact frames</b> at
 								collision with a wall, useful for providing seconds to think
 								to the player and to make the experience more fluid. <br>
 								- <b>Zero influence of gravity.</b> <br>
 								- <b>Near maximum rebound coefficient</b>, <br>
 								so that the conservation of motion is not
 								maximum, therefore, it loses speed slightly. <br>
-								- <b>Different graphic feedback</b> .</p>
+								- <b>Different graphic feedback</b> .</p>
 						</td>
 						<td width="33%"
 							style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
@@ -629,19 +635,19 @@ plr.pj.onDoppioScattoStart.AddListener(
 						<td width="33%"
 							style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
 							<p>
-								- Maximum speed cap, <b>cannot go beyond X
+								- Maximum speed cap, <b>cannot go beyond X
 									speed</b>, even if hit. <br>
-								- The <b>frames of
-									impact</b> last a little longer. <br>
+								- The <b>frames of
+									impact</b> last a little longer. <br>
 								- <b>Feedback
-									different graphs</b> . <br>
-								- <b>Damage</b> maximum damage (See the
+									different graphs</b> . <br>
+								- <b>Damage</b> maximum damage (See the
 								game design section to understand this point). <br>
 								- <b>Coefficient
-									of rebound to the maximum</b>, therefore, <b>total conservation
+									of rebound to the maximum</b>, therefore, <b>total conservation
 									of motion.</b> <br>
 								- Since it retains all its speed without it
-								stop, <b>the ball remains in this stage for X seconds</b>,
+								stop, <b>the ball remains in this stage for X seconds</b>,
 								if a player hits it the timer resets. Upon expiration of
 								timer its rebound coefficient decreases, so that it can
 								fall below the minimum threshold of stage 3, thus returning to stage
@@ -675,14 +681,13 @@ plr.pj.onDoppioScattoStart.AddListener(
 				necessity, as well as the states of the ball. Furthermore, I have a clear
 				structure of the states of the ball and gain in terms of
 				readability and maintainability.</p>
-			<p>Mi baso sul modello realizzato qui: [[RumbleSmash - Portfolio -
-				IT#🗿 FSM Template, pulito, facile, scalabile State pattern &amp;
-				Curiosly Recurring Template Pattern|FSM Template]].</p>
+			<p>Im using the template realized
+				<a href="#FSM-Template">here</a>.</p>
 			<h3 class="western">Hitting the ball</h3>
 			<h4 class="western">🧭 CONTEXT</h4>
 			<p>I wanted the feeling of the gameplay to be natural and fast, opt
 				for consistent and realistic ball physics was not an option
-				that would allow me to achieve this goal. So, I have
+				that would allow me to achieve this goal. So, I have
 				opted to bend to physics as needed more <b>arcade</b>,
 				Let's see how.</p>
 			<p>To maximize the speed of the gameplay I made sure that the
@@ -726,7 +731,7 @@ plr.pj.onDoppioScattoStart.AddListener(
 				final. The direction of the force received by the player comes instead
 				normalized, since it only represents the direction of the blow
 				inflicted, so I can use it to change the direction of motion
-				of the ball <b>without altering its accumulated speed </b>. During
+				of the ball <b>without altering its accumulated speed </b>. During
 				the calculation the resulting vector is influenced by the power of
 				player shot. See the section dedicated to the <a
 					href="https://en.wikipedia.org/wiki/#%F0%9F%8E%AE%20Il%20Player">player</a>.</p>
@@ -741,10 +746,11 @@ plr.pj.onDoppioScattoStart.AddListener(
 				stage.</p>
 			<h3 class="western">A sea of parameters</h3>
 			<h4 class="western">🧭 CONTEXT</h4>
-			<p>The parameters of the ball between management of physics, collisions, impact
+			<p>The parameters of the ball between management of physics, collisions,
+				impact
 				frames and edge cases required the creation of <b>30+ parameters</b>,
 				which is why it made sense to pack everything into one
-				ScriptableObject. See below for the result.</p>
+				ScriptableObject. See below for the result.</p>
 			<h4 class="western">❓ WHY?</h4>
 			<h5 class="western">Why did you use Scriptable Objects?</h5>
 			<p>Using ScriptableObjects I was able to centralize
@@ -753,7 +759,7 @@ plr.pj.onDoppioScattoStart.AddListener(
 				parameters in Play Mode, <b>avoiding long compilation times</b>,
 				drastically shortening the time dedicated to testingm, <b>at
 					game design choices</b> and also centralizing more parameters
-				resulting from different scripts. It was the same approach
+				resulting from different scripts. It was the same approach
 				dedicated to player parameters for the same reasons.</p>
 			<table width="100%" cellpadding="4" cellspacing="0">
 				<col width="85*" />
@@ -835,15 +841,13 @@ plr.pj.onDoppioScattoStart.AddListener(
 			<h3 class="western">Event-driven Graphical feedback & UI
 				communication</h3>
 			<p>The approach used to provide information to the UI is
-				event-driven, to better understand how it works you can see the following
-				paragraphs:</p>
-			<ul>
-				<li>
-					<p>[[RumbleSmash - Portfolio - IT#🗿 FSM Template, pulito,
-						facile, scalabile State pattern &amp; Curiosly Recurring Template
-						Pattern|Event-driven system]]</p>
-				</li>
-			</ul>
+				event-driven, to better understand how it works you can see the
+				<a href="#Event-driven-Design">
+
+					following
+					paragraphs
+				</a>.
+			</p>
 			<h4>Ball.cs Listener and Invoker</h4>
 			<p>
 				<img
@@ -855,7 +859,7 @@ plr.pj.onDoppioScattoStart.AddListener(
 				which animate the gaming experience, as a controllable puppet
 				by the end user, it was essential that his control was in
 				line with the rest of the game parameters and that its movements
-				were intuitive and coherent. The other objective is management
+				were intuitive and coherent. The other objective is management
 				of the movement was to achieve concerned <b>the process of
 					learning</b>: the character's movement had to be
 				simple enough to be understandable by everyone, <b>but
@@ -884,7 +888,8 @@ plr.pj.onDoppioScattoStart.AddListener(
 				ball paragraph</a>.</p>
 		<h2 class="western">📽️ The Sequencer and eventables | Templates
 			method pattern & State pattern for half</h2>
-		<p>Rumble Smash was missing something, the player was missing understanding how
+		<p>Rumble Smash was missing something, the player was missing understanding
+			how
 			play it,
 			it lacked personality and depth, I also wanted the player to feel it
 			rewarded
@@ -909,7 +914,7 @@ plr.pj.onDoppioScattoStart.AddListener(
 			had the <b>modularity</b> as an architectural feature, in
 			so that I could interchange mission with dialogue, with mission and
 			with cutscenes, this way I could move with more agility
-			from a creative point of view. Also, I wanted architecture
+			from a creative point of view. Also, I wanted architecture
 			was Game Designer-proof, so anyone could create
 			new dialogues with text lines and scrolling speed
 			customizations, moving missions and rearranging cutscenes.</p>
@@ -923,7 +928,7 @@ plr.pj.onDoppioScattoStart.AddListener(
 			it was necessary for there to be a "conductor" who
 			could manage different types of assets with ease,
 			turning them on and off on command, the name of this script is
-			"<b>Sequencer</b>". The <b>Sequencer</b> does nothing else
+			"<b>Sequencer</b>". The <b>Sequencer</b> does nothing else
 			than running a set of assets according to FIFO logic, does the former
 			asset, as soon as its termination conditions come true, it passes
 			to the next, until it has executed them all sequentially.</p>
@@ -940,11 +945,12 @@ plr.pj.onDoppioScattoStart.AddListener(
 			<b>MAINLY</b> (there are influences from other patterns, such as
 			the Command pattern and the state pattern, but it does not have all of them
 			peculiarity, therefore it better fits into the TMDP) the "<b>Template
-				method design</b> <b>pattern</b>" thanks to which I
+				method design</b> <b>pattern</b>" thanks to which I
 			enclosed common methods among all children. I
 		</p>
 		<p>Each "Eventable" has a variable that contains
-			the state, being that the Sequencer will have to cycle between the various assets,
+			the state, being that the Sequencer will have to cycle between the various
+			assets,
 			it must also know when to do it and to know it it reads the variable
 			<b>EventableState</b>
 		</p>
@@ -1043,16 +1049,16 @@ plr.pj.onDoppioScattoStart.AddListener(
 		<h4 class="western"><b>Why did I choose this structure for the
 				Sequencer and Eventables?</b></h4>
 		<p>The structure of the Sequencer is deliberately simple, the needs that
-			this architecture had to satisfy were essential. I had
+			this architecture had to satisfy were essential. I had
 			the need to integrate many different assets together without
 			complex conditional structures, therefore, this was the most way
-			short. <b>The template method pattern</b> allowed me to
+			short. <b>The template method pattern</b> allowed me to
 			abstract common methods useful for leveraging assets on time
 			real, like the function <b>Update()</b> which has a beahviour
 			different for each asset, for example, in the dialogues the beavhoiur is
 			check each frame to verify user input to pass
 			to the next line, or, for a mission, check every frame
-			if the termination conditions are satisfied. Moving the
+			if the termination conditions are satisfied. Moving the
 			behavior to the asset code itself which derives from <b>Eventable</b>
 			the Sequencer manages them with extreme ease, without having any
 			knowledge of the behaviour.</p>
@@ -1069,8 +1075,9 @@ plr.pj.onDoppioScattoStart.AddListener(
 			Root/Bootstrap Scene, Study case</h2>
 		<p>Using this pattern is more because I wanted it
 			study the usefulness and why my mind works better with gods
-			pattern (ADHD be like). Furthermore, within the project
-			there were some small problems related to temporal coupling, which could be solved
+			pattern (ADHD be like). Furthermore, within the project
+			there were some small problems related to temporal coupling, which could be
+			solved
 			like this.</p>
 		<h3 class="western">❓ WHY</h3>
 		<h4 class="western">Why did you choose to use the SEP?</h4>
@@ -1081,7 +1088,7 @@ plr.pj.onDoppioScattoStart.AddListener(
 				forced to categorize the objects</b> on scene in order to then be able to
 			instantiate from script (obtaining the obvious advantages of simple
 			order); it allowed me to <b>create a non-fake loading screen</b>
-			(not realized due to time constraints). Also, the real benefit
+			(not realized due to time constraints). Also, the real benefit
 			is derived from deepening our knowledge and understanding, given that
 			it is an industry-standard pattern.</p>
 		<h3 class="western">🧭 CONTEXT</h3>
@@ -1099,7 +1106,7 @@ plr.pj.onDoppioScattoStart.AddListener(
 		<p>After that, I created the bootstrap script with all the
 			useful references of the scene, this way if I wanted to change
 			of references with alternative assets I could have done
-			quietly. In the case of the UI, but as for all the others
+			quietly. In the case of the UI, but as for all the others
 			reference, for example, change a screen type with a template
 			different it was just a matter of drag 'n drop.</p>
 		<p><img
@@ -1125,9 +1132,9 @@ plr.pj.onDoppioScattoStart.AddListener(
 				<p>Manager Level Refs</p>
 			</li>
 			<li>
-				<p>UI As you can see, the managers appear several times, since
+				<p>UI As you can see, the managers appear several times, since
 					I preferred to split the initialization and configuration by
-					prioritize it at the top of the list. <b>Theoretically it is not
+					prioritize it at the top of the list. <b>Theoretically it is not
 						useful</b>, since objects looking for reference <b>outside</b>
 					they do it themselves in the "Start()" function (good
 					practices save us 🤗), when the configurations are already all
@@ -1197,8 +1204,9 @@ void Start()
 				Well, they scored, </i><i><b>let's give them space to celebrate the
 					their deeds</b></i><i>. Enough of this, </i><i><b>IN THE PLACES OF
 					DEPARTURE</b></i><i>,
-				3... 2... 1... GO, AGAIN!</i> <i>Three nil, well, victory
-				overwhelming, wait the loser doesn't give up, he wants to challenge the again
+				3... 2... 1... GO, AGAIN!</i> <i>Three nil, well, victory
+				overwhelming, wait the loser doesn't give up, he wants to challenge the
+				again
 				winner, that's good, don't give up,
 			</i><i><b>let's start again</b></i><i>!</i></p>
 		<p>What was I talking about? Well, obviously, I'm talking about "<b>Match
@@ -1217,7 +1225,7 @@ void Start()
 			of the logic itself, we must ensure that the gameplay action
 			the "<b>Match flow</b>" respond accordingly. Furthermore,
 			we want it to be flexible, if I want to rearrange the flow not
-			I want to change the entire infrastructure. Well, the more approach
+			I want to change the entire infrastructure. Well, the more approach
 			makes sense is obviously an <b>event-driven design</b>!</p>
 		<p>I also decided to exploit the <b>Singleton design pattern</b>
 			for the code dedicated to managing the "Match flow", to its
@@ -1245,7 +1253,7 @@ void Start()
 			will trigger screens like the one for input setup or
 			the pre-match animation.</p>
 		<p>Each phase of a match corresponds to an event to connect to
-			to listen. Alongside the features it gets later
+			to listen. Alongside the features it gets later
 			to the behavior of the listeners when invoked.</p>
 		<table width="100%" cellpadding="4" cellspacing="0">
 			<col width="85*" />
@@ -1457,7 +1465,7 @@ void Start()
 			fsm, are you sure it's the right approach?</h6>
 		<p>Actually I think it's more of a personal choice, since I had
 			complete free will over design choices I undertook this one
-			road. The FSM, for me, make architecture particularly
+			road. The FSM, for me, make architecture particularly
 			clear and easy to remember, they are also easier to
 			explain and represent. <b>The performance impact is almost zero</b>
 			from more complex architectures, perhaps based on enums. Readability
@@ -1469,7 +1477,8 @@ void Start()
 				href="https://en.wikipedia.org/wiki/#%F0%9F%97%BF%20FSM%20Template,%20pulito,%20facile,%20scalabile%20State%20pattern%20&amp;%20Curiosly%20Recurring%20Template%20Pattern">in
 				section of the FSM</a>, together with this I exploited the logic
 			<a
-				href="https://en.wikipedia.org/wiki/#%F0%9F%8E%AB%20Event-driven%20come%20obiettivo">event-driven</a>. Then
+				href="https://en.wikipedia.org/wiki/#%F0%9F%8E%AB%20Event-driven%20come%20obiettivo">event-driven</a>.
+			Then
 			I added parameters such as the round start and end delay
 			round and that's it!
 		</p>
