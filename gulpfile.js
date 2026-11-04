@@ -25,7 +25,10 @@ var path = {
     blur: "source/images/**/*.+(jpg|jpeg|webp)",
     fonts: "source/fonts/**/*.+(eot|ttf|woff|woff2|otf)",
     static: "source/static/**/*",
-    single_pages: "source/single-pages/**/*"
+    single_pages: "source/single-pages/**/*",
+
+    // Handmade
+    games: "source/games/**/*"
   },
   build: {
     // build paths
@@ -169,6 +172,18 @@ gulp.task("static", function () {
   return gulp.src(path.src.static).pipe(gulp.dest(path.build.dir));
 });
 
+// Games folder
+gulp.task("games", function () {
+  return gulp
+    .src(path.src.games)
+    .pipe(gulp.dest(path.build.dir + "games/"))
+    .pipe(
+      bs.reload({
+        stream: true,
+      })
+    );
+});
+
 // Clean Theme Folder
 gulp.task("clean", function (cb) {
   rimraf("./theme", cb);
@@ -184,6 +199,7 @@ gulp.task("watch", function () {
   gulp.watch(path.src.fonts, gulp.series("fonts"));
   gulp.watch(path.src.plugins, gulp.series("plugins"));
   gulp.watch(path.src.plugins, gulp.series("single-pages"));
+  gulp.watch(path.src.games, gulp.series("games"))
 });
 
 // dev Task
@@ -199,6 +215,7 @@ gulp.task(
     "plugins",
     "static",
     "single-pages",
+    "games",
     gulp.parallel("watch", function () {
       bs.init({
         server: {
@@ -221,7 +238,9 @@ gulp.task(
     "fonts",
     "plugins",
     "static",
-    "single-pages"
+    "single-pages",
+
+    "games"
   )
 );
 
@@ -239,7 +258,9 @@ gulp.task(
     "fonts",
     "plugins",
     "static",
-    "single-pages"
+    "single-pages",
+
+    "games"
   )
 );
 
