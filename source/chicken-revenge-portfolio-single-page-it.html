@@ -1,4 +1,4 @@
-@@include('header.htm')
+﻿@@include('header.htm')
 @@include('blocks/it/nav-2.htm')
 @@include('blocks/page-title.htm', {
 "title": "Chicken Revenge",
@@ -11,7 +11,8 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-6">
-                <img src="images/Assets/UnderConstruction.png" alt="Chicken Revenge" class="img-fluid w-100">
+                <img src="images/Assets/UnderConstruction.png"
+                    alt="Chicken Revenge" class="img-fluid w-100">
             </div>
 
             <div class="col-lg-6">
@@ -26,21 +27,21 @@
                                 <p>2025</p>
                             </div>
                         </div>
-                        
+
                         <div class="col-lg-6">
                             <div class="info">
                                 <h5 class="mb-0">Engine</h5>
                                 <p>Unity</p>
                             </div>
                         </div>
-                        
+
                         <div class="col-lg-6">
                             <div class="info">
                                 <h5 class="mb-0">Durata</h5>
                                 <p>1 Mese</p>
                             </div>
                         </div>
-                        
+
                         <div class="col-lg-6">
                             <div class="info">
                                 <h5 class="mb-0">Team</h5>
@@ -50,14 +51,18 @@
                     </div>
                 </div>
                 <div class="mt-4">
-                    <div class="btn-group-project d-flex gap-2 flex-wrap">
-                        <a href="https://github.com/0pow-pow0/ProjectZenzero" class="btn btn-dark btn-small" target="_blank" rel="noopener">
+                    <div class="btn-group-wd-flex gap-2 flex-wrap">
+                        <a href="https://github.com/0pow-pow0/ProjectZenzero"
+                            class="btn btn-dark btn-small" target="_blank"
+                            rel="noopener">
                             <i class="fab fa-github me-1"></i> GitHub
                         </a>
-                        <a href="#" class="btn btn-danger btn-small" target="_blank" rel="noopener">
+                        <a href="#" class="btn btn-danger btn-small"
+                            target="_blank" rel="noopener">
                             <i class="fab fa-youtube me-1"></i> YouTube
                         </a>
-                        <a href="#" class="btn btn-main btn-small">Vedi Progetto</a>
+                        <a href="#" class="btn btn-main btn-small">Vedi
+                            Progetto</a>
                     </div>
                 </div>
             </div>
@@ -67,14 +72,31 @@
         <div class="row mt-5">
             <div class="col-lg-12">
                 <div class="project-description-full">
-</div>
+                    @@include("fragments\callout-critical.html",
+                    {
+                        title: "Questo progetto non è stato mai completato al 100%!",
+                        description: "Questo progetto presenta bug critici che ne compromettono l'estetica e la giocabilità, in quanto è un progetto non terminato. Il motivo per cui si trova comunque tra i miei progetti risiede nell'architettura profonda e complessa, degna di essere documentata."
+                    })
+                    <video controls
+                        src="images/portfolio/Chicken-Revenge/ChickenRevengeGameplayCutCompr.mp4"
+                        style="max-width: 100%; height: auto; display: block; margin: 0 auto;"
+                        width="640"></video>
+                    
+                    @@include("fragments\callout-warning.html",
+                    {
+                    title: "Pagina in costruzione!",
+                    description: "Questa pagina dev'essere ancora riempita"
+                    })
+                </div>
             </div>
         </div>
         <div class="border-line"></div>
         <div class="row mt-5 justify-content-center">
             <div class="col-lg-6 text-center">
-                <a href="identity-seeker-portfolio-single-page-it.html" class="btn btn-dark">Progetto Precedente</a>
-                <a href="ssgrp-portfolio-single-page-it.html" class="btn btn-dark">Prossimo Progetto</a>
+                <a href="identity-seeker-portfolio-single-page-it.html"
+                    class="btn btn-dark">Progetto Precedente</a>
+                <a href="ssgrp-portfolio-single-page-it.html"
+                    class="btn btn-dark">Prossimo Progetto</a>
             </div>
         </div>
     </div>

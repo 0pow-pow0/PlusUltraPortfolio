@@ -1,8 +1,8 @@
-@@include('header.htm')
+﻿@@include('header.htm')
 @@include('blocks/it/nav-2.htm')
 @@include('blocks/page-title.htm', {
 "title": "Rumble Smash",
-"description": "Gioco casual 1v1 dove l'unico obiettivo è segnare punti!"
+"description": "Gioco casual 1v1 dove l'unico obiettivo Ã¨ segnare punti!"
 })
 @@include('blocks/table-of-contents.htm')
 
@@ -17,7 +17,7 @@
             <div class="col-lg-6">
                 <div class="project-info">
                     <h3 class="mb-4">Sinossi</h3>
-                    <p>Gioco casual 1v1 dove l'unico obiettivo è segnare punti!</p>
+                    <p>Gioco casual 1v1 dove l'unico obiettivo Ã¨ segnare punti!</p>
 
                     <div class="row mt-4">
                         <div class="col-lg-6">
@@ -68,7 +68,12 @@
             <div class="col-lg-12">
                 <div class="project-description-full">
                     @@include('blocks/it/portfolio-content/rumble-smash-portfolio-content-it.html')
-                </div>
+                
+                    @@include("fragments\callout-warning.html",
+                    {
+                        title: "Pagina in costruzione!",
+                        description: "Questa pagina dev'essere ancora riempita"
+                    })</div>
             </div>
         </div>
         <div class="border-line"></div>
