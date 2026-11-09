@@ -40,8 +40,8 @@
 <body>
 <!-- Navigation Start: Contiene il codice della barra per navigare -->
 <!-- Header Start -->
-<nav class="navbar navbar-expand-lg  main-nav " id="navbar">
-	<div class="container">
+<nav class="navbar navbar-expand-xs main-nav d-flex flex-nowrap" id="navbar">
+	<div class="container d-flex flex-nowrap align-items-center">
 		<a class="navbar-brand" href="index.html">
 			<img style="width: 10%" src="images/Assets/little-deku-NOBG.png" alt="" class="img-fluid">
 		</a>
@@ -52,7 +52,7 @@
 		</button>
 
 		<div class="collapse navbar-collapse" id="navbarsExample09">
-			<ul class="navbar-nav ml-auto">
+			<ul class="navbar-nav ml-auto flex-nowrap">
 				<li class="nav-item  active"><a class="nav-link" href="index.html">Home</a></li>
 				<li class="nav-item"><a class="nav-link" href="images/CV/CV - Game Dev - Definitive - EN.pdf">Curriculum</a></li>
 				<li class="nav-item nav-item-lang language-switcher-container">
@@ -78,29 +78,31 @@
 
 <!-- Banner Start -->
 <section class="section banner">
-		<!-- Video di sfondo centrato (non si espande in orizzontale) -->
-		<div class="video-background">
-			<video autoplay muted loop playsinline>
-				<source src="images/Assets/UEShowcase.mp4" type="video/mp4">
-			</video>
-		</div>
+	<!-- Video di sfondo centrato (non si espande in orizzontale) -->
+	<div class="video-background">
+		<video autoplay muted loop playsinline>
+			<source src="images/portfolio/HeroVideoCompr.mp4" type="video/mp4">
+		</video>
+	</div>
 
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-10 mx-auto"> <!-- Aggiunto mx-auto per centrare la colonna -->
-					<h2 class="cd-headline clip is-full-width mb-4">
-						Sono <br>
-						<span class="cd-words-wrapper text-color">
-							<b class="is-visible">Raffaele Castania.</b>
-							<b>un Gameplay Programmer.</b>
-							<b>un Sognatore.</b>
-						</span>
-					</h2>
-					<p>Offro esperienze interattive incredibili attraverso sistemi strutturati :D.</p>
-				</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-10 mx-auto">
+				<!-- Aggiunto mx-auto per centrare la colonna -->
+				<h2 class="cd-headline clip is-full-width mb-4">
+					Sono <br>
+					<span class="cd-words-wrapper text-color">
+						<b class="is-visible">Raffaele Castania.</b>
+						<b>un Gameplay Programmer.</b>
+						<b>un Sognatore.</b>
+					</span>
+				</h2>
+				<p>Offro esperienze interattive incredibili attraverso sistemi strutturati
+					:D.</p>
 			</div>
 		</div>
-	</section>
+	</div>
+</section>
 <!-- Banner End -->
 
 <!-- POrtfolio start -->
@@ -233,7 +235,7 @@
         </div>
     </div>
 </div>
-		<div class="col-lg-3 col-md-4 col-6 mb-4 shuffle-item" data-groups='["unity"]'>
+		<div class="col-lg-3 col-md-4 col-6 mb-4 shuffle-item" data-groups='["other"]'>
     <div class="portfolio-card">
         <!-- Immagine -->
         <div class="position-relative inner-box">
@@ -261,7 +263,7 @@
                 </div>
                 <div class="stat">
                     <i class="ti-game"></i>
-                    <span>Unity</span>
+                    <span>No Engine</span>
                 </div>
                 <div class="stat">
                     <i class="ti-user rainbow-icon"></i>
@@ -326,7 +328,7 @@
     </div>
 </div>
  
-		<div class="col-lg-3 col-md-4 col-6 mb-4 shuffle-item" data-groups='["unreal"]'>
+		<div class="col-lg-3 col-md-4 col-6 mb-4 shuffle-item" data-groups='["unreal engine"]'>
     <div class="portfolio-card">
         <!-- Immagine -->
         <div class="position-relative inner-box">
